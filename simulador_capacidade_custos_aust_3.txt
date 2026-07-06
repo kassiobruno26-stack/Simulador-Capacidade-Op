@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AustCapital — Simulador de Capacidade & Custos</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#11151B; --red:#C02225; --cream:#F8F4EF;
+  --dark-blue:#1B3A6B; --med-blue:#2E5FA3; --light-blue:#D6E4F0;
+  --off-white:#F8F9FA; --border:#BDCFE8;
+  --green:#2A7D4F; --orange:#D4810A; --danger:#C02225;
+  --gray:#6B7280; --light-gray:#E8E8E8; --internal:#5B6472;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh}
+
+.header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+.header-stripe{width:4px;height:32px;background:var(--red);border-radius:2px}
+.header .brand{color:var(--cream);font-weight:800;font-size:16px}
+.header .brand b{color:var(--red);font-weight:800}
+.header .tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.tool-btn{background:transparent;border:1px solid rgba(255,255,255,.25);color:var(--cream);font-family:inherit;font-size:11px;font-weight:600;padding:7px 12px;border-radius:6px;cursor:pointer;transition:.15s}
+.tool-btn:hover{background:rgba(255,255,255,.1)}
+.tool-btn.solid{background:var(--red);border-color:var(--red)}
+.tool-btn.solid:hover{filter:brightness(1.1)}
+
+.tabbar{background:var(--navy);display:flex;padding:0 24px;gap:2px;position:sticky;top:60px;z-index:99;border-top:1px solid rgba(255,255,255,.08);overflow-x:auto}
+.tab{background:none;border:none;color:rgba(248,244,239,.55);font-family:inherit;font-size:13px;font-weight:600;padding:12px 15px;cursor:pointer;border-bottom:3px solid transparent;transition:.15s;white-space:nowrap}
+.tab:hover{color:var(--cream)}
+.tab.active{color:var(--cream);border-bottom-color:var(--red)}
+.tab .badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:5px}
+
+.page{padding:22px 24px;max-width:1400px;margin:0 auto;display:none}
+.page.active{display:block}
+
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin:0 0 14px;padding-bottom:6px;border-bottom:2px solid var(--light-gray);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:20px}
+
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.person-card{background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.person-card.inactive{opacity:.55}
+.pc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+.name-wrap{display:flex;align-items:center;gap:6px;flex:1;background:#fff;border:1px solid var(--border);border-radius:6px;padding:2px 6px}
+.name-wrap .pen{font-size:11px;color:var(--gray)}
+.pc-name-in{font-size:14px;font-weight:700;border:none;background:transparent;font-family:inherit;color:var(--navy);width:100%;padding:4px 0}
+.pc-name-in:focus{outline:none}
+.pill{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:10px;white-space:nowrap;cursor:pointer;border:none;font-family:inherit}
+.pill-cons{background:var(--dark-blue);color:#fff}
+.pill-int{background:var(--orange);color:#fff}
+.pill:hover{filter:brightness(1.15)}
+.field{margin-bottom:8px}
+.field label{display:block;font-size:10px;font-weight:600;color:var(--gray);margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.field input,.field select{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:var(--navy)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--med-blue)}
+.field-money{position:relative}
+.field-money::before{content:'R$';position:absolute;left:8px;top:26px;font-size:11px;color:var(--gray);font-weight:600}
+.field-money input{padding-left:28px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mini-toggle{width:38px;height:22px;border-radius:11px;border:none;cursor:pointer;position:relative;background:var(--green);transition:.25s;flex-shrink:0}
+.mini-toggle.off{background:var(--light-gray)}
+.mini-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:19px;transition:.25s}
+.mini-toggle.off::after{left:3px}
+.del-btn{background:none;border:none;color:var(--gray);cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;border-radius:4px}
+.del-btn:hover{color:var(--danger);background:rgba(192,34,37,.08)}
+.cost-line{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);display:flex;justify-content:space-between;font-size:11px}
+.cost-line .val{font-weight:700;color:var(--dark-blue)}
+.add-btn{background:var(--dark-blue);color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:600;padding:9px 16px;border-radius:7px;cursor:pointer;transition:.15s}
+.add-btn:hover{filter:brightness(1.15)}
+.add-btn.ghost{background:#fff;color:var(--dark-blue);border:1px dashed var(--med-blue)}
+.add-btn.sm{padding:5px 10px;font-size:11px}
+
+/* onboarding items */
+.onb-box{margin-top:8px;background:#fff;border:1px solid var(--border);border-radius:7px;padding:8px}
+.onb-box .oh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.onb-item{display:grid;grid-template-columns:1fr 74px 54px 20px;gap:5px;margin-bottom:5px;align-items:center}
+.onb-item input{padding:5px 6px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:inherit;width:100%}
+.onb-item input:focus{outline:none;border-color:var(--med-blue)}
+.onb-empty{font-size:10px;color:var(--gray);padding:4px 0}
+.onb-total{font-size:10px;color:var(--dark-blue);font-weight:700;margin-top:4px;text-align:right}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl thead th{background:var(--dark-blue);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:9px 10px;text-align:left}
+.tbl thead th:first-child{border-top-left-radius:6px}
+.tbl thead th:last-child{border-top-right-radius:6px}
+.tbl tbody tr:nth-child(even){background:var(--off-white)}
+.tbl tbody tr:nth-child(odd){background:#fff}
+.tbl td{padding:6px 8px;border-bottom:1px solid var(--light-gray);vertical-align:middle}
+.tbl input,.tbl select{width:100%;padding:5px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit;background:#fff}
+.tbl input:focus,.tbl select:focus{outline:none;border-color:var(--med-blue)}
+.type-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:.3px}
+.type-advisor{background:var(--light-blue);color:var(--dark-blue)}
+.type-ma{background:rgba(192,34,37,.15);color:var(--red)}
+.type-pontual{background:rgba(212,129,10,.18);color:var(--orange)}
+.flag-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 3px;color:var(--light-gray)}
+.flag-btn.on{color:var(--red)}
+.permuta-btn.on{color:var(--med-blue)}
+.permuta-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:var(--med-blue);color:#fff;margin-left:4px;letter-spacing:.3px}
+
+.fee-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fee-box{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px}
+.fee-box label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);display:block;margin-bottom:6px}
+.fee-box .field-money::before{top:2px}
+.fee-box input{width:100%;padding:8px 8px 8px 28px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-weight:700;font-family:inherit;color:var(--navy)}
+
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.strip-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.strip-num{font-size:20px;font-weight:800;line-height:1.1}
+.strip-lbl{font-size:9px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.n-green{color:var(--green)}.n-orange{color:var(--orange)}.n-red{color:var(--danger)}.n-navy{color:var(--navy)}.n-blue{color:var(--dark-blue)}
+
+.alloc-layout{display:grid;grid-template-columns:240px 1fr;gap:16px}
+.pool{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;align-self:start;position:sticky;top:120px;max-height:calc(100vh - 140px);overflow-y:auto}
+.pool-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:10px;margin-top:14px}
+.pool-title:first-child{margin-top:0}
+.chip{background:var(--off-white);border:1px solid var(--border);border-left:4px solid var(--med-blue);border-radius:7px;padding:8px 10px;margin-bottom:8px;cursor:grab;transition:.12s;user-select:none}
+.chip:hover{box-shadow:0 2px 8px rgba(0,0,0,.1);transform:translateY(-1px)}
+.chip.dragging{opacity:.4}
+.chip.type-advisor{border-left-color:var(--dark-blue)}
+.chip.type-ma{border-left-color:var(--red)}
+.chip.type-pontual{border-left-color:var(--orange)}
+.chip.task{border-left-color:var(--internal);border-style:dashed}
+.chip-name{font-size:12px;font-weight:700}
+.chip-meta{font-size:9px;color:var(--gray);font-weight:500;margin-top:2px}
+.pool-empty{font-size:11px;color:var(--gray);text-align:center;padding:12px 8px;line-height:1.5}
+.freq-tag{display:inline-block;font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;background:var(--navy);color:#fff;margin-left:4px}
+.task-create{display:grid;grid-template-columns:1fr 58px 34px;gap:5px;margin-bottom:8px}
+.task-create input{padding:6px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit}
+.task-create button{background:var(--internal);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:700}
+
+.grid-wrap{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.grid-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--off-white);overflow-x:auto}
+.gtab{padding:10px 16px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--gray);font-family:inherit;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:8px}
+.gtab.active{color:var(--navy);border-bottom-color:var(--red)}
+.gtab .occ{font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px}
+.cal{display:grid;grid-template-columns:52px repeat(5,1fr);font-size:11px}
+.cal-h{padding:8px;text-align:center;font-weight:700;background:var(--dark-blue);color:#fff;font-size:11px}
+.cal-h:first-child{background:var(--navy);font-size:10px}
+.cal-t{padding:4px 6px;text-align:right;font-weight:500;color:var(--gray);font-size:10px;border-bottom:1px solid var(--light-gray);display:flex;align-items:center;justify-content:flex-end;min-height:44px}
+.slot{min-height:44px;border-bottom:1px solid var(--light-gray);border-left:1px solid var(--light-gray);display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:3px;gap:2px;transition:.1s}
+.slot.outside{background:#f0f0f0}
+.slot.lunch{background:#9CA3AF22}
+.slot.droptarget{background:var(--light-blue);box-shadow:inset 0 0 0 2px var(--med-blue)}
+.slot.conflict{box-shadow:inset 0 0 0 2px var(--danger)}
+.placed{width:100%;border-radius:5px;padding:4px 6px;color:#fff;font-size:9px;font-weight:700;cursor:grab;display:flex;flex-direction:column;justify-content:center;gap:1px;line-height:1.15;position:relative}
+.placed.type-advisor{background:var(--dark-blue)}
+.placed.type-ma{background:var(--red)}
+.placed.type-pontual{background:var(--orange)}
+.placed.task{background:var(--internal);background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,.08) 4px,rgba(255,255,255,.08) 8px)}
+.placed .pf{font-size:8px;font-weight:600;opacity:.85}
+.placed .x{position:absolute;top:2px;right:3px;font-size:10px;opacity:.7;cursor:pointer}
+.placed .x:hover{opacity:1}
+.cal-legend{display:flex;gap:14px;padding:12px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:var(--off-white)}
+.lg{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:500}
+.lg-dot{width:12px;height:12px;border-radius:3px}
+
+.occ-panel{background:var(--navy);border-radius:10px;padding:16px;margin-top:16px}
+.occ-panel .pt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:12px}
+.occ-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.occ-name{width:110px;font-size:12px;font-weight:600;color:var(--cream);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.occ-track{flex:1;height:24px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;display:flex}
+.occ-seg{height:100%;transition:width .3s}
+.occ-pct{width:60px;text-align:right;font-size:13px;font-weight:700;flex-shrink:0}
+.occ-free{width:92px;text-align:right;font-size:10px;color:rgba(248,244,239,.6);flex-shrink:0}
+.occ-legend{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+.occ-legend .lg{color:rgba(248,244,239,.8)}
+
+.insights{margin-top:16px}
+.insight{padding:11px 13px;margin-bottom:8px;border-radius:7px;font-size:12px;line-height:1.5;background:#fff;border:1px solid var(--border);border-left:3px solid}
+.ins-danger{border-left-color:var(--red);background:rgba(192,34,37,.06)}
+.ins-warn{border-left-color:var(--orange);background:rgba(212,129,10,.06)}
+.ins-info{border-left-color:var(--med-blue);background:rgba(46,95,163,.06)}
+.ins-ok{border-left-color:var(--green);background:rgba(42,125,79,.06)}
+
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.result-grid{grid-template-columns:1fr}}
+.big-result{background:var(--navy);border-radius:10px;padding:20px;color:var(--cream);position:relative;overflow:hidden}
+.big-result::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--red)}
+.big-result .lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(248,244,239,.6)}
+.big-result .num{font-size:32px;font-weight:800;margin:4px 0}
+.big-result .sub{font-size:12px;color:rgba(248,244,239,.75)}
+.breakdown{margin-top:14px}
+.bd-line{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.bd-line.total{border-bottom:none;border-top:2px solid var(--red);margin-top:4px;padding-top:8px;font-weight:700;font-size:14px}
+.bd-line .plus{color:#6EE7B7}.bd-line .minus{color:#FCA5A5}
+.mono-num{font-variant-numeric:tabular-nums}
+.margin-pos{color:var(--green);font-weight:700}
+.margin-neg{color:var(--danger);font-weight:700}
+.help{font-size:11px;color:var(--gray);line-height:1.5;margin-top:6px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--gray)}
+.empty-state b{display:block;font-size:14px;color:var(--navy);margin-bottom:6px}
+
+/* charts */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+.kpi .k-num{font-size:22px;font-weight:800;line-height:1.05}
+.kpi .k-lbl{font-size:9px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.kpi .k-sub{font-size:10px;color:var(--gray);margin-top:2px}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:840px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+.chart-card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:14px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.bar-lbl{width:120px;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:20px;background:var(--off-white);border-radius:5px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:5px;transition:width .4s}
+.bar-val{width:90px;text-align:right;font-size:11px;font-weight:700;flex-shrink:0;font-variant-numeric:tabular-nums}
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{width:130px;height:130px;border-radius:50%;position:relative;flex-shrink:0}
+.donut::after{content:'';position:absolute;inset:26px;background:#fff;border-radius:50%}
+.donut-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1}
+.donut-c .dc-num{font-size:15px;font-weight:800}
+.donut-c .dc-lbl{font-size:8px;color:var(--gray);text-transform:uppercase}
+.legend-list{display:flex;flex-direction:column;gap:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-item .ld{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.legend-item b{margin-left:auto;font-variant-numeric:tabular-nums}
+
+/* projection */
+.proj-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:6px}
+.hire-row{display:grid;grid-template-columns:60px 1.4fr 90px 1fr 1fr 1fr 70px 70px 26px;gap:6px;align-items:center;margin-bottom:6px}
+.hire-row input,.hire-row select{padding:6px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;width:100%}
+.hire-head{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.3px}
+.proj-bars{display:flex;align-items:flex-end;gap:4px;height:180px;padding:10px 0;overflow-x:auto}
+.pb-col{flex:1;min-width:34px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.pb-bar{width:70%;border-radius:3px 3px 0 0;transition:height .3s;min-height:2px}
+.pb-lbl{font-size:8px;color:var(--gray);margin-top:4px;white-space:nowrap}
+.pb-val{font-size:8px;font-weight:700;margin-bottom:2px;white-space:nowrap}
+.pb-group{display:flex;align-items:flex-end;justify-content:center;gap:2px;width:100%;height:calc(100% - 14px)}
+.pb-bar-mini{width:9px;border-radius:2px 2px 0 0;transition:height .3s;min-height:2px}
+.proj-legend{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}
+.scen-editor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:800px){.scen-editor-grid{grid-template-columns:1fr}}
+.scen-col{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px}
+.scen-name{font-size:12px;font-weight:700;margin-bottom:10px}
+.scen-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:800px){.scen-cards{grid-template-columns:1fr}}
+.scen-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px}
+.sc-name{font-size:13px;font-weight:800;margin-bottom:8px}
+.sc-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px dashed var(--light-gray)}
+.sc-row:last-child{border-bottom:none}
+.sc-row b{font-variant-numeric:tabular-nums}
+.scen-radio{background:#fff;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;margin-left:6px}
+
+/* watch */
+.watch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.watch-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;border-top:4px solid var(--red)}
+.watch-card.media{border-top-color:var(--orange)}
+.wc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+.wc-name{font-size:14px;font-weight:700}
+.wc-field{margin-bottom:8px}
+.wc-field label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray);display:block;margin-bottom:3px}
+.wc-field textarea,.wc-field input,.wc-field select{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;resize:vertical}
+.wc-field textarea:focus,.wc-field input:focus{outline:none;border-color:var(--med-blue)}
+.avail-list{display:flex;flex-wrap:wrap;gap:8px}
+.avail-chip{background:var(--off-white);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.12s}
+.avail-chip:hover{border-color:var(--med-blue);background:var(--light-blue)}
+
+@media(max-width:800px){.alloc-layout{grid-template-columns:1fr}.pool{position:static;max-height:none}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-stripe"></div>
+  <span class="brand">AUST<b>CAPITAL</b></span>
+  <span style="color:var(--red);font-size:12px;font-weight:600">Simulador de Capacidade &amp; Custos</span>
+  <div class="tools">
+    <button class="tool-btn" onclick="exportCSV()">Exportar planilha</button>
+    <button class="tool-btn" onclick="exportJSON()">Backup</button>
+    <button class="tool-btn" onclick="document.getElementById('importFile').click()">Restaurar</button>
+    <button class="tool-btn solid" onclick="resetAll()">Zerar</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" data-tab="cadastro" onclick="switchTab('cadastro')">1 · Cadastro</button>
+  <button class="tab" data-tab="alocacao" onclick="switchTab('alocacao')">2 · Grade <span class="badge" id="badge-pool">0</span></button>
+  <button class="tab" data-tab="custos" onclick="switchTab('custos')">3 · Custos</button>
+  <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">4 · Projeção</button>
+  <button class="tab" data-tab="watch" onclick="switchTab('watch')">5 · Watch List <span class="badge" id="badge-watch">0</span></button>
+  <button class="tab" data-tab="painel" onclick="switchTab('painel')">6 · Painel</button>
+</div>
+
+<!-- ABA 1: CADASTRO -->
+<div class="page active" id="page-cadastro">
+  <div class="card">
+    <div class="section-title">Equipe</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="add-btn ghost" onclick="addPerson(false)">+ Adicionar consultor</button>
+      <button class="add-btn ghost" onclick="addPerson(true)">+ Adicionar estagiário</button>
+    </div>
+    <p class="help" style="margin:0 0 12px">Clique no nome para renomear. Clique no selo <b>Cons/Estag</b> para trocar o papel da pessoa.</p>
+    <div class="people-grid" id="people-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Fee mensal por tipo de cliente</div>
+    <div class="fee-grid">
+      <div class="fee-box"><label>Advisor</label><div class="field-money"><input type="number" step="0.01" id="fee-advisor" oninput="onFeeChange()"></div></div>
+      <div class="fee-box"><label>M&amp;A</label><div class="field-money"><input type="number" step="0.01" id="fee-ma" oninput="onFeeChange()"></div></div>
+      <div class="fee-box"><label>Pontual / Projeto</label><div class="field-money"><input type="number" step="0.01" id="fee-pontual" oninput="onFeeChange()"></div></div>
+    </div>
+    <p class="help">Cada cliente herda o fee do seu tipo. Você pode sobrescrever o valor individual na coluna "Fee".</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Clientes <button class="add-btn" onclick="addClient()">+ Cliente</button></div>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="client-table">
+        <thead><tr>
+          <th style="width:6%"></th><th style="width:16%">Cliente</th><th style="width:12%">Tipo</th>
+          <th style="width:12%">Frequência</th><th style="width:10%">Reunião (h)</th><th style="width:10%">Operac. (h)</th>
+          <th style="width:14%">Fee (R$/mês)</th><th style="width:14%">Consultor</th><th style="width:4%"></th>
+        </tr></thead>
+        <tbody id="client-tbody"></tbody>
+      </table>
+    </div>
+    <p class="help">O ⚑ marca o cliente na Watch List. <b>Operac. (h)</b> entra automático na carga do consultor dono quando o cliente é alocado na grade.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Custos fixos da operação (rateados por hora)</div>
+    <div id="fixed-list"></div>
+    <button class="add-btn ghost" onclick="addFixed()" style="margin-top:10px">+ Adicionar custo fixo</button>
+    <p class="help">Somados e divididos pelas horas disponíveis da equipe no mês → custo fixo por hora, que entra no custo de servir cada cliente.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Parâmetros de cálculo</div>
+    <div class="row3" style="max-width:640px">
+      <div class="field"><label>Comparecimento em reuniões (%)</label><input type="number" id="p-attendance" min="0" max="100" step="5" oninput="saveAndRender()"></div>
+      <div class="field"><label>Semanas por mês</label><input type="number" id="p-weeks" min="1" max="5" step="0.01" oninput="saveAndRender()"></div>
+      <div class="field"><label>Almoço (h/dia)</label><input type="number" id="p-lunch" min="0" max="3" step="0.5" oninput="saveAndRender()"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA 2: ALOCACAO -->
+<div class="page" id="page-alocacao">
+  <div class="alloc-layout">
+    <div class="pool">
+      <div class="pool-title">Clientes a alocar</div>
+      <div id="pool-list"></div>
+      <div class="pool-title">Afazeres internos</div>
+      <div class="task-create">
+        <input id="task-name" placeholder="Ex: Reunião interna">
+        <input id="task-hours" type="number" step="0.5" placeholder="h/sem">
+        <button onclick="addTask()">+</button>
+      </div>
+      <div id="task-list"></div>
+    </div>
+    <div>
+      <div class="grid-wrap">
+        <div class="grid-tabs" id="grid-tabs"></div>
+        <div id="grid-body"></div>
+        <div class="cal-legend">
+          <div class="lg"><div class="lg-dot" style="background:var(--dark-blue)"></div>Advisor</div>
+          <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>M&amp;A</div>
+          <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Pontual</div>
+          <div class="lg"><div class="lg-dot" style="background:var(--internal)"></div>Interno</div>
+          <div class="lg"><div class="lg-dot" style="background:#9CA3AF"></div>Almoço</div>
+          <div class="lg"><div class="lg-dot" style="box-shadow:inset 0 0 0 2px var(--danger);border-radius:3px"></div>Conflito</div>
+        </div>
+      </div>
+      <div class="occ-panel">
+        <div class="pt">⚡ Ocupação da equipe (ao vivo)</div>
+        <div id="occ-list"></div>
+        <div class="occ-legend">
+          <div class="lg"><div class="lg-dot" style="background:var(--med-blue)"></div>Gestão</div>
+          <div class="lg"><div class="lg-dot" style="background:#3a9d68"></div>Clientes</div>
+          <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Interno</div>
+        </div>
+      </div>
+      <div class="insights" id="insights"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA 3: CUSTOS -->
+<div class="page" id="page-custos">
+  <div class="strip" id="cost-strip"></div>
+  <div class="result-grid" style="margin-bottom:20px">
+    <div class="big-result" id="result-box"></div>
+    <div class="card" style="margin:0">
+      <div class="section-title">Ociosidade — dinheiro parado</div>
+      <div id="idle-box"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title">Custo por hora de cada pessoa</div>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="cost-people-table">
+        <thead><tr><th>Pessoa</th><th>Salário</th><th>Encargos</th><th>Onboarding/mês</th><th>Custo mensal</th><th>Horas/mês</th><th>Custo/hora</th></tr></thead>
+        <tbody id="cost-people-tbody"></tbody>
+      </table>
+    </div>
+    <p class="help">Custo/hora = custo mensal ÷ horas disponíveis no mês. O onboarding é a soma das parcelas mensais de cada item comprado.</p>
+  </div>
+  <div class="card">
+    <div class="section-title">Custo de servir e margem por cliente <span style="font-size:10px;color:var(--gray);font-weight:600;text-transform:none;letter-spacing:0">só clientes alocados</span></div>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="cost-client-table">
+        <thead><tr><th>Cliente</th><th>Tipo</th><th>Consultor</th><th>Horas/mês</th><th>Custo de servir</th><th>Fee</th><th>Margem R$</th><th>Margem %</th></tr></thead>
+        <tbody id="cost-client-tbody"></tbody>
+      </table>
+    </div>
+    <p class="help">Custo de servir = horas do cliente no mês × (custo/hora do dono + custo fixo/hora). Aloque na aba 2 para "realizar" o cliente.</p>
+  </div>
+</div>
+
+<!-- ABA 4: PROJECAO -->
+<div class="page" id="page-projecao">
+  <div class="card">
+    <div class="section-title">Horizonte da projeção</div>
+    <div class="field" style="max-width:220px"><label>Meses à frente</label><input type="number" id="pj-horizon" min="3" max="24" oninput="saveProjHorizon()"></div>
+    <p class="help">A base é a operação de hoje (pessoas ativas + clientes alocados, permutas contam R$ 0). Os 3 cenários abaixo partem dessa base e mudam só as premissas de crescimento. As contratações e o horizonte são os mesmos para os três.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Premissas por cenário</div>
+    <div id="scenario-editor"></div>
+    <p class="help"><b>Ramp-up</b> = meses até o cliente novo chegar a 100% do fee. <b>Churn</b> = % da carteira que sai por mês. <b>Reajuste</b> = % que fee, salário e custo fixo sobem a cada 12 meses.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Contratações planejadas <button class="add-btn sm" onclick="addHire()">+ Contratação</button></div>
+    <div id="hire-list"></div>
+    <p class="help">Cada contratação entra a partir do mês indicado. O onboarding é diluído no nº de parcelas a partir do mês de entrada.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Comparação de cenários</div>
+    <div class="scen-cards" id="scen-cards"></div>
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin:18px 0 4px">Resultado mensal — 3 cenários</h3>
+    <div class="proj-legend" id="proj-legend"></div>
+    <div class="proj-bars" id="proj-bars"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Detalhe do cenário <span id="detail-radios" style="font-weight:600;text-transform:none;letter-spacing:0"></span></div>
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin:0 0 8px">Capacidade × demanda (horas/mês)</h3>
+    <div id="alert-cap"></div>
+    <div class="proj-bars" id="cap-bars"></div>
+    <div class="proj-legend"><div class="lg"><div class="lg-dot" style="background:#3a9d68"></div>Demanda</div><div class="lg"><div class="lg-dot" style="background:var(--navy)"></div>Capacidade</div><div class="lg"><div class="lg-dot" style="background:var(--danger)"></div>Estouro</div></div>
+    <div style="overflow-x:auto;margin-top:14px">
+      <table class="tbl" id="proj-table">
+        <thead><tr><th>Mês</th><th>Equipe</th><th>Receita</th><th>Custo pessoas</th><th>Custo fixo</th><th>Resultado</th><th>Caixa acum.</th><th>Ocupação</th></tr></thead>
+        <tbody id="proj-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ABA 5: WATCH LIST -->
+<div class="page" id="page-watch">
+  <div class="card">
+    <div class="section-title">Clientes em atenção</div>
+    <div class="watch-grid" id="watch-grid"></div>
+    <div id="watch-empty"></div>
+  </div>
+  <div class="card">
+    <div class="section-title">Adicionar à watch list</div>
+    <div class="avail-list" id="watch-avail"></div>
+  </div>
+</div>
+
+<!-- ABA 6: PAINEL -->
+<div class="page" id="page-painel">
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>Receita por tipo de cliente</h3><div id="chart-revtype"></div></div>
+    <div class="chart-card"><h3>Ocupação por pessoa</h3><div id="chart-occ"></div></div>
+    <div class="chart-card"><h3>Composição do custo mensal</h3><div id="chart-cost"></div></div>
+    <div class="chart-card"><h3>Horas da equipe no mês</h3><div id="chart-hours"></div></div>
+  </div>
+  <div class="chart-card" style="margin-top:16px"><h3>Margem por cliente (alocados)</h3><div id="chart-margin"></div></div>
+</div>
+
+<script>
+/* ============ CONST ============ */
+const DAYS=['Seg','Ter','Qua','Qui','Sex'];
+const H_START=7,H_END=21;
+const STORE_KEY='austcapital_simulador_v3';
+let uid=1;
+const nid=()=>'id'+(uid++)+'_'+Math.random().toString(36).slice(2,6);
+let state=null, activeGridPerson=null, dragItem=null;
+
+function defaultState(){
+  const p1=nid(),p2=nid();
+  return {
+    people:[
+      {id:p1,name:'Kassio',isIntern:false,active:true,start:7,end:19,hasManagement:true,mgmtSplit:30,salary:0,encargos:0,onbItems:[]},
+      {id:p2,name:'Ariana',isIntern:false,active:true,start:10,end:18,hasManagement:false,mgmtSplit:0,salary:0,encargos:0,onbItems:[]}
+    ],
+    clients:[], tasks:[],
+    fees:{advisor:0,ma:0,pontual:0},
+    fixed:[{id:nid(),name:'Aluguel',value:0},{id:nid(),name:'Softwares',value:0}],
+    params:{attendance:75,weeks:4.33,lunch:1},
+    projection:{horizon:12,hires:[],activeScenario:'base',scenarios:{
+      conservador:{newClients:{advisor:0,ma:0,pontual:0},ramp:3,churn:3,adjust:5},
+      base:{newClients:{advisor:1,ma:0,pontual:0},ramp:2,churn:2,adjust:5},
+      agressivo:{newClients:{advisor:2,ma:1,pontual:0},ramp:1,churn:1,adjust:5}
+    }}
+  };
+}
+
+/* ============ PERSIST ============ */
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify({state,uid}))}catch(e){}}
+function load(){
+  try{const raw=localStorage.getItem(STORE_KEY);if(raw){const o=JSON.parse(raw);state=o.state;uid=o.uid||100;normalize();return true}}catch(e){}
+  return false;
+}
+function scenarioDefault(nc,ramp,churn,adjust){return {newClients:nc,ramp,churn,adjust}}
+function normalize(){
+  state.tasks=state.tasks||[];
+  const pj=state.projection||{};
+  const oldNC=pj.newClients||{advisor:0,ma:0,pontual:0};
+  if(!pj.scenarios){
+    pj.scenarios={
+      conservador:scenarioDefault({advisor:0,ma:0,pontual:0},3,3,5),
+      base:scenarioDefault({advisor:oldNC.advisor||1,ma:oldNC.ma||0,pontual:oldNC.pontual||0},2,2,5),
+      agressivo:scenarioDefault({advisor:(oldNC.advisor||1)*2,ma:(oldNC.ma||0)*2||1,pontual:(oldNC.pontual||0)*2},1,1,5)
+    };
+  }
+  ['conservador','base','agressivo'].forEach(k=>{const s=pj.scenarios[k];s.newClients=s.newClients||{advisor:0,ma:0,pontual:0};if(s.ramp==null)s.ramp=2;if(s.churn==null)s.churn=2;if(s.adjust==null)s.adjust=5});
+  pj.horizon=pj.horizon||12;pj.hires=pj.hires||[];pj.activeScenario=pj.activeScenario||'base';
+  delete pj.newClients;delete pj.fixedGrowth;
+  state.projection=pj;
+  state.people.forEach(p=>{
+    if(!p.onbItems){
+      p.onbItems=[];
+      if(p.onboarding&&p.onboarding>0)p.onbItems.push({id:nid(),desc:'Equipamentos',value:p.onboarding,parcelas:p.onbParcelas||12});
+    }
+    delete p.onboarding;delete p.onbParcelas;
+  });
+  state.clients.forEach(c=>{if(!c.watch)c.watch={on:false,level:'media',reason:'',next:''};if(c.permuta==null)c.permuta=false});
+}
+function saveAndRender(){readParams();save();renderAll()}
+function readParams(){state.params.attendance=numv('p-attendance',75);state.params.weeks=numv('p-weeks',4.33);state.params.lunch=numv('p-lunch',1)}
+function numv(id,def){const el=document.getElementById(id);if(!el)return def;const v=parseFloat(el.value);return isNaN(v)?def:v}
+
+/* ============ HELPERS ============ */
+function typeClass(t){return t==='ma'?'type-ma':t==='pontual'?'type-pontual':'type-advisor'}
+function typeLabel(t){return t==='ma'?'M&A':t==='pontual'?'Pontual':'Advisor'}
+function freqMonth(f){return f==='quinzenal'?state.params.weeks/2:state.params.weeks}
+function freqWeek(f){return f==='quinzenal'?0.5:1}
+function brl(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2})}
+function num2(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function onbMonthly(p){return (p.onbItems||[]).reduce((s,i)=>s+((i.parcelas>0)?(i.value||0)/i.parcelas:0),0)}
+function personMonthlyCost(p){return (p.salary||0)+(p.encargos||0)+onbMonthly(p)}
+function personWeekHours(p){return Math.max(0,(p.end-p.start-state.params.lunch)*5)}
+function personMonthHours(p){return personWeekHours(p)*state.params.weeks}
+function clientFee(c){if(c.feeOverride!==undefined&&c.feeOverride!==null&&c.feeOverride!=='')return parseFloat(c.feeOverride)||0;return state.fees[c.type]||0}
+function clientRevenue(c){return c.permuta?0:clientFee(c)}
+function clientMonthHours(c){const fm=freqMonth(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fm+(c.opHours||0)*fm}
+function clientWeekHours(c){const fw=freqWeek(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fw+(c.opHours||0)*fw}
+function taskWeekHours(t){return (t.hours||0)}
+function fixedTotal(){return state.fixed.reduce((s,f)=>s+(parseFloat(f.value)||0),0)}
+function teamMonthHours(){return state.people.filter(p=>p.active).reduce((s,p)=>s+personMonthHours(p),0)}
+function fixedPerHour(){const t=teamMonthHours();return t>0?fixedTotal()/t:0}
+function personWeekLoad(p){
+  let l=0;
+  if(p.hasManagement)l+=personWeekHours(p)*(p.mgmtSplit/100);
+  state.clients.forEach(c=>{if(c.ownerId===p.id&&c.slot)l+=clientWeekHours(c)});
+  state.tasks.forEach(t=>{if(t.ownerId===p.id&&t.slot)l+=taskWeekHours(t)});
+  return l;
+}
+function personLoadSplit(p){
+  const mgmt=p.hasManagement?personWeekHours(p)*(p.mgmtSplit/100):0;
+  let cli=0,intr=0;
+  state.clients.forEach(c=>{if(c.ownerId===p.id&&c.slot)cli+=clientWeekHours(c)});
+  state.tasks.forEach(t=>{if(t.ownerId===p.id&&t.slot)intr+=taskWeekHours(t)});
+  return {mgmt,cli,intr};
+}
+function personOccupation(p){const cap=personWeekHours(p);return cap>0?(personWeekLoad(p)/cap)*100:0}
+
+/* ============ TABS ============ */
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===t));
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  if(t==='alocacao')renderAllocation();
+  if(t==='custos')renderCosts();
+  if(t==='projecao')renderProjection();
+  if(t==='watch')renderWatch();
+  if(t==='painel')renderPainel();
+}
+
+/* ============ CADASTRO: PEOPLE ============ */
+function renderPeople(){
+  const g=document.getElementById('people-grid');
+  g.innerHTML=state.people.map(p=>{
+    const cost=personMonthlyCost(p);
+    const onbItems=(p.onbItems||[]).map(it=>`
+      <div class="onb-item">
+        <input value="${esc(it.desc)}" placeholder="Item" onchange="updOnb('${p.id}','${it.id}','desc',this.value)">
+        <input type="number" step="0.01" value="${it.value||''}" placeholder="R$" onchange="updOnb('${p.id}','${it.id}','value',+this.value)">
+        <input type="number" min="1" value="${it.parcelas}" placeholder="x" onchange="updOnb('${p.id}','${it.id}','parcelas',+this.value)">
+        <button class="del-btn" onclick="delOnb('${p.id}','${it.id}')">×</button>
+      </div>`).join('');
+    return `<div class="person-card ${p.active?'':'inactive'}">
+      <div class="pc-head">
+        <div class="name-wrap"><span class="pen">✎</span><input class="pc-name-in" value="${esc(p.name)}" onchange="updP('${p.id}','name',this.value)"></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="pill ${p.isIntern?'pill-int':'pill-cons'}" title="Trocar papel" onclick="toggleRole('${p.id}')">${p.isIntern?'Estag':'Cons'}</button>
+          <button class="mini-toggle ${p.active?'':'off'}" title="Ativar/desativar" onclick="updP('${p.id}','active',${!p.active})"></button>
+          <button class="del-btn" title="Remover" onclick="delPerson('${p.id}')">×</button>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Entrada</label><input type="number" min="6" max="22" value="${p.start}" onchange="updP('${p.id}','start',+this.value)"></div>
+        <div class="field"><label>Saída</label><input type="number" min="7" max="23" value="${p.end}" onchange="updP('${p.id}','end',+this.value)"></div>
+      </div>
+      <div class="row2">
+        <div class="field field-money"><label>Salário</label><input type="number" step="0.01" value="${p.salary||''}" placeholder="0,00" onchange="updP('${p.id}','salary',+this.value)"></div>
+        <div class="field field-money"><label>Encargos</label><input type="number" step="0.01" value="${p.encargos||''}" placeholder="0,00" onchange="updP('${p.id}','encargos',+this.value)"></div>
+      </div>
+      <div class="onb-box">
+        <div class="oh"><span>Onboarding (equipamentos)</span><button class="add-btn sm" onclick="addOnb('${p.id}')">+ Item</button></div>
+        ${onbItems||'<div class="onb-empty">Sem itens. Ex: notebook, monitor, teclado…</div>'}
+        <div class="onb-total">Onboarding/mês: ${brl(onbMonthly(p))}</div>
+      </div>
+      <div class="field" style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <label style="margin:0">Faz gestão?</label>
+        <button class="mini-toggle ${p.hasManagement?'':'off'}" onclick="updP('${p.id}','hasManagement',${!p.hasManagement})"></button>
+        ${p.hasManagement?`<input type="range" min="10" max="80" step="5" value="${p.mgmtSplit}" oninput="updP('${p.id}','mgmtSplit',+this.value)" style="flex:1;accent-color:var(--red)"><span style="font-size:11px;font-weight:700;color:var(--dark-blue);white-space:nowrap">${p.mgmtSplit}%</span>`:''}
+      </div>
+      <div class="cost-line"><b>Custo mensal:</b> <span class="val">${brl(cost)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderClients(){
+  const tb=document.getElementById('client-tbody');
+  if(!state.clients.length){tb.innerHTML=`<tr><td colspan="9" class="empty-state"><b>Nenhum cliente ainda</b>Clique em "+ Cliente".</td></tr>`;return}
+  const consOpts=sel=>state.people.filter(x=>x.active).map(x=>`<option value="${x.id}" ${sel===x.id?'selected':''}>${esc(x.name)}</option>`).join('');
+  tb.innerHTML=state.clients.map(c=>`
+    <tr>
+      <td style="text-align:center;white-space:nowrap"><button class="flag-btn ${c.watch.on?'on':''}" title="Watch list" onclick="toggleWatch('${c.id}')">⚑</button><button class="flag-btn permuta-btn ${c.permuta?'on':''}" title="Permuta (não gera receita)" onclick="togglePermuta('${c.id}')">⇄</button></td>
+      <td><input value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)"></td>
+      <td><select onchange="updC('${c.id}','type',this.value)">
+        <option value="advisor" ${c.type==='advisor'?'selected':''}>Advisor</option>
+        <option value="ma" ${c.type==='ma'?'selected':''}>M&A</option>
+        <option value="pontual" ${c.type==='pontual'?'selected':''}>Pontual</option></select></td>
+      <td><select onchange="updC('${c.id}','freq',this.value)">
+        <option value="semanal" ${c.freq==='semanal'?'selected':''}>Semanal</option>
+        <option value="quinzenal" ${c.freq==='quinzenal'?'selected':''}>Quinzenal</option></select></td>
+      <td><input type="number" step="0.5" min="0" value="${c.meetingDur}" onchange="updC('${c.id}','meetingDur',+this.value)"></td>
+      <td><input type="number" step="0.5" min="0" value="${c.opHours}" onchange="updC('${c.id}','opHours',+this.value)"></td>
+      <td><input type="number" step="0.01" placeholder="${num2(state.fees[c.type]||0)}" value="${c.feeOverride??''}" onchange="updC('${c.id}','feeOverride',this.value)"></td>
+      <td><select onchange="updC('${c.id}','ownerId',this.value)"><option value="">—</option>${consOpts(c.ownerId)}</select></td>
+      <td><button class="del-btn" onclick="delClient('${c.id}')">×</button></td>
+    </tr>`).join('');
+}
+
+function renderFixed(){
+  const g=document.getElementById('fixed-list');
+  g.innerHTML=state.fixed.map(f=>`
+    <div style="display:grid;grid-template-columns:1fr 180px 40px;gap:8px;margin-bottom:8px;align-items:center">
+      <input style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px" value="${esc(f.name)}" onchange="updFixed('${f.id}','name',this.value)">
+      <div class="field-money" style="margin:0;position:relative"><input type="number" step="0.01" style="width:100%;padding:7px 8px 7px 28px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px" value="${f.value||''}" placeholder="0,00" onchange="updFixed('${f.id}','value',+this.value)"><span style="position:absolute;left:8px;top:8px;font-size:11px;color:var(--gray);font-weight:600">R$</span></div>
+      <button class="del-btn" onclick="delFixed('${f.id}')">×</button>
+    </div>`).join('') +
+    `<div class="cost-line" style="max-width:440px"><b>Total fixo/mês:</b> <span class="val">${brl(fixedTotal())}</span> · <b>por hora:</b> <span class="val">${brl(fixedPerHour())}</span></div>`;
+}
+function renderFeesInputs(){document.getElementById('fee-advisor').value=state.fees.advisor||'';document.getElementById('fee-ma').value=state.fees.ma||'';document.getElementById('fee-pontual').value=state.fees.pontual||''}
+function renderParams(){document.getElementById('p-attendance').value=state.params.attendance;document.getElementById('p-weeks').value=state.params.weeks;document.getElementById('p-lunch').value=state.params.lunch}
+
+/* ============ MUTATIONS ============ */
+function updP(id,k,v){const p=state.people.find(x=>x.id===id);if(!p)return;p[k]=v;save();renderPeople();updateBadges()}
+function toggleRole(id){const p=state.people.find(x=>x.id===id);if(!p)return;p.isIntern=!p.isIntern;save();renderPeople()}
+function addOnb(id){const p=state.people.find(x=>x.id===id);if(!p)return;p.onbItems.push({id:nid(),desc:'',value:0,parcelas:12});save();renderPeople()}
+function updOnb(pid,iid,k,v){const p=state.people.find(x=>x.id===pid);if(!p)return;const it=p.onbItems.find(x=>x.id===iid);if(!it)return;it[k]=v;save();renderPeople()}
+function delOnb(pid,iid){const p=state.people.find(x=>x.id===pid);if(!p)return;p.onbItems=p.onbItems.filter(x=>x.id!==iid);save();renderPeople()}
+function updC(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c[k]=v;if(k==='ownerId'&&!v)c.slot=null;save();renderClients();updateBadges()}
+function updFixed(id,k,v){const f=state.fixed.find(x=>x.id===id);if(!f)return;f[k]=v;save();renderFixed()}
+function onFeeChange(){state.fees.advisor=numv('fee-advisor',0);state.fees.ma=numv('fee-ma',0);state.fees.pontual=numv('fee-pontual',0);save();renderClients()}
+function addPerson(isIntern){state.people.push({id:nid(),name:isIntern?'Novo estagiário':'Novo consultor',isIntern,active:true,start:isIntern?10:9,end:isIntern?16:18,hasManagement:false,mgmtSplit:0,salary:0,encargos:0,onbItems:[]});save();renderPeople();updateBadges()}
+function delPerson(id){if(!confirm('Remover esta pessoa? Os clientes dela ficam sem consultor.'))return;state.people=state.people.filter(p=>p.id!==id);state.clients.forEach(c=>{if(c.ownerId===id){c.ownerId='';c.slot=null}});state.tasks.forEach(t=>{if(t.ownerId===id){t.ownerId='';t.slot=null}});save();renderPeople();renderClients();updateBadges()}
+function addClient(){state.clients.push({id:nid(),name:'Novo cliente',type:'advisor',freq:'semanal',meetingDur:1,opHours:3,feeOverride:'',ownerId:'',slot:null,permuta:false,watch:{on:false,level:'media',reason:'',next:''}});save();renderClients();updateBadges()}
+function togglePermuta(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.permuta=!c.permuta;save();renderClients()}
+function delClient(id){state.clients=state.clients.filter(c=>c.id!==id);save();renderClients();updateBadges()}
+function addFixed(){state.fixed.push({id:nid(),name:'Novo custo',value:0});save();renderFixed()}
+function delFixed(id){state.fixed=state.fixed.filter(f=>f.id!==id);save();renderFixed()}
+function updateBadges(){
+  document.getElementById('badge-pool').textContent=state.clients.filter(c=>!c.slot).length;
+  document.getElementById('badge-watch').textContent=state.clients.filter(c=>c.watch&&c.watch.on).length;
+}
+
+/* ============ ALLOCATION ============ */
+function renderAllocation(){renderPool();renderTaskPool();renderGridTabs();renderGrid();renderOccPanel();renderInsights()}
+function renderPool(){
+  const list=document.getElementById('pool-list');
+  const pend=state.clients.filter(c=>!c.slot);
+  if(!pend.length){list.innerHTML=`<div class="pool-empty">Tudo alocado 🎯</div>`;return}
+  list.innerHTML=pend.map(c=>`
+    <div class="chip ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)">
+      <div class="chip-name">${esc(c.name)}${c.freq==='quinzenal'?'<span class="freq-tag">15/15</span>':''}</div>
+      <div class="chip-meta">${typeLabel(c.type)} · reun ${num2(c.meetingDur)}h · oper ${num2(c.opHours)}h</div>
+    </div>`).join('');
+}
+function renderTaskPool(){
+  const list=document.getElementById('task-list');
+  const pend=state.tasks.filter(t=>!t.slot);
+  if(!pend.length){list.innerHTML=`<div class="pool-empty">Nenhum afazer solto.</div>`;return}
+  list.innerHTML=pend.map(t=>`
+    <div class="chip task" draggable="true" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)">
+      <div class="chip-name">${esc(t.name)}</div>
+      <div class="chip-meta">interno · ${num2(t.hours)}h/sem <button class="del-btn" style="float:right;margin-top:-2px" onclick="delTask('${t.id}')">×</button></div>
+    </div>`).join('');
+}
+function addTask(){
+  const n=document.getElementById('task-name'),h=document.getElementById('task-hours');
+  const name=(n.value||'').trim();const hours=parseFloat(h.value)||0;
+  if(!name){n.focus();return}
+  state.tasks.push({id:nid(),name,hours,ownerId:'',slot:null});
+  n.value='';h.value='';save();renderTaskPool();
+}
+function delTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);save();renderAllocation()}
+
+function renderGridTabs(){
+  const tabs=document.getElementById('grid-tabs');
+  const active=state.people.filter(p=>p.active);
+  if(!active.length){tabs.innerHTML='';document.getElementById('grid-body').innerHTML='<div class="empty-state"><b>Nenhuma pessoa ativa</b>Ative alguém no Cadastro.</div>';return}
+  if(!activeGridPerson||!active.find(p=>p.id===activeGridPerson))activeGridPerson=active[0].id;
+  tabs.innerHTML=active.map(p=>{
+    const occ=personOccupation(p);
+    const col=occ>100?'background:rgba(192,34,37,.15);color:var(--danger)':occ>85?'background:rgba(212,129,10,.15);color:var(--orange)':'background:rgba(42,125,79,.15);color:var(--green)';
+    return `<button class="gtab ${p.id===activeGridPerson?'active':''}" onclick="activeGridPerson='${p.id}';renderGrid();renderGridTabs()">${esc(p.name)} <span class="occ" style="${col}">${occ.toFixed(0)}%</span></button>`;
+  }).join('');
+}
+function renderGrid(){
+  const p=state.people.find(x=>x.id===activeGridPerson);if(!p)return;
+  const lunchHour=Math.floor((p.start+p.end)/2);
+  let html='<div class="cal"><div class="cal-h">Hora</div>'+DAYS.map(d=>`<div class="cal-h">${d}</div>`).join('');
+  for(let h=H_START;h<H_END;h++){
+    html+=`<div class="cal-t">${h}:00</div>`;
+    DAYS.forEach(day=>{
+      const outside=(h<p.start||h>=p.end);
+      const lunch=(h===lunchHour&&!outside);
+      const cli=state.clients.filter(c=>c.ownerId===p.id&&c.slot&&c.slot.day===day&&c.slot.hour===h);
+      const tsk=state.tasks.filter(t=>t.ownerId===p.id&&t.slot&&t.slot.day===day&&t.slot.hour===h);
+      const conflict=(cli.length+tsk.length)>1;
+      let cls='slot';if(outside)cls+=' outside';if(lunch)cls+=' lunch';if(conflict)cls+=' conflict';
+      let inner='';
+      cli.forEach(c=>{inner+=`<div class="placed ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)" title="${esc(c.name)}"><span class="x" onclick="event.stopPropagation();unassign('${c.id}','client')">×</span><span>${esc(c.name)}${c.freq==='quinzenal'?' <b>15/15</b>':''}</span><span class="pf">${typeLabel(c.type)}</span></div>`});
+      tsk.forEach(t=>{inner+=`<div class="placed task" draggable="true" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)" title="${esc(t.name)}"><span class="x" onclick="event.stopPropagation();unassign('${t.id}','task')">×</span><span>${esc(t.name)}</span><span class="pf">interno ${num2(t.hours)}h</span></div>`});
+      const drop=outside?'':`ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'${p.id}','${day}',${h})"`;
+      html+=`<div class="${cls}" ${drop}>${inner}</div>`;
+    });
+  }
+  html+='</div>';
+  document.getElementById('grid-body').innerHTML=html;
+  attachPoolDrop();
+}
+function attachPoolDrop(){const pool=document.querySelector('.pool');if(!pool)return;pool.ondragover=e=>e.preventDefault();pool.ondrop=e=>{e.preventDefault();if(dragItem)unassign(dragItem.id,dragItem.kind)}}
+function onDragStart(e,id,kind){dragItem={id,kind};e.dataTransfer.effectAllowed='move';e.target.classList.add('dragging')}
+function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.droptarget').forEach(s=>s.classList.remove('droptarget'))}
+function onDragOver(e){e.preventDefault();e.currentTarget.classList.add('droptarget')}
+function onDragLeave(e){e.currentTarget.classList.remove('droptarget')}
+function onDrop(e,personId,day,hour){
+  e.preventDefault();e.currentTarget.classList.remove('droptarget');
+  if(!dragItem)return;
+  const arr=dragItem.kind==='client'?state.clients:state.tasks;
+  const item=arr.find(x=>x.id===dragItem.id);
+  if(item){item.ownerId=personId;item.slot={day,hour};save();renderAllocation();updateBadges()}
+  dragItem=null;
+}
+function unassign(id,kind){const arr=kind==='client'?state.clients:state.tasks;const item=arr.find(x=>x.id===id);if(item){item.slot=null;save();renderAllocation();updateBadges()}dragItem=null}
+
+function renderOccPanel(){
+  const list=document.getElementById('occ-list');
+  const active=state.people.filter(p=>p.active);
+  if(!active.length){list.innerHTML='<div style="color:rgba(255,255,255,.5);font-size:12px">Nenhuma pessoa ativa.</div>';return}
+  list.innerHTML=active.map(p=>{
+    const cap=personWeekHours(p);const s=personLoadSplit(p);const load=s.mgmt+s.cli+s.intr;const occ=cap>0?(load/cap)*100:0;
+    const w=x=>cap>0?Math.min(100,(x/cap)*100):0;
+    const mgmtW=w(s.mgmt),cliW=w(s.cli),intrW=w(s.intr);const freeW=Math.max(0,100-mgmtW-cliW-intrW);
+    const over=occ>100;const pctCol=over?'color:#FCA5A5':occ>85?'color:#FCD34D':'color:#6EE7B7';
+    const free=freeSlackClients(p);
+    return `<div class="occ-row">
+      <div class="occ-name">${esc(p.name)}</div>
+      <div class="occ-track">
+        ${mgmtW>0?`<div class="occ-seg" style="width:${mgmtW}%;background:var(--med-blue)"></div>`:''}
+        <div class="occ-seg" style="width:${cliW}%;background:${over?'var(--danger)':'#3a9d68'}"></div>
+        ${intrW>0?`<div class="occ-seg" style="width:${intrW}%;background:var(--orange)"></div>`:''}
+        <div class="occ-seg" style="width:${freeW}%;background:transparent"></div>
+      </div>
+      <div class="occ-pct" style="${pctCol}">${occ.toFixed(0)}%</div>
+      <div class="occ-free">${over?'estourado':free>0?('+'+free+' cli'):'no limite'}</div>
+    </div>`;
+  }).join('');
+}
+function freeSlackClients(p){
+  const cap=personWeekHours(p);const free=cap-personWeekLoad(p);
+  const owned=state.clients.filter(c=>c.ownerId===p.id&&c.slot);
+  let avg=owned.length?owned.reduce((s,c)=>s+clientWeekHours(c),0)/owned.length:(1*(state.params.attendance/100)+3);
+  return avg>0?Math.max(0,Math.floor(free/avg)):0;
+}
+function renderInsights(){
+  const box=document.getElementById('insights');const ins=[];
+  const active=state.people.filter(p=>p.active);
+  const allocated=state.clients.filter(c=>c.slot);const pending=state.clients.filter(c=>!c.slot);
+  const conflicts=[];
+  active.forEach(p=>{const map={};state.clients.filter(c=>c.ownerId===p.id&&c.slot).forEach(c=>{const k=c.slot.day+c.slot.hour;map[k]=(map[k]||0)+1});state.tasks.filter(t=>t.ownerId===p.id&&t.slot).forEach(t=>{const k=t.slot.day+t.slot.hour;map[k]=(map[k]||0)+1});if(Object.values(map).some(v=>v>1))conflicts.push(p.name)});
+  if(conflicts.length)ins.push({t:'danger',h:`<b>Conflito de horário:</b> ${conflicts.join(', ')} tem dois itens no mesmo horário.`});
+  active.forEach(p=>{const occ=personOccupation(p);if(occ>100)ins.push({t:'danger',h:`<b>${esc(p.name)}</b> em ${occ.toFixed(0)}% — acima da capacidade. Vira hora extra ou atraso.`});else if(occ>85)ins.push({t:'warn',h:`<b>${esc(p.name)}</b> em ${occ.toFixed(0)}% — zona de risco.`})});
+  if(pending.length)ins.push({t:'info',h:`${pending.length} cliente(s) não alocado(s). Não entram no resultado até irem pra grade.`});
+  const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
+  if(active.length&&avgOcc<=70&&allocated.length)ins.push({t:'ok',h:`Ocupação média ${avgOcc.toFixed(0)}% — folga saudável pra crescer sem contratar.`});
+  const cons=active.filter(p=>!p.isIntern);
+  if(cons.length&&allocated.length){const r=allocated.length/cons.length;ins.push({t:r>8?'warn':'info',h:`Ratio: ${r.toFixed(1)} clientes por consultor. ${r>8?'Acima de 8 a qualidade tende a cair.':'Sustentável.'}`})}
+  if(!ins.length)ins.push({t:'info',h:'Arraste clientes e afazeres da esquerda para a grade de cada pessoa.'});
+  box.innerHTML=ins.map(i=>`<div class="insight ins-${i.t}">${i.h}</div>`).join('');
+}
+
+/* ============ CUSTOS ============ */
+function renderCosts(){
+  const fph=fixedPerHour();const allocated=state.clients.filter(c=>c.slot);
+  const receita=allocated.reduce((s,c)=>s+clientRevenue(c),0);
+  const custoPessoas=state.people.filter(p=>p.active).reduce((s,p)=>s+personMonthlyCost(p),0);
+  const custoFixos=fixedTotal();const resultado=receita-custoPessoas-custoFixos;
+  const margemPct=receita>0?(resultado/receita)*100:0;
+  document.getElementById('cost-strip').innerHTML=`
+    <div class="strip-card"><div class="strip-num n-green">${brl(receita)}</div><div class="strip-lbl">Receita/mês</div></div>
+    <div class="strip-card"><div class="strip-num n-navy">${brl(custoPessoas)}</div><div class="strip-lbl">Pessoas/mês</div></div>
+    <div class="strip-card"><div class="strip-num n-navy">${brl(custoFixos)}</div><div class="strip-lbl">Fixo/mês</div></div>
+    <div class="strip-card"><div class="strip-num ${resultado>=0?'n-green':'n-red'}">${brl(resultado)}</div><div class="strip-lbl">Resultado/mês</div></div>
+    <div class="strip-card"><div class="strip-num ${margemPct>=0?'n-blue':'n-red'}">${num2(margemPct)}%</div><div class="strip-lbl">Margem</div></div>`;
+  document.getElementById('result-box').innerHTML=`
+    <div class="lbl">Resultado da operação (mês)</div><div class="num">${brl(resultado)}</div>
+    <div class="sub">${resultado>=0?'Operação no azul':'Operação no vermelho'} · margem ${num2(margemPct)}%</div>
+    <div class="breakdown">
+      <div class="bd-line"><span>Receita alocada</span><span class="plus">+ ${brl(receita)}</span></div>
+      <div class="bd-line"><span>Custo das pessoas</span><span class="minus">− ${brl(custoPessoas)}</span></div>
+      <div class="bd-line"><span>Custos fixos</span><span class="minus">− ${brl(custoFixos)}</span></div>
+      <div class="bd-line total"><span>Resultado</span><span class="${resultado>=0?'plus':'minus'}">${brl(resultado)}</span></div>
+    </div>`;
+  const teamH=teamMonthHours();let usedH=0;
+  state.people.filter(p=>p.active).forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
+  allocated.forEach(c=>usedH+=clientMonthHours(c));
+  state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
+  const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;const usePct=teamH>0?(usedH/teamH)*100:0;
+  document.getElementById('idle-box').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+      <div><div class="strip-num n-red" style="font-size:26px">${brl(idleCost)}</div><div class="strip-lbl">custo da hora ociosa/mês</div></div>
+      <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--dark-blue)">${num2(idleH)}h</div><div class="strip-lbl">horas paradas/mês</div></div>
+    </div>
+    <div class="occ-track" style="background:var(--light-gray);height:20px"><div class="occ-seg" style="width:${Math.min(100,usePct)}%;background:var(--dark-blue)"></div></div>
+    <p class="help">${num2(usePct)}% da capacidade usada. As ${num2(idleH)}h restantes são pagas sem gerar receita — é o custo de contratar antes de encher a agenda, ou o espaço pra vender mais.</p>`;
+  const tb1=document.getElementById('cost-people-tbody');const ap=state.people.filter(p=>p.active);
+  tb1.innerHTML=ap.length?ap.map(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);const cph=mh>0?cost/mh:0;
+    return `<tr><td><b>${esc(p.name)}</b></td><td class="mono-num">${brl(p.salary||0)}</td><td class="mono-num">${brl(p.encargos||0)}</td><td class="mono-num">${brl(onbMonthly(p))}</td><td class="mono-num"><b>${brl(cost)}</b></td><td class="mono-num">${num2(mh)}</td><td class="mono-num"><b>${brl(cph)}</b></td></tr>`}).join(''):`<tr><td colspan="7" class="empty-state">Nenhuma pessoa ativa.</td></tr>`;
+  const tb2=document.getElementById('cost-client-tbody');
+  tb2.innerHTML=allocated.length?allocated.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);const rev=clientRevenue(c);const marg=rev-custo;const mp=rev>0?(marg/rev)*100:0;
+    const feeCell=c.permuta?`<span style="color:var(--gray)">${brl(clientFee(c))}</span><span class="permuta-tag">PERMUTA</span>`:brl(rev);
+    return `<tr><td><b>${esc(c.name)}</b></td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${owner?esc(owner.name):'—'}</td><td class="mono-num">${num2(mh)}</td><td class="mono-num">${brl(custo)}</td><td class="mono-num">${feeCell}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${brl(marg)}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${c.permuta?'—':num2(mp)+'%'}</td></tr>`}).join(''):`<tr><td colspan="8" class="empty-state"><b>Nenhum cliente alocado</b>Aloque na aba Grade.</td></tr>`;
+}
+
+/* ============ PROJECAO ============ */
+const SCENARIOS=[{k:'conservador',label:'Conservador',color:'var(--med-blue)'},{k:'base',label:'Base',color:'var(--dark-blue)'},{k:'agressivo',label:'Agressivo',color:'var(--red)'}];
+function saveProjHorizon(){state.projection.horizon=Math.max(3,Math.min(24,Math.round(numv('pj-horizon',12))));save();renderProjResults()}
+function updScen(k,field,sub,v){const s=state.projection.scenarios[k];if(sub)s[field][sub]=v;else s[field]=v;save();renderProjResults()}
+function renderProjection(){
+  document.getElementById('pj-horizon').value=state.projection.horizon;
+  renderScenarioEditor();renderHires();renderProjResults();
+}
+function renderScenarioEditor(){
+  const box=document.getElementById('scenario-editor');
+  box.innerHTML=`<div class="scen-editor-grid">`+SCENARIOS.map(sc=>{
+    const s=state.projection.scenarios[sc.k];
+    return `<div class="scen-col" style="border-top:3px solid ${sc.color}">
+      <div class="scen-name">${sc.label}</div>
+      <div class="row3">
+        <div class="field"><label>Adv/mês</label><input type="number" min="0" step="1" value="${s.newClients.advisor||0}" onchange="updScen('${sc.k}','newClients','advisor',+this.value)"></div>
+        <div class="field"><label>M&A/mês</label><input type="number" min="0" step="1" value="${s.newClients.ma||0}" onchange="updScen('${sc.k}','newClients','ma',+this.value)"></div>
+        <div class="field"><label>Pont/mês</label><input type="number" min="0" step="1" value="${s.newClients.pontual||0}" onchange="updScen('${sc.k}','newClients','pontual',+this.value)"></div>
+      </div>
+      <div class="row3">
+        <div class="field"><label>Ramp (m)</label><input type="number" min="1" step="1" value="${s.ramp}" onchange="updScen('${sc.k}','ramp',null,+this.value)"></div>
+        <div class="field"><label>Churn %/m</label><input type="number" min="0" step="0.5" value="${s.churn}" onchange="updScen('${sc.k}','churn',null,+this.value)"></div>
+        <div class="field"><label>Reajuste %</label><input type="number" min="0" step="0.5" value="${s.adjust}" onchange="updScen('${sc.k}','adjust',null,+this.value)"></div>
+      </div>
+    </div>`;
+  }).join('')+`</div>`;
+}
+function renderHires(){
+  const g=document.getElementById('hire-list');
+  const head=`<div class="hire-row hire-head"><div>Mês</div><div>Nome</div><div>Papel</div><div>Salário</div><div>Encargos</div><div>Onboarding</div><div>Parc.</div><div>h/sem</div><div></div></div>`;
+  if(!state.projection.hires.length){g.innerHTML=head+`<div class="onb-empty" style="padding:8px">Nenhuma contratação planejada. A projeção usa só a equipe atual.</div>`;return}
+  g.innerHTML=head+state.projection.hires.map(h=>`
+    <div class="hire-row">
+      <input type="number" min="1" value="${h.month}" onchange="updHire('${h.id}','month',+this.value)">
+      <input value="${esc(h.name)}" onchange="updHire('${h.id}','name',this.value)">
+      <select onchange="updHire('${h.id}','role',this.value)"><option value="cons" ${h.role==='cons'?'selected':''}>Consultor</option><option value="estag" ${h.role==='estag'?'selected':''}>Estagiário</option></select>
+      <input type="number" step="0.01" value="${h.salary||''}" placeholder="R$" onchange="updHire('${h.id}','salary',+this.value)">
+      <input type="number" step="0.01" value="${h.encargos||''}" placeholder="R$" onchange="updHire('${h.id}','encargos',+this.value)">
+      <input type="number" step="0.01" value="${h.onboarding||''}" placeholder="R$" onchange="updHire('${h.id}','onboarding',+this.value)">
+      <input type="number" min="1" value="${h.onbParcelas}" onchange="updHire('${h.id}','onbParcelas',+this.value)">
+      <input type="number" step="1" value="${h.weekHours}" onchange="updHire('${h.id}','weekHours',+this.value)">
+      <button class="del-btn" onclick="delHire('${h.id}')">×</button>
+    </div>`).join('');
+}
+function addHire(){state.projection.hires.push({id:nid(),month:3,name:'Nova contratação',role:'cons',salary:0,encargos:0,onboarding:0,onbParcelas:12,weekHours:40});save();renderHires();renderProjResults()}
+function updHire(id,k,v){const h=state.projection.hires.find(x=>x.id===id);if(!h)return;h[k]=v;save();renderProjResults()}
+function delHire(id){state.projection.hires=state.projection.hires.filter(h=>h.id!==id);save();renderHires();renderProjResults()}
+function setActiveScenario(k){state.projection.activeScenario=k;save();renderProjResults()}
+
+function avgHoursType(t){
+  const cs=state.clients.filter(c=>c.type===t);
+  if(cs.length)return cs.reduce((s,c)=>s+clientMonthHours(c),0)/cs.length;
+  const d={advisor:[1,3],ma:[1.5,6],pontual:[1,4]}[t]||[1,3];
+  return (d[0]*(state.params.attendance/100)+d[1])*state.params.weeks;
+}
+// simula um cenário mês a mês com ramp-up, churn, reajuste anual
+function simulate(scenKey){
+  const pj=state.projection;const s=pj.scenarios[scenKey];const months=[];
+  const allocated=state.clients.filter(c=>c.slot);
+  const baseRevenue=allocated.reduce((sum,c)=>sum+clientRevenue(c),0);
+  const basePeople=state.people.filter(p=>p.active);
+  const basePeopleCost=basePeople.reduce((sum,p)=>sum+personMonthlyCost(p),0);
+  const baseCapacity=basePeople.reduce((sum,p)=>sum+personMonthHours(p),0);
+  let baseDemand=0;allocated.forEach(c=>baseDemand+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>baseDemand+=taskWeekHours(t)*state.params.weeks);
+  const newRevPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*(state.fees[t]||0),0);
+  const newDemPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*avgHoursType(t),0);
+  const churn=(s.churn||0)/100;const ramp=Math.max(1,s.ramp||1);
+  let cash=0,estouroMonth=null,paybackMonth=null;
+  for(let m=1;m<=pj.horizon;m++){
+    const adj=Math.pow(1+(s.adjust||0)/100,Math.floor((m-1)/12));
+    // base cohort (start=1, ramp completo), churn a partir do mês seguinte
+    let rev=baseRevenue*Math.pow(1-churn,m-1);
+    let dem=baseDemand*Math.pow(1-churn,m-1);
+    // cohorts de clientes novos: um por mês k=1..m
+    for(let k=1;k<=m;k++){
+      const age=m-k;const rf=Math.min(1,(age+1)/ramp);const surv=Math.pow(1-churn,age);
+      rev+=newRevPerMonth*rf*surv;dem+=newDemPerMonth*rf*surv;
+    }
+    rev*=adj;
+    // pessoas
+    let peopleCost=basePeopleCost*adj,capacity=baseCapacity,headAdd=0;
+    pj.hires.forEach(h=>{if(h.month<=m){peopleCost+=((h.salary||0)+(h.encargos||0))*adj;if(h.onbParcelas>0&&m<h.month+h.onbParcelas)peopleCost+=(h.onboarding||0)/h.onbParcelas;capacity+=(h.weekHours||0)*state.params.weeks;headAdd++}});
+    const fixed=fixedTotal()*adj;
+    const result=rev-peopleCost-fixed;cash+=result;
+    const occ=capacity>0?(dem/capacity)*100:0;
+    if(estouroMonth===null&&occ>100)estouroMonth=m;
+    if(paybackMonth===null&&cash>=0&&result>=0)paybackMonth=m;
+    months.push({m,revenue:rev,peopleCost,fixed,result,cash,occ,capacity,demand:dem,headcount:basePeople.length+headAdd});
+  }
+  return {months,estouroMonth,paybackMonth,total:months.reduce((a,x)=>a+x.result,0),finalCash:cash};
+}
+function renderProjResults(){
+  const sims={};SCENARIOS.forEach(sc=>sims[sc.k]=simulate(sc.k));
+  // cards
+  document.getElementById('scen-cards').innerHTML=SCENARIOS.map(sc=>{
+    const r=sims[sc.k];const last=r.months[r.months.length-1]||{};
+    return `<div class="scen-card" style="border-left:4px solid ${sc.color}">
+      <div class="sc-name" style="color:${sc.color}">${sc.label}</div>
+      <div class="sc-row"><span>Resultado acum.</span><b class="${r.finalCash>=0?'margin-pos':'margin-neg'}">${brl(r.finalCash)}</b></div>
+      <div class="sc-row"><span>Result. no último mês</span><b class="${(last.result||0)>=0?'margin-pos':'margin-neg'}">${brl(last.result||0)}</b></div>
+      <div class="sc-row"><span>Caixa vira +</span><b>${r.paybackMonth?('M'+r.paybackMonth):'—'}</b></div>
+      <div class="sc-row"><span>Capacidade estoura</span><b style="color:${r.estouroMonth?'var(--danger)':'var(--green)'}">${r.estouroMonth?('M'+r.estouroMonth):'não estoura'}</b></div>
+    </div>`;
+  }).join('');
+  // legenda
+  document.getElementById('proj-legend').innerHTML=SCENARIOS.map(sc=>`<div class="lg"><div class="lg-dot" style="background:${sc.color}"></div>${sc.label}</div>`).join('');
+  // gráfico agrupado de resultado (3 barras por mês)
+  const H=state.projection.horizon;
+  const allVals=[];SCENARIOS.forEach(sc=>sims[sc.k].months.forEach(x=>allVals.push(x.result)));
+  const maxAbs=Math.max(1,...allVals.map(Math.abs));
+  let bars='';
+  for(let i=0;i<H;i++){
+    let group='';
+    SCENARIOS.forEach(sc=>{const x=sims[sc.k].months[i];const pos=x.result>=0;const hPct=Math.min(100,(Math.abs(x.result)/maxAbs)*100);
+      group+=`<div class="pb-bar-mini" title="${sc.label} M${x.m}: ${brl(x.result)}" style="height:${hPct}%;background:${pos?sc.color:'var(--danger)'};opacity:${pos?1:.75}"></div>`;});
+    bars+=`<div class="pb-col"><div class="pb-group">${group}</div><div class="pb-lbl">M${i+1}</div></div>`;
+  }
+  document.getElementById('proj-bars').innerHTML=bars;
+  // detalhe: radios
+  const act=state.projection.activeScenario;
+  document.getElementById('detail-radios').innerHTML=SCENARIOS.map(sc=>`<button class="scen-radio ${sc.k===act?'active':''}" onclick="setActiveScenario('${sc.k}')" style="${sc.k===act?'background:'+sc.color+';color:#fff;border-color:'+sc.color:''}">${sc.label}</button>`).join('');
+  const r=sims[act];
+  // alerta capacidade
+  const alert=document.getElementById('alert-cap');
+  if(r.estouroMonth)alert.innerHTML=`<div class="insight ins-danger" style="margin-bottom:10px"><b>Capacidade estoura no mês ${r.estouroMonth}.</b> A demanda passa da capacidade da equipe — hora de acelerar uma contratação antes disso.</div>`;
+  else alert.innerHTML=`<div class="insight ins-ok" style="margin-bottom:10px">A capacidade aguenta a demanda em todo o horizonte deste cenário.</div>`;
+  // gráfico capacidade x demanda
+  const maxH=Math.max(1,...r.months.map(x=>Math.max(x.capacity,x.demand)));
+  document.getElementById('cap-bars').innerHTML=r.months.map(x=>{
+    const dH=Math.min(100,(x.demand/maxH)*100);const cH=Math.min(100,(x.capacity/maxH)*100);const over=x.demand>x.capacity;
+    return `<div class="pb-col" title="M${x.m}: demanda ${num2(x.demand)}h / capacidade ${num2(x.capacity)}h"><div class="pb-group" style="align-items:flex-end">
+      <div class="pb-bar-mini" style="height:${dH}%;background:${over?'var(--danger)':'#3a9d68'}"></div>
+      <div class="pb-bar-mini" style="height:${cH}%;background:var(--navy);opacity:.55"></div>
+    </div><div class="pb-lbl">M${x.m}</div></div>`;
+  }).join('');
+  // tabela detalhe
+  document.getElementById('proj-tbody').innerHTML=r.months.map(x=>{
+    const ocCol=x.occ>100?'color:var(--danger);font-weight:700':x.occ>85?'color:var(--orange);font-weight:700':'';
+    return `<tr><td><b>M${x.m}</b></td><td>${x.headcount}</td><td class="mono-num">${brl(x.revenue)}</td><td class="mono-num">${brl(x.peopleCost)}</td><td class="mono-num">${brl(x.fixed)}</td><td class="mono-num ${x.result>=0?'margin-pos':'margin-neg'}">${brl(x.result)}</td><td class="mono-num ${x.cash>=0?'margin-pos':'margin-neg'}">${brl(x.cash)}</td><td class="mono-num" style="${ocCol}">${num2(x.occ)}%</td></tr>`;
+  }).join('');
+}
+
+/* ============ WATCH LIST ============ */
+function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch.on=!c.watch.on;save();renderClients();updateBadges();if(document.getElementById('page-watch').classList.contains('active'))renderWatch()}
+function updWatch(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch[k]=v;save();if(k==='level')renderWatch()}
+function renderWatch(){
+  const grid=document.getElementById('watch-grid');const empty=document.getElementById('watch-empty');
+  const flagged=state.clients.filter(c=>c.watch&&c.watch.on);
+  if(!flagged.length){grid.innerHTML='';empty.innerHTML='<div class="empty-state"><b>Nenhum cliente em atenção</b>Marque clientes abaixo ou pelo ⚑ na aba Cadastro.</div>'}
+  else{empty.innerHTML='';grid.innerHTML=flagged.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);
+    return `<div class="watch-card ${c.watch.level==='media'?'media':''}">
+      <div class="wc-head"><span class="wc-name">${esc(c.name)}</span><button class="flag-btn on" title="Tirar da watch" onclick="toggleWatch('${c.id}')">⚑</button></div>
+      <div class="wc-field"><label>Tipo · Consultor</label><div style="font-size:12px;font-weight:600"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> · ${owner?esc(owner.name):'sem consultor'}</div></div>
+      <div class="wc-field"><label>Nível de atenção</label><select onchange="updWatch('${c.id}','level',this.value)"><option value="alta" ${c.watch.level==='alta'?'selected':''}>Alta</option><option value="media" ${c.watch.level==='media'?'selected':''}>Média</option></select></div>
+      <div class="wc-field"><label>Motivo</label><textarea rows="2" placeholder="Ex: atraso no pagamento, risco de churn…" onchange="updWatch('${c.id}','reason',this.value)">${esc(c.watch.reason)}</textarea></div>
+      <div class="wc-field"><label>Próxima ação</label><input value="${esc(c.watch.next)}" placeholder="Ex: ligar até sexta" onchange="updWatch('${c.id}','next',this.value)"></div>
+    </div>`}).join('')}
+  const avail=document.getElementById('watch-avail');const rest=state.clients.filter(c=>!(c.watch&&c.watch.on));
+  avail.innerHTML=rest.length?rest.map(c=>`<div class="avail-chip" onclick="toggleWatch('${c.id}')"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> ${esc(c.name)} +</div>`).join(''):'<div class="onb-empty">Todos os clientes já estão na watch list.</div>';
+}
+
+/* ============ PAINEL ============ */
+function bar(label,fillPct,color,valText){
+  return `<div class="bar-row"><div class="bar-lbl" title="${label}">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,Math.min(100,fillPct))}%;background:${color}"></div></div><div class="bar-val">${valText}</div></div>`;
+}
+function renderPainel(){
+  const allocated=state.clients.filter(c=>c.slot);const active=state.people.filter(p=>p.active);
+  const receita=allocated.reduce((s,c)=>s+clientRevenue(c),0);
+  const custoPessoas=active.reduce((s,p)=>s+personMonthlyCost(p),0);
+  const custoFixos=fixedTotal();const custoTotal=custoPessoas+custoFixos;const resultado=receita-custoTotal;
+  const margemPct=receita>0?(resultado/receita)*100:0;
+  const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
+  const teamH=teamMonthHours();let usedH=0;
+  active.forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
+  allocated.forEach(c=>usedH+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
+  const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;
+  const watchCount=state.clients.filter(c=>c.watch&&c.watch.on).length;
+  const consCount=active.filter(p=>!p.isIntern).length;const ratio=consCount?allocated.length/consCount:0;
+
+  document.getElementById('kpi-grid').innerHTML=`
+    ${kpi(brl(receita),'Receita/mês','n-green')}
+    ${kpi(brl(custoTotal),'Custo total/mês','n-navy',brl(custoPessoas)+' pessoas')}
+    ${kpi(brl(resultado),'Resultado/mês',resultado>=0?'n-green':'n-red',num2(margemPct)+'% de margem')}
+    ${kpi(num2(avgOcc)+'%','Ocupação média',avgOcc>85?'n-red':avgOcc>70?'n-orange':'n-green')}
+    ${kpi(allocated.length+'/'+state.clients.length,'Clientes alocados','n-blue')}
+    ${kpi(active.length+'','Pessoas ativas','n-navy',consCount+' consultores')}
+    ${kpi(brl(idleCost),'Custo ociosidade','n-red',num2(idleH)+'h paradas')}
+    ${kpi(watchCount+'','Em atenção',watchCount>0?'n-orange':'n-green')}
+    ${kpi(num2(ratio),'Clientes/consultor',ratio>8?'n-red':'n-blue')}`;
+
+  // receita por tipo
+  const revByType={advisor:0,ma:0,pontual:0};allocated.forEach(c=>revByType[c.type]+=clientRevenue(c));
+  const maxRev=Math.max(1,revByType.advisor,revByType.ma,revByType.pontual);
+  document.getElementById('chart-revtype').innerHTML=
+    bar('Advisor',revByType.advisor/maxRev*100,'var(--dark-blue)',brl(revByType.advisor))+
+    bar('M&A',revByType.ma/maxRev*100,'var(--red)',brl(revByType.ma))+
+    bar('Pontual',revByType.pontual/maxRev*100,'var(--orange)',brl(revByType.pontual));
+
+  // ocupação por pessoa
+  document.getElementById('chart-occ').innerHTML=active.length?active.map(p=>{const o=personOccupation(p);const col=o>100?'var(--danger)':o>85?'var(--orange)':'var(--green)';return bar(esc(p.name),o,col,num2(o)+'%')}).join(''):'<div class="onb-empty">Sem pessoas ativas.</div>';
+
+  // composição de custo (donut)
+  const p1=custoTotal>0?custoPessoas/custoTotal*100:0;
+  document.getElementById('chart-cost').innerHTML=`
+    <div class="donut-wrap">
+      <div class="donut" style="background:conic-gradient(var(--dark-blue) 0 ${p1}%, var(--red) ${p1}% 100%)">
+        <div class="donut-c"><span class="dc-num">${brl(custoTotal)}</span><span class="dc-lbl">total/mês</span></div>
+      </div>
+      <div class="legend-list">
+        <div class="legend-item"><span class="ld" style="background:var(--dark-blue)"></span>Pessoas <b>${brl(custoPessoas)}</b></div>
+        <div class="legend-item"><span class="ld" style="background:var(--red)"></span>Fixos <b>${brl(custoFixos)}</b></div>
+      </div>
+    </div>`;
+
+  // horas da equipe (stacked)
+  let hMgmt=0,hCli=0,hInt=0;active.forEach(p=>{if(p.hasManagement)hMgmt+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
+  allocated.forEach(c=>hCli+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>hInt+=taskWeekHours(t)*state.params.weeks);
+  const totH=Math.max(1,teamH);const wg=x=>x/totH*100;
+  document.getElementById('chart-hours').innerHTML=`
+    <div class="bar-track" style="height:26px;display:flex">
+      <div style="width:${wg(hMgmt)}%;background:var(--med-blue)"></div>
+      <div style="width:${wg(hCli)}%;background:#3a9d68"></div>
+      <div style="width:${wg(hInt)}%;background:var(--orange)"></div>
+    </div>
+    <div class="legend-list" style="margin-top:12px">
+      <div class="legend-item"><span class="ld" style="background:var(--med-blue)"></span>Gestão <b>${num2(hMgmt)}h</b></div>
+      <div class="legend-item"><span class="ld" style="background:#3a9d68"></span>Clientes <b>${num2(hCli)}h</b></div>
+      <div class="legend-item"><span class="ld" style="background:var(--orange)"></span>Internas <b>${num2(hInt)}h</b></div>
+      <div class="legend-item"><span class="ld" style="background:var(--light-gray)"></span>Ociosas <b>${num2(idleH)}h</b></div>
+    </div>`;
+
+  // margem por cliente
+  const fph=fixedPerHour();
+  const rows=allocated.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);return {name:c.name+(c.permuta?' ⇄':''),marg:clientRevenue(c)-custo,type:c.type}}).sort((a,b)=>b.marg-a.marg);
+  const maxM=Math.max(1,...rows.map(r=>Math.abs(r.marg)));
+  document.getElementById('chart-margin').innerHTML=rows.length?rows.map(r=>bar(esc(r.name),Math.abs(r.marg)/maxM*100,r.marg>=0?'var(--green)':'var(--danger)',brl(r.marg))).join(''):'<div class="onb-empty">Nenhum cliente alocado ainda.</div>';
+}
+function kpi(num,lbl,cls,sub){return `<div class="kpi"><div class="k-num ${cls||''}">${num}</div><div class="k-lbl">${lbl}</div>${sub?`<div class="k-sub">${sub}</div>`:''}</div>`}
+
+/* ============ EXPORT / IMPORT ============ */
+function exportJSON(){dl(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'austcapital_simulador_backup.json')}
+function importJSON(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(!o.people||!o.clients)throw 0;state=o;if(!state.params)state.params={attendance:75,weeks:4.33,lunch:1};normalize();save();renderAll();switchTab('cadastro');alert('Backup restaurado.')}catch(err){alert('Arquivo inválido.')}};r.readAsText(file);ev.target.value=''}
+function exportCSV(){
+  const fph=fixedPerHour();
+  const rows=[['Cliente','Tipo','Frequencia','Consultor','Alocado','Dia','Hora','Horas/mes','Fee','Custo de servir','Margem R$','Margem %','Watch','Nivel','Motivo']];
+  state.clients.forEach(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=c.slot?mh*(oCPH+fph):0;const fee=clientFee(c);const marg=c.slot?fee-custo:0;const mp=fee>0&&c.slot?(marg/fee)*100:0;
+    rows.push([c.name,typeLabel(c.type),c.freq,owner?owner.name:'',c.slot?'Sim':'Nao',c.slot?c.slot.day:'',c.slot?c.slot.hour+':00':'',num2(mh),num2(fee),num2(custo),num2(marg),num2(mp),c.watch&&c.watch.on?'Sim':'',c.watch?c.watch.level:'',c.watch?c.watch.reason:''])});
+  rows.push([]);rows.push(['Pessoa','Papel','Salario','Encargos','Onboarding/mes','Custo mensal','Horas/mes','Custo/hora']);
+  state.people.filter(p=>p.active).forEach(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);rows.push([p.name,p.isIntern?'Estagiario':'Consultor',num2(p.salary||0),num2(p.encargos||0),num2(onbMonthly(p)),num2(cost),num2(mh),num2(mh>0?cost/mh:0)])});
+  rows.push([]);rows.push(['Afazer interno','Consultor','Horas/sem','Alocado']);
+  state.tasks.forEach(t=>{const owner=state.people.find(p=>p.id===t.ownerId);rows.push([t.name,owner?owner.name:'',num2(t.hours),t.slot?'Sim':'Nao'])});
+  const csv='\ufeff'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  dl(new Blob([csv],{type:'text/csv;charset=utf-8'}),'austcapital_simulador.csv');
+}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function resetAll(){if(!confirm('Zerar TODOS os dados? Faça um backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
+
+/* ============ UTIL ============ */
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function renderAll(){
+  renderPeople();renderClients();renderFixed();renderFeesInputs();renderParams();updateBadges();
+  if(document.getElementById('page-alocacao').classList.contains('active'))renderAllocation();
+  if(document.getElementById('page-custos').classList.contains('active'))renderCosts();
+  if(document.getElementById('page-projecao').classList.contains('active'))renderProjection();
+  if(document.getElementById('page-watch').classList.contains('active'))renderWatch();
+  if(document.getElementById('page-painel').classList.contains('active'))renderPainel();
+}
+
+/* ============ INIT ============ */
+if(!load())state=defaultState();
+renderAll();
+</script>
+</body>
+</html>
