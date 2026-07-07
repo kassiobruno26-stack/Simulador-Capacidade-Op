@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AustCapital — Simulador de Capacidade & Custos</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --navy:#11151B; --red:#C02225; --cream:#F8F4EF;
@@ -25,6 +26,11 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 .tool-btn:hover{background:rgba(255,255,255,.1)}
 .tool-btn.solid{background:var(--red);border-color:var(--red)}
 .tool-btn.solid:hover{filter:brightness(1.1)}
+.sync-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.3px;white-space:nowrap}
+.sync-saving{background:rgba(212,129,10,.2);color:#F5C46B}
+.sync-saved{background:rgba(42,125,79,.25);color:#7EE0A8}
+.sync-error{background:rgba(192,34,37,.25);color:#FCA5A5}
+.sync-offline{background:rgba(255,255,255,.12);color:rgba(248,244,239,.7)}
 
 .tabbar{background:var(--navy);display:flex;padding:0 24px;gap:2px;position:sticky;top:60px;z-index:99;border-top:1px solid rgba(255,255,255,.08);overflow-x:auto}
 .tab{background:none;border:none;color:rgba(248,244,239,.55);font-family:inherit;font-size:13px;font-weight:600;padding:12px 15px;cursor:pointer;border-bottom:3px solid transparent;transition:.15s;white-space:nowrap}
@@ -287,6 +293,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
   <div class="header-stripe"></div>
   <span class="brand">AUST<b>CAPITAL</b></span>
   <span style="color:var(--red);font-size:12px;font-weight:600">Simulador de Capacidade &amp; Custos</span>
+  <span id="sync-status" class="sync-status" title="Estado da sincronização">•••</span>
   <div class="tools">
     <button class="tool-btn" onclick="exportCSV()">Exportar planilha</button>
     <button class="tool-btn" onclick="exportJSON()">Backup</button>
@@ -538,11 +545,58 @@ function defaultState(){
   };
 }
 
-/* ============ PERSIST ============ */
-function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify({state,uid}))}catch(e){}}
-function load(){
-  try{const raw=localStorage.getItem(STORE_KEY);if(raw){const o=JSON.parse(raw);state=o.state;uid=o.uid||100;normalize();return true}}catch(e){}
+/* ============ PERSIST (Supabase) ============ */
+const SUPA_URL='https://tulsemiywmrnvenmqsgy.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bHNlbWl5d21ybnZlbm1xc2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDE0ODAsImV4cCI6MjA5ODkxNzQ4MH0.s0jgRd5bqMppeUB0YwEH58Mw2kC5xd3FT6MPaYnMRRE';
+const ROW_ID=1;
+let sb=null, saveTimer=null, lastPushed='', editingUntil=0, applyingRemote=false;
+function setStatus(kind,txt){const el=document.getElementById('sync-status');if(!el)return;el.className='sync-status sync-'+kind;el.textContent=txt}
+function save(){ // chamado por toda a app; agenda auto-save na nuvem
+  if(applyingRemote)return;
+  editingUntil=Date.now()+4000;
+  setStatus('saving','Salvando…');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(cloudSave,700);
+}
+async function cloudSave(){
+  if(!sb){setStatus('offline','Offline');return}
+  try{
+    const payload={state,uid};const str=JSON.stringify(payload);lastPushed=str;
+    const {error}=await sb.from('app_state').upsert({id:ROW_ID,data:payload,updated_at:new Date().toISOString()});
+    if(error)throw error;
+    setStatus('saved','Salvo na nuvem');
+  }catch(e){setStatus('error','Erro ao salvar');}
+}
+async function cloudLoad(){
+  const {data,error}=await sb.from('app_state').select('data').eq('id',ROW_ID).maybeSingle();
+  if(error)throw error;
+  if(data&&data.data&&data.data.state){state=data.data.state;uid=data.data.uid||100;lastPushed=JSON.stringify({state,uid});normalize();return true}
   return false;
+}
+async function cloudBoot(){
+  if(!window.supabase){state=defaultState();setStatus('offline','SDK offline');return}
+  sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  try{
+    const ok=await cloudLoad();
+    if(!ok){state=defaultState();await cloudSave();}
+    else setStatus('saved','Salvo na nuvem');
+    subscribeRealtime();
+  }catch(e){state=defaultState();setStatus('error','Sem conexão');}
+}
+function subscribeRealtime(){
+  if(!sb)return;
+  sb.channel('app_state_live').on('postgres_changes',{event:'*',schema:'public',table:'app_state',filter:'id=eq.'+ROW_ID},payload=>{
+    const nd=payload.new&&payload.new.data;if(!nd||!nd.state)return;
+    const incoming=JSON.stringify({state:nd.state,uid:nd.uid});
+    if(incoming===lastPushed)return;            // eco da minha própria gravação
+    if(Date.now()<editingUntil)return;          // estou editando agora: não sobrescreve
+    applyingRemote=true;
+    state=nd.state;uid=nd.uid||uid;lastPushed=incoming;normalize();renderAll();
+    applyingRemote=false;
+    setStatus('saved','Atualizado por outro usuário');
+  }).subscribe();
+  // ao voltar pra aba, recarrega o mais recente
+  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&sb&&Date.now()>editingUntil){try{const changed=await cloudLoad();if(changed!==false)renderAll();setStatus('saved','Salvo na nuvem')}catch(e){}}});
 }
 function scenarioDefault(nc,ramp,churn,adjust){return {newClients:nc,ramp,churn,adjust}}
 function normalize(){
@@ -1309,7 +1363,7 @@ function exportCSV(){
   dl(new Blob([csv],{type:'text/csv;charset=utf-8'}),'austcapital_simulador.csv');
 }
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function resetAll(){if(!confirm('Zerar TODOS os dados? Faça um backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
+function resetAll(){if(!confirm('Zerar TODOS os dados na nuvem? Isso afeta você, Gustavo e Ariana (todos veem os mesmos dados). Faça um Backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
 
 /* ============ UTIL ============ */
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -1323,8 +1377,11 @@ function renderAll(){
 }
 
 /* ============ INIT ============ */
-if(!load())state=defaultState();
-renderAll();
+(async function(){
+  setStatus('saving','Conectando…');
+  await cloudBoot();
+  renderAll();
+})();
 </script>
 </body>
 </html>
