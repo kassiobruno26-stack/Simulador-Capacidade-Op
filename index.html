@@ -98,6 +98,14 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 .flag-btn.on{color:var(--red)}
 .permuta-btn.on{color:var(--med-blue)}
 .permuta-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:var(--med-blue);color:#fff;margin-left:4px;letter-spacing:.3px}
+.client-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.client-card{background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:14px}
+.client-card.excedida{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange)}
+.cc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.excede-badge{background:rgba(212,129,10,.12);color:var(--orange);font-size:10px;font-weight:700;padding:6px 8px;border-radius:6px;margin-bottom:10px;line-height:1.3}
+.fin-box{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px}
+.fin-note{font-size:10px;color:var(--dark-blue);font-weight:600;line-height:1.4;margin-top:2px}
+.cc-sub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray);margin:4px 0 4px}
 
 .fee-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .fee-box{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px}
@@ -244,6 +252,17 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 .sc-row:last-child{border-bottom:none}
 .sc-row b{font-variant-numeric:tabular-nums}
 .scen-radio{background:#fff;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;margin-left:6px}
+.gantt-wrap{min-width:600px}
+.gantt-row{display:flex;align-items:center;margin-bottom:4px}
+.gantt-head{margin-bottom:6px}
+.gantt-name{width:130px;flex-shrink:0;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.gantt-track{flex:1;position:relative;height:22px;background:var(--off-white);border-radius:4px;display:flex}
+.gantt-head .gantt-track{background:none;height:auto}
+.gantt-mlabel{flex:1;font-size:8px;color:var(--gray);text-align:center;white-space:nowrap;min-width:0}
+.gantt-mlabel.now{color:var(--red);font-weight:700}
+.gantt-person{font-size:11px;font-weight:800;color:var(--dark-blue);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 4px}
+.gantt-bar{position:absolute;top:2px;height:18px;border-radius:4px;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gantt-bar.gantt-open::after{content:'▸';position:absolute;right:2px;opacity:.8}
 
 /* watch */
 .watch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
@@ -310,17 +329,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 
   <div class="card">
     <div class="section-title">Clientes <button class="add-btn" onclick="addClient()">+ Cliente</button></div>
-    <div style="overflow-x:auto">
-      <table class="tbl" id="client-table">
-        <thead><tr>
-          <th style="width:6%"></th><th style="width:16%">Cliente</th><th style="width:12%">Tipo</th>
-          <th style="width:12%">Frequência</th><th style="width:10%">Reunião (h)</th><th style="width:10%">Operac. (h)</th>
-          <th style="width:14%">Fee (R$/mês)</th><th style="width:14%">Consultor</th><th style="width:4%"></th>
-        </tr></thead>
-        <tbody id="client-tbody"></tbody>
-      </table>
-    </div>
-    <p class="help">O ⚑ marca o cliente na Watch List. <b>Operac. (h)</b> entra automático na carga do consultor dono quando o cliente é alocado na grade.</p>
+    <div class="client-cards" id="client-cards"></div>
+    <p class="help">Cada card é um contrato. ⚑ = watch list · ⇄ = permuta (não gera receita). Os campos mudam conforme o tipo: recorrência, estruturação, parcelamento ou êxito.</p>
   </div>
 
   <div class="card">
@@ -405,7 +415,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
     <div class="section-title">Custo de servir e margem por cliente <span style="font-size:10px;color:var(--gray);font-weight:600;text-transform:none;letter-spacing:0">só clientes alocados</span></div>
     <div style="overflow-x:auto">
       <table class="tbl" id="cost-client-table">
-        <thead><tr><th>Cliente</th><th>Tipo</th><th>Consultor</th><th>Horas/mês</th><th>Custo de servir</th><th>Fee</th><th>Margem R$</th><th>Margem %</th></tr></thead>
+        <thead><tr><th>Cliente</th><th>Tipo</th><th>Consultor</th><th>Horas/mês</th><th>Custo serviço</th><th>Custo adic.</th><th>Receita (comp.)</th><th>Margem R$</th><th>Margem %</th></tr></thead>
         <tbody id="cost-client-tbody"></tbody>
       </table>
     </div>
@@ -449,7 +459,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
     <div class="proj-legend"><div class="lg"><div class="lg-dot" style="background:#3a9d68"></div>Demanda</div><div class="lg"><div class="lg-dot" style="background:var(--navy)"></div>Capacidade</div><div class="lg"><div class="lg-dot" style="background:var(--danger)"></div>Estouro</div></div>
     <div style="overflow-x:auto;margin-top:14px">
       <table class="tbl" id="proj-table">
-        <thead><tr><th>Mês</th><th>Equipe</th><th>Receita</th><th>Custo pessoas</th><th>Custo fixo</th><th>Resultado</th><th>Caixa acum.</th><th>Ocupação</th></tr></thead>
+        <thead><tr><th>Mês</th><th>Equipe</th><th>Rec. comp.</th><th>Rec. caixa</th><th>Custo pessoas</th><th>Fixo+adic.</th><th>Resultado</th><th>Caixa acum.</th><th>Ocupação</th></tr></thead>
         <tbody id="proj-tbody"></tbody>
       </table>
     </div>
@@ -479,16 +489,28 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
     <div class="chart-card"><h3>Horas da equipe no mês</h3><div id="chart-hours"></div></div>
   </div>
   <div class="chart-card" style="margin-top:16px"><h3>Margem por cliente (alocados)</h3><div id="chart-margin"></div></div>
+  <div class="chart-card" style="margin-top:16px">
+    <h3>Agenda no tempo — Gantt por consultor</h3>
+    <div id="gantt"></div>
+    <div class="proj-legend" style="margin-top:10px">
+      <div class="lg"><div class="lg-dot" style="background:var(--dark-blue)"></div>Advisor</div>
+      <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>M&A</div>
+      <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Pontual</div>
+      <div class="lg"><div class="lg-dot" style="background:var(--med-blue)"></div>Estruturação</div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px">
+    <h3>Tempo de casa e receita gerada por cliente</h3>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="tenure-table">
+        <thead><tr><th>Cliente</th><th>Tipo</th><th>Início</th><th>Duração</th><th>Tempo de casa</th><th>Receita total (compet.)</th><th>Status</th></tr></thead>
+        <tbody id="tenure-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ============ SUPABASE ============ */
-const SUPABASE_URL='https://tulsemiywmrnvenmqsgy.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bHNlbWl5d21ybnZlbm1xc2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDE0ODAsImV4cCI6MjA5ODkxNzQ4MH0.s0jgRd5bqMppeUB0YwEH58Mw2kC5xd3FT6MPaYnMRRE';
-const STATE_ID=1;
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-
 /* ============ CONST ============ */
 const DAYS=['Seg','Ter','Qua','Qui','Sex'];
 const H_START=7,H_END=21;
@@ -516,38 +538,12 @@ function defaultState(){
   };
 }
 
-/* ============ PERSIST (Supabase) ============ */
-let _saveTimer=null,_savePending=false,_saveInFlight=false;
-async function _doSave(){
-  if(!state)return;
-  _saveInFlight=true;
-  try{
-    const payload={id:STATE_ID,data:{state,uid},updated_at:new Date().toISOString()};
-    const {error}=await sb.from('app_state').upsert(payload,{onConflict:'id'});
-    if(error)console.error('Supabase save error:',error);
-  }catch(e){console.error(e)}
-  _saveInFlight=false;
-  if(_savePending){_savePending=false;_doSave()}
-}
-function save(){
-  if(_saveInFlight){_savePending=true;return}
-  clearTimeout(_saveTimer);
-  _saveTimer=setTimeout(_doSave,300);
-}
-async function load(){
-  try{
-    const {data,error}=await sb.from('app_state').select('data').eq('id',STATE_ID).maybeSingle();
-    if(error){console.error('Supabase load error:',error);return false}
-    if(data&&data.data&&data.data.state){
-      state=data.data.state;
-      uid=data.data.uid||100;
-      normalize();
-      return true;
-    }
-  }catch(e){console.error(e)}
+/* ============ PERSIST ============ */
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify({state,uid}))}catch(e){}}
+function load(){
+  try{const raw=localStorage.getItem(STORE_KEY);if(raw){const o=JSON.parse(raw);state=o.state;uid=o.uid||100;normalize();return true}}catch(e){}
   return false;
 }
-
 function scenarioDefault(nc,ramp,churn,adjust){return {newClients:nc,ramp,churn,adjust}}
 function normalize(){
   state.tasks=state.tasks||[];
@@ -571,7 +567,21 @@ function normalize(){
     }
     delete p.onboarding;delete p.onbParcelas;
   });
-  state.clients.forEach(c=>{if(!c.watch)c.watch={on:false,level:'media',reason:'',next:''};if(c.permuta==null)c.permuta=false});
+  state.clients.forEach(c=>{
+    if(!c.watch)c.watch={on:false,level:'media',reason:'',next:''};
+    if(c.permuta==null)c.permuta=false;
+    if(c.subtype==null)c.subtype='recorrencia';
+    if(c.start==null)c.start='';
+    if(c.duration==null)c.duration=3;
+    if(c.totalValue==null)c.totalValue=0;
+    if(c.parcelas==null)c.parcelas=1;
+    if(c.upfront==null)c.upfront=0;
+    if(c.dealValue==null)c.dealValue=0;
+    if(c.successPct==null)c.successPct=0;
+    if(c.addMonthly==null)c.addMonthly=0;
+    if(c.addOnce==null)c.addOnce=0;
+    if(c.addOnceOffset==null)c.addOnceOffset=0;
+  });
 }
 function saveAndRender(){readParams();save();renderAll()}
 function readParams(){state.params.attendance=numv('p-attendance',75);state.params.weeks=numv('p-weeks',4.33);state.params.lunch=numv('p-lunch',1)}
@@ -590,6 +600,53 @@ function personWeekHours(p){return Math.max(0,(p.end-p.start-state.params.lunch)
 function personMonthHours(p){return personWeekHours(p)*state.params.weeks}
 function clientFee(c){if(c.feeOverride!==undefined&&c.feeOverride!==null&&c.feeOverride!=='')return parseFloat(c.feeOverride)||0;return state.fees[c.type]||0}
 function clientRevenue(c){return c.permuta?0:clientFee(c)}
+/* ===== Contrato no tempo ===== */
+const MONTH_NAMES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function ymToMI(ym){if(!ym||typeof ym!=='string'||ym.indexOf('-')<0)return null;const p=ym.split('-');const y=+p[0],m=+p[1];if(!y||!m)return null;return y*12+(m-1)}
+function miToLabel(mi){const y=Math.floor(mi/12);const m=((mi%12)+12)%12;return MONTH_NAMES[m]+'/'+String(y).slice(2)}
+function nowMI(){const d=new Date();return d.getFullYear()*12+d.getMonth()}
+function clientStartMI(c){const mi=ymToMI(c.start);return mi==null?nowMI():mi}
+function clientDuration(c){ // meses de ocupação de agenda; null = contínuo
+  if(c.type==='advisor')return c.subtype==='estruturacao'?Math.max(1,c.duration||3):null;
+  if(c.type==='pontual')return Math.max(1,c.duration||1);
+  if(c.type==='ma')return Math.max(1,c.duration||1);
+  return null;
+}
+function clientEndMI(c){const d=clientDuration(c);return d==null?Infinity:clientStartMI(c)+d}
+function clientActiveAt(c,mi){return mi>=clientStartMI(c)&&mi<clientEndMI(c)}
+function clientRevenueAt(c,mi,regime){ // regime: 'cash' | 'accrual'
+  if(c.permuta)return 0;
+  const age=mi-clientStartMI(c);const d=clientDuration(c);
+  if(c.type==='advisor'){return clientActiveAt(c,mi)?clientFee(c):0}
+  if(c.type==='pontual'){
+    const total=c.totalValue||0;
+    if(regime==='cash'){const par=Math.max(1,c.parcelas||1);return (age>=0&&age<par)?total/par:0}
+    const dur=Math.max(1,d||1);return (age>=0&&age<dur)?total/dur:0;
+  }
+  if(c.type==='ma'){
+    let r=0;const dur=Math.max(1,d||1);
+    if(age===0)r+=(c.upfront||0);
+    if(age===dur-1)r+=(c.dealValue||0)*((c.successPct||0)/100);
+    return r;
+  }
+  return 0;
+}
+function clientAddCostAt(c,mi){let a=0;const age=mi-clientStartMI(c);if(clientActiveAt(c,mi))a+=(c.addMonthly||0);if(age===(c.addOnceOffset||0))a+=(c.addOnce||0);return a}
+function clientAgendaHoursAt(c,mi){return clientActiveAt(c,mi)?clientMonthHours(c):0}
+function clientCashNow(c){return clientRevenueAt(c,nowMI(),'cash')}
+function clientAccrualNow(c){return clientRevenueAt(c,nowMI(),'accrual')}
+function clientAddCostNow(c){return clientAddCostAt(c,nowMI())}
+function clientActiveNow(c){return clientActiveAt(c,nowMI())}
+function estruturacaoExcedida(c){return c.type==='advisor'&&c.subtype==='estruturacao'&&nowMI()>=clientEndMI(c)}
+function clientTenure(c){ // meses já decorridos e total planejado
+  const d=clientDuration(c);const elapsed=Math.max(0,nowMI()-clientStartMI(c)+1);
+  return {elapsed:d==null?elapsed:Math.min(elapsed,d),total:d,ongoing:d==null};
+}
+function clientLifetimeRevenue(c){ // receita total (competência) ao longo de toda a duração
+  const d=clientDuration(c);const start=clientStartMI(c);const span=d==null?60:d;let sum=0;
+  for(let i=0;i<span;i++)sum+=clientRevenueAt(c,start+i,'accrual');
+  return {value:sum,capped:d==null};
+}
 function clientMonthHours(c){const fm=freqMonth(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fm+(c.opHours||0)*fm}
 function clientWeekHours(c){const fw=freqWeek(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fw+(c.opHours||0)*fw}
 function taskWeekHours(t){return (t.hours||0)}
@@ -669,26 +726,70 @@ function renderPeople(){
 }
 
 function renderClients(){
-  const tb=document.getElementById('client-tbody');
-  if(!state.clients.length){tb.innerHTML=`<tr><td colspan="9" class="empty-state"><b>Nenhum cliente ainda</b>Clique em "+ Cliente".</td></tr>`;return}
+  const g=document.getElementById('client-cards');
+  if(!state.clients.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><b>Nenhum cliente ainda</b>Clique em "+ Cliente".</div>`;return}
   const consOpts=sel=>state.people.filter(x=>x.active).map(x=>`<option value="${x.id}" ${sel===x.id?'selected':''}>${esc(x.name)}</option>`).join('');
-  tb.innerHTML=state.clients.map(c=>`
-    <tr>
-      <td style="text-align:center;white-space:nowrap"><button class="flag-btn ${c.watch.on?'on':''}" title="Watch list" onclick="toggleWatch('${c.id}')">⚑</button><button class="flag-btn permuta-btn ${c.permuta?'on':''}" title="Permuta (não gera receita)" onclick="togglePermuta('${c.id}')">⇄</button></td>
-      <td><input value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)"></td>
-      <td><select onchange="updC('${c.id}','type',this.value)">
-        <option value="advisor" ${c.type==='advisor'?'selected':''}>Advisor</option>
-        <option value="ma" ${c.type==='ma'?'selected':''}>M&A</option>
-        <option value="pontual" ${c.type==='pontual'?'selected':''}>Pontual</option></select></td>
-      <td><select onchange="updC('${c.id}','freq',this.value)">
-        <option value="semanal" ${c.freq==='semanal'?'selected':''}>Semanal</option>
-        <option value="quinzenal" ${c.freq==='quinzenal'?'selected':''}>Quinzenal</option></select></td>
-      <td><input type="number" step="0.5" min="0" value="${c.meetingDur}" onchange="updC('${c.id}','meetingDur',+this.value)"></td>
-      <td><input type="number" step="0.5" min="0" value="${c.opHours}" onchange="updC('${c.id}','opHours',+this.value)"></td>
-      <td><input type="number" step="0.01" placeholder="${num2(state.fees[c.type]||0)}" value="${c.feeOverride??''}" onchange="updC('${c.id}','feeOverride',this.value)"></td>
-      <td><select onchange="updC('${c.id}','ownerId',this.value)"><option value="">—</option>${consOpts(c.ownerId)}</select></td>
-      <td><button class="del-btn" onclick="delClient('${c.id}')">×</button></td>
-    </tr>`).join('');
+  g.innerHTML=state.clients.map(c=>{
+    const excedida=estruturacaoExcedida(c);
+    // bloco financeiro por tipo
+    let fin='';
+    if(c.type==='advisor'){
+      fin=`<div class="row2">
+        <div class="field"><label>Subtipo</label><select onchange="updC('${c.id}','subtype',this.value)"><option value="recorrencia" ${c.subtype!=='estruturacao'?'selected':''}>Recorrência</option><option value="estruturacao" ${c.subtype==='estruturacao'?'selected':''}>Estruturação</option></select></div>
+        <div class="field field-money"><label>Fee mensal</label><input type="number" step="0.01" placeholder="${num2(state.fees.advisor||0)}" value="${c.feeOverride??''}" onchange="updC('${c.id}','feeOverride',this.value)"></div>
+      </div>
+      ${c.subtype==='estruturacao'?`<div class="field"><label>Duração da estruturação (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>`:`<div class="fin-note">Recorrência: fee mensal enquanto o cliente ficar na operação.</div>`}`;
+    } else if(c.type==='pontual'){
+      fin=`<div class="row2">
+        <div class="field field-money"><label>Valor total</label><input type="number" step="0.01" value="${c.totalValue||''}" placeholder="12000,00" onchange="updC('${c.id}','totalValue',+this.value)"></div>
+        <div class="field"><label>Nº de parcelas</label><input type="number" min="1" value="${c.parcelas}" onchange="updC('${c.id}','parcelas',+this.value)"></div>
+      </div>
+      <div class="field"><label>Duração do trabalho / agenda (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>
+      <div class="fin-note">Competência: ${brl((c.totalValue||0)/Math.max(1,c.duration))}/mês por ${c.duration}m · Caixa: ${brl((c.totalValue||0)/Math.max(1,c.parcelas))}/mês por ${c.parcelas}x</div>`;
+    } else if(c.type==='ma'){
+      const successFee=(c.dealValue||0)*((c.successPct||0)/100);
+      fin=`<div class="row2">
+        <div class="field field-money"><label>Valor à vista</label><input type="number" step="0.01" value="${c.upfront||''}" placeholder="0,00" onchange="updC('${c.id}','upfront',+this.value)"></div>
+        <div class="field"><label>Duração até o êxito (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>
+      </div>
+      <div class="row2">
+        <div class="field field-money"><label>Valor do contrato (deal)</label><input type="number" step="0.01" value="${c.dealValue||''}" placeholder="0,00" onchange="updC('${c.id}','dealValue',+this.value)"></div>
+        <div class="field"><label>% de êxito</label><input type="number" step="0.5" value="${c.successPct||''}" placeholder="0" onchange="updC('${c.id}','successPct',+this.value)"></div>
+      </div>
+      <div class="fin-note">Êxito: ${brl(successFee)} no mês ${c.duration} (valor cheio) + ${brl(c.upfront||0)} à vista no início.</div>`;
+    }
+    return `<div class="client-card ${excedida?'excedida':''}">
+      <div class="cc-top">
+        <div class="name-wrap"><span class="pen">✎</span><input class="pc-name-in" value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)"></div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <button class="flag-btn ${c.watch.on?'on':''}" title="Watch list" onclick="toggleWatch('${c.id}')">⚑</button>
+          <button class="flag-btn permuta-btn ${c.permuta?'on':''}" title="Permuta (não gera receita)" onclick="togglePermuta('${c.id}')">⇄</button>
+          <button class="del-btn" onclick="delClient('${c.id}')">×</button>
+        </div>
+      </div>
+      ${excedida?`<div class="excede-badge">⚠ Estruturação excedendo o prazo — converta para recorrência ou revise.</div>`:''}
+      <div class="row2">
+        <div class="field"><label>Tipo</label><select onchange="updC('${c.id}','type',this.value)">
+          <option value="advisor" ${c.type==='advisor'?'selected':''}>Advisor</option>
+          <option value="ma" ${c.type==='ma'?'selected':''}>M&A</option>
+          <option value="pontual" ${c.type==='pontual'?'selected':''}>Pontual</option></select></div>
+        <div class="field"><label>Início (mês/ano)</label><input type="month" value="${esc(c.start)}" onchange="updC('${c.id}','start',this.value)"></div>
+      </div>
+      <div class="fin-box">${fin}</div>
+      <div class="row3">
+        <div class="field"><label>Frequência</label><select onchange="updC('${c.id}','freq',this.value)"><option value="semanal" ${c.freq==='semanal'?'selected':''}>Semanal</option><option value="quinzenal" ${c.freq==='quinzenal'?'selected':''}>Quinzenal</option></select></div>
+        <div class="field"><label>Reunião (h)</label><input type="number" step="0.5" min="0" value="${c.meetingDur}" onchange="updC('${c.id}','meetingDur',+this.value)"></div>
+        <div class="field"><label>Operac. (h)</label><input type="number" step="0.5" min="0" value="${c.opHours}" onchange="updC('${c.id}','opHours',+this.value)"></div>
+      </div>
+      <div class="cc-sub">Custos adicionais</div>
+      <div class="row3">
+        <div class="field field-money"><label>Mensal</label><input type="number" step="0.01" value="${c.addMonthly||''}" placeholder="0,00" onchange="updC('${c.id}','addMonthly',+this.value)"></div>
+        <div class="field field-money"><label>Único</label><input type="number" step="0.01" value="${c.addOnce||''}" placeholder="0,00" onchange="updC('${c.id}','addOnce',+this.value)"></div>
+        <div class="field"><label>Mês do único</label><input type="number" min="0" value="${c.addOnceOffset}" title="0 = mês de início" onchange="updC('${c.id}','addOnceOffset',+this.value)"></div>
+      </div>
+      <div class="field"><label>Consultor responsável</label><select onchange="updC('${c.id}','ownerId',this.value)"><option value="">—</option>${consOpts(c.ownerId)}</select></div>
+    </div>`;
+  }).join('');
 }
 
 function renderFixed(){
@@ -715,7 +816,7 @@ function updFixed(id,k,v){const f=state.fixed.find(x=>x.id===id);if(!f)return;f[
 function onFeeChange(){state.fees.advisor=numv('fee-advisor',0);state.fees.ma=numv('fee-ma',0);state.fees.pontual=numv('fee-pontual',0);save();renderClients()}
 function addPerson(isIntern){state.people.push({id:nid(),name:isIntern?'Novo estagiário':'Novo consultor',isIntern,active:true,start:isIntern?10:9,end:isIntern?16:18,hasManagement:false,mgmtSplit:0,salary:0,encargos:0,onbItems:[]});save();renderPeople();updateBadges()}
 function delPerson(id){if(!confirm('Remover esta pessoa? Os clientes dela ficam sem consultor.'))return;state.people=state.people.filter(p=>p.id!==id);state.clients.forEach(c=>{if(c.ownerId===id){c.ownerId='';c.slot=null}});state.tasks.forEach(t=>{if(t.ownerId===id){t.ownerId='';t.slot=null}});save();renderPeople();renderClients();updateBadges()}
-function addClient(){state.clients.push({id:nid(),name:'Novo cliente',type:'advisor',freq:'semanal',meetingDur:1,opHours:3,feeOverride:'',ownerId:'',slot:null,permuta:false,watch:{on:false,level:'media',reason:'',next:''}});save();renderClients();updateBadges()}
+function addClient(){state.clients.push({id:nid(),name:'Novo cliente',type:'advisor',subtype:'recorrencia',freq:'semanal',meetingDur:1,opHours:3,feeOverride:'',start:'',duration:3,totalValue:0,parcelas:1,upfront:0,dealValue:0,successPct:0,addMonthly:0,addOnce:0,addOnceOffset:0,ownerId:'',slot:null,permuta:false,watch:{on:false,level:'media',reason:'',next:''}});save();renderClients();updateBadges()}
 function togglePermuta(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.permuta=!c.permuta;save();renderClients()}
 function delClient(id){state.clients=state.clients.filter(c=>c.id!==id);save();renderClients();updateBadges()}
 function addFixed(){state.fixed.push({id:nid(),name:'Novo custo',value:0});save();renderFixed()}
@@ -854,29 +955,37 @@ function renderInsights(){
 
 /* ============ CUSTOS ============ */
 function renderCosts(){
-  const fph=fixedPerHour();const allocated=state.clients.filter(c=>c.slot);
-  const receita=allocated.reduce((s,c)=>s+clientRevenue(c),0);
+  const fph=fixedPerHour();
+  const allocated=state.clients.filter(c=>c.slot);
+  const activeNow=allocated.filter(c=>clientActiveNow(c));
+  const receitaComp=activeNow.reduce((s,c)=>s+clientAccrualNow(c),0);
+  const receitaCaixa=allocated.reduce((s,c)=>s+clientCashNow(c),0);
+  const addCosts=allocated.reduce((s,c)=>s+clientAddCostNow(c),0);
   const custoPessoas=state.people.filter(p=>p.active).reduce((s,p)=>s+personMonthlyCost(p),0);
-  const custoFixos=fixedTotal();const resultado=receita-custoPessoas-custoFixos;
-  const margemPct=receita>0?(resultado/receita)*100:0;
+  const custoFixos=fixedTotal();
+  const resultado=receitaComp-custoPessoas-custoFixos-addCosts;
+  const resultadoCaixa=receitaCaixa-custoPessoas-custoFixos-addCosts;
+  const margemPct=receitaComp>0?(resultado/receitaComp)*100:0;
   document.getElementById('cost-strip').innerHTML=`
-    <div class="strip-card"><div class="strip-num n-green">${brl(receita)}</div><div class="strip-lbl">Receita/mês</div></div>
+    <div class="strip-card"><div class="strip-num n-green">${brl(receitaComp)}</div><div class="strip-lbl">Receita compet./mês</div></div>
+    <div class="strip-card"><div class="strip-num n-blue">${brl(receitaCaixa)}</div><div class="strip-lbl">Receita caixa/mês</div></div>
     <div class="strip-card"><div class="strip-num n-navy">${brl(custoPessoas)}</div><div class="strip-lbl">Pessoas/mês</div></div>
-    <div class="strip-card"><div class="strip-num n-navy">${brl(custoFixos)}</div><div class="strip-lbl">Fixo/mês</div></div>
-    <div class="strip-card"><div class="strip-num ${resultado>=0?'n-green':'n-red'}">${brl(resultado)}</div><div class="strip-lbl">Resultado/mês</div></div>
+    <div class="strip-card"><div class="strip-num n-navy">${brl(custoFixos+addCosts)}</div><div class="strip-lbl">Fixo + adic./mês</div></div>
+    <div class="strip-card"><div class="strip-num ${resultado>=0?'n-green':'n-red'}">${brl(resultado)}</div><div class="strip-lbl">Result. compet./mês</div></div>
     <div class="strip-card"><div class="strip-num ${margemPct>=0?'n-blue':'n-red'}">${num2(margemPct)}%</div><div class="strip-lbl">Margem</div></div>`;
   document.getElementById('result-box').innerHTML=`
-    <div class="lbl">Resultado da operação (mês)</div><div class="num">${brl(resultado)}</div>
-    <div class="sub">${resultado>=0?'Operação no azul':'Operação no vermelho'} · margem ${num2(margemPct)}%</div>
+    <div class="lbl">Resultado do mês atual (${miToLabel(nowMI())})</div><div class="num">${brl(resultado)}</div>
+    <div class="sub">Competência · margem ${num2(margemPct)}% · caixa do mês ${brl(resultadoCaixa)}</div>
     <div class="breakdown">
-      <div class="bd-line"><span>Receita alocada</span><span class="plus">+ ${brl(receita)}</span></div>
+      <div class="bd-line"><span>Receita (competência)</span><span class="plus">+ ${brl(receitaComp)}</span></div>
       <div class="bd-line"><span>Custo das pessoas</span><span class="minus">− ${brl(custoPessoas)}</span></div>
       <div class="bd-line"><span>Custos fixos</span><span class="minus">− ${brl(custoFixos)}</span></div>
+      <div class="bd-line"><span>Custos adicionais (clientes)</span><span class="minus">− ${brl(addCosts)}</span></div>
       <div class="bd-line total"><span>Resultado</span><span class="${resultado>=0?'plus':'minus'}">${brl(resultado)}</span></div>
     </div>`;
   const teamH=teamMonthHours();let usedH=0;
   state.people.filter(p=>p.active).forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
-  allocated.forEach(c=>usedH+=clientMonthHours(c));
+  activeNow.forEach(c=>usedH+=clientMonthHours(c));
   state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
   const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;const usePct=teamH>0?(usedH/teamH)*100:0;
   document.getElementById('idle-box').innerHTML=`
@@ -885,14 +994,14 @@ function renderCosts(){
       <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--dark-blue)">${num2(idleH)}h</div><div class="strip-lbl">horas paradas/mês</div></div>
     </div>
     <div class="occ-track" style="background:var(--light-gray);height:20px"><div class="occ-seg" style="width:${Math.min(100,usePct)}%;background:var(--dark-blue)"></div></div>
-    <p class="help">${num2(usePct)}% da capacidade usada. As ${num2(idleH)}h restantes são pagas sem gerar receita — é o custo de contratar antes de encher a agenda, ou o espaço pra vender mais.</p>`;
+    <p class="help">${num2(usePct)}% da capacidade usada neste mês. As ${num2(idleH)}h restantes são pagas sem gerar receita — espaço pra vender mais.</p>`;
   const tb1=document.getElementById('cost-people-tbody');const ap=state.people.filter(p=>p.active);
   tb1.innerHTML=ap.length?ap.map(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);const cph=mh>0?cost/mh:0;
     return `<tr><td><b>${esc(p.name)}</b></td><td class="mono-num">${brl(p.salary||0)}</td><td class="mono-num">${brl(p.encargos||0)}</td><td class="mono-num">${brl(onbMonthly(p))}</td><td class="mono-num"><b>${brl(cost)}</b></td><td class="mono-num">${num2(mh)}</td><td class="mono-num"><b>${brl(cph)}</b></td></tr>`}).join(''):`<tr><td colspan="7" class="empty-state">Nenhuma pessoa ativa.</td></tr>`;
   const tb2=document.getElementById('cost-client-tbody');
-  tb2.innerHTML=allocated.length?allocated.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);const rev=clientRevenue(c);const marg=rev-custo;const mp=rev>0?(marg/rev)*100:0;
-    const feeCell=c.permuta?`<span style="color:var(--gray)">${brl(clientFee(c))}</span><span class="permuta-tag">PERMUTA</span>`:brl(rev);
-    return `<tr><td><b>${esc(c.name)}</b></td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${owner?esc(owner.name):'—'}</td><td class="mono-num">${num2(mh)}</td><td class="mono-num">${brl(custo)}</td><td class="mono-num">${feeCell}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${brl(marg)}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${c.permuta?'—':num2(mp)+'%'}</td></tr>`}).join(''):`<tr><td colspan="8" class="empty-state"><b>Nenhum cliente alocado</b>Aloque na aba Grade.</td></tr>`;
+  tb2.innerHTML=activeNow.length?activeNow.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);const adic=clientAddCostNow(c);const rev=clientAccrualNow(c);const marg=rev-custo-adic;const mp=rev>0?(marg/rev)*100:0;
+    const revCell=c.permuta?`<span style="color:var(--gray)">${brl(clientFee(c))}</span><span class="permuta-tag">PERMUTA</span>`:brl(rev);
+    return `<tr><td><b>${esc(c.name)}</b></td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${owner?esc(owner.name):'—'}</td><td class="mono-num">${num2(mh)}</td><td class="mono-num">${brl(custo)}</td><td class="mono-num">${brl(adic)}</td><td class="mono-num">${revCell}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${brl(marg)}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${c.permuta?'—':num2(mp)+'%'}</td></tr>`}).join(''):`<tr><td colspan="9" class="empty-state"><b>Nenhum cliente ativo neste mês</b>Aloque na Grade e confira as datas de início.</td></tr>`;
 }
 
 /* ============ PROJECAO ============ */
@@ -950,39 +1059,41 @@ function avgHoursType(t){
   const d={advisor:[1,3],ma:[1.5,6],pontual:[1,4]}[t]||[1,3];
   return (d[0]*(state.params.attendance/100)+d[1])*state.params.weeks;
 }
-// simula um cenário mês a mês com ramp-up, churn, reajuste anual
+// simula um cenário mês a mês: base pelos contratos reais (datas/durações) + pipeline com ramp/churn
 function simulate(scenKey){
   const pj=state.projection;const s=pj.scenarios[scenKey];const months=[];
   const allocated=state.clients.filter(c=>c.slot);
-  const baseRevenue=allocated.reduce((sum,c)=>sum+clientRevenue(c),0);
   const basePeople=state.people.filter(p=>p.active);
   const basePeopleCost=basePeople.reduce((sum,p)=>sum+personMonthlyCost(p),0);
   const baseCapacity=basePeople.reduce((sum,p)=>sum+personMonthHours(p),0);
-  let baseDemand=0;allocated.forEach(c=>baseDemand+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>baseDemand+=taskWeekHours(t)*state.params.weeks);
+  const taskDemand=state.tasks.filter(t=>t.slot).reduce((a,t)=>a+taskWeekHours(t)*state.params.weeks,0);
   const newRevPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*(state.fees[t]||0),0);
   const newDemPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*avgHoursType(t),0);
   const churn=(s.churn||0)/100;const ramp=Math.max(1,s.ramp||1);
+  const origin=nowMI();
   let cash=0,estouroMonth=null,paybackMonth=null;
   for(let m=1;m<=pj.horizon;m++){
+    const abs=origin+(m-1);
     const adj=Math.pow(1+(s.adjust||0)/100,Math.floor((m-1)/12));
-    // base cohort (start=1, ramp completo), churn a partir do mês seguinte
-    let rev=baseRevenue*Math.pow(1-churn,m-1);
-    let dem=baseDemand*Math.pow(1-churn,m-1);
-    // cohorts de clientes novos: um por mês k=1..m
-    for(let k=1;k<=m;k++){
-      const age=m-k;const rf=Math.min(1,(age+1)/ramp);const surv=Math.pow(1-churn,age);
-      rev+=newRevPerMonth*rf*surv;dem+=newDemPerMonth*rf*surv;
-    }
-    rev*=adj;
-    // pessoas
+    // base real, respeitando início e duração de cada contrato
+    let revComp=0,revCash=0,dem=taskDemand,addc=0;
+    allocated.forEach(c=>{revComp+=clientRevenueAt(c,abs,'accrual');revCash+=clientRevenueAt(c,abs,'cash');dem+=clientAgendaHoursAt(c,abs);addc+=clientAddCostAt(c,abs)});
+    revComp*=adj;revCash*=adj;
+    // pipeline (clientes novos do cenário) com ramp-up e churn
+    let newRev=0,newDem=0;
+    for(let k=1;k<=m;k++){const age=m-k;const rf=Math.min(1,(age+1)/ramp);const surv=Math.pow(1-churn,age);newRev+=newRevPerMonth*rf*surv;newDem+=newDemPerMonth*rf*surv}
+    newRev*=adj;revComp+=newRev;revCash+=newRev;dem+=newDem;
+    // pessoas + fixo
     let peopleCost=basePeopleCost*adj,capacity=baseCapacity,headAdd=0;
     pj.hires.forEach(h=>{if(h.month<=m){peopleCost+=((h.salary||0)+(h.encargos||0))*adj;if(h.onbParcelas>0&&m<h.month+h.onbParcelas)peopleCost+=(h.onboarding||0)/h.onbParcelas;capacity+=(h.weekHours||0)*state.params.weeks;headAdd++}});
     const fixed=fixedTotal()*adj;
-    const result=rev-peopleCost-fixed;cash+=result;
+    const result=revComp-peopleCost-fixed-addc;
+    const resultCash=revCash-peopleCost-fixed-addc;
+    cash+=resultCash;
     const occ=capacity>0?(dem/capacity)*100:0;
     if(estouroMonth===null&&occ>100)estouroMonth=m;
-    if(paybackMonth===null&&cash>=0&&result>=0)paybackMonth=m;
-    months.push({m,revenue:rev,peopleCost,fixed,result,cash,occ,capacity,demand:dem,headcount:basePeople.length+headAdd});
+    if(paybackMonth===null&&cash>=0&&resultCash>=0)paybackMonth=m;
+    months.push({m,abs,revenue:revComp,revCash,peopleCost,fixed,addc,result,resultCash,cash,occ,capacity,demand:dem,headcount:basePeople.length+headAdd});
   }
   return {months,estouroMonth,paybackMonth,total:months.reduce((a,x)=>a+x.result,0),finalCash:cash};
 }
@@ -993,7 +1104,7 @@ function renderProjResults(){
     const r=sims[sc.k];const last=r.months[r.months.length-1]||{};
     return `<div class="scen-card" style="border-left:4px solid ${sc.color}">
       <div class="sc-name" style="color:${sc.color}">${sc.label}</div>
-      <div class="sc-row"><span>Resultado acum.</span><b class="${r.finalCash>=0?'margin-pos':'margin-neg'}">${brl(r.finalCash)}</b></div>
+      <div class="sc-row"><span>Caixa acumulado</span><b class="${r.finalCash>=0?'margin-pos':'margin-neg'}">${brl(r.finalCash)}</b></div>
       <div class="sc-row"><span>Result. no último mês</span><b class="${(last.result||0)>=0?'margin-pos':'margin-neg'}">${brl(last.result||0)}</b></div>
       <div class="sc-row"><span>Caixa vira +</span><b>${r.paybackMonth?('M'+r.paybackMonth):'—'}</b></div>
       <div class="sc-row"><span>Capacidade estoura</span><b style="color:${r.estouroMonth?'var(--danger)':'var(--green)'}">${r.estouroMonth?('M'+r.estouroMonth):'não estoura'}</b></div>
@@ -1033,7 +1144,7 @@ function renderProjResults(){
   // tabela detalhe
   document.getElementById('proj-tbody').innerHTML=r.months.map(x=>{
     const ocCol=x.occ>100?'color:var(--danger);font-weight:700':x.occ>85?'color:var(--orange);font-weight:700':'';
-    return `<tr><td><b>M${x.m}</b></td><td>${x.headcount}</td><td class="mono-num">${brl(x.revenue)}</td><td class="mono-num">${brl(x.peopleCost)}</td><td class="mono-num">${brl(x.fixed)}</td><td class="mono-num ${x.result>=0?'margin-pos':'margin-neg'}">${brl(x.result)}</td><td class="mono-num ${x.cash>=0?'margin-pos':'margin-neg'}">${brl(x.cash)}</td><td class="mono-num" style="${ocCol}">${num2(x.occ)}%</td></tr>`;
+    return `<tr><td><b>M${x.m}</b><br><span style="font-size:9px;color:var(--gray)">${miToLabel(x.abs)}</span></td><td>${x.headcount}</td><td class="mono-num">${brl(x.revenue)}</td><td class="mono-num">${brl(x.revCash)}</td><td class="mono-num">${brl(x.peopleCost)}</td><td class="mono-num">${brl(x.fixed+x.addc)}</td><td class="mono-num ${x.result>=0?'margin-pos':'margin-neg'}">${brl(x.result)}</td><td class="mono-num ${x.cash>=0?'margin-pos':'margin-neg'}">${brl(x.cash)}</td><td class="mono-num" style="${ocCol}">${num2(x.occ)}%</td></tr>`;
   }).join('');
 }
 
@@ -1062,14 +1173,15 @@ function bar(label,fillPct,color,valText){
 }
 function renderPainel(){
   const allocated=state.clients.filter(c=>c.slot);const active=state.people.filter(p=>p.active);
-  const receita=allocated.reduce((s,c)=>s+clientRevenue(c),0);
+  const activeNow=allocated.filter(c=>clientActiveNow(c));
+  const receita=activeNow.reduce((s,c)=>s+clientAccrualNow(c),0);
   const custoPessoas=active.reduce((s,p)=>s+personMonthlyCost(p),0);
   const custoFixos=fixedTotal();const custoTotal=custoPessoas+custoFixos;const resultado=receita-custoTotal;
   const margemPct=receita>0?(resultado/receita)*100:0;
   const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
   const teamH=teamMonthHours();let usedH=0;
   active.forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
-  allocated.forEach(c=>usedH+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
+  activeNow.forEach(c=>usedH+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
   const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;
   const watchCount=state.clients.filter(c=>c.watch&&c.watch.on).length;
   const consCount=active.filter(p=>!p.isIntern).length;const ratio=consCount?allocated.length/consCount:0;
@@ -1086,7 +1198,7 @@ function renderPainel(){
     ${kpi(num2(ratio),'Clientes/consultor',ratio>8?'n-red':'n-blue')}`;
 
   // receita por tipo
-  const revByType={advisor:0,ma:0,pontual:0};allocated.forEach(c=>revByType[c.type]+=clientRevenue(c));
+  const revByType={advisor:0,ma:0,pontual:0};activeNow.forEach(c=>revByType[c.type]+=clientAccrualNow(c));
   const maxRev=Math.max(1,revByType.advisor,revByType.ma,revByType.pontual);
   document.getElementById('chart-revtype').innerHTML=
     bar('Advisor',revByType.advisor/maxRev*100,'var(--dark-blue)',brl(revByType.advisor))+
@@ -1111,7 +1223,7 @@ function renderPainel(){
 
   // horas da equipe (stacked)
   let hMgmt=0,hCli=0,hInt=0;active.forEach(p=>{if(p.hasManagement)hMgmt+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
-  allocated.forEach(c=>hCli+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>hInt+=taskWeekHours(t)*state.params.weeks);
+  activeNow.forEach(c=>hCli+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>hInt+=taskWeekHours(t)*state.params.weeks);
   const totH=Math.max(1,teamH);const wg=x=>x/totH*100;
   document.getElementById('chart-hours').innerHTML=`
     <div class="bar-track" style="height:26px;display:flex">
@@ -1128,9 +1240,56 @@ function renderPainel(){
 
   // margem por cliente
   const fph=fixedPerHour();
-  const rows=allocated.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);return {name:c.name+(c.permuta?' ⇄':''),marg:clientRevenue(c)-custo,type:c.type}}).sort((a,b)=>b.marg-a.marg);
+  const rows=activeNow.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph)+clientAddCostNow(c);return {name:c.name+(c.permuta?' ⇄':''),marg:clientAccrualNow(c)-custo,type:c.type}}).sort((a,b)=>b.marg-a.marg);
   const maxM=Math.max(1,...rows.map(r=>Math.abs(r.marg)));
   document.getElementById('chart-margin').innerHTML=rows.length?rows.map(r=>bar(esc(r.name),Math.abs(r.marg)/maxM*100,r.marg>=0?'var(--green)':'var(--danger)',brl(r.marg))).join(''):'<div class="onb-empty">Nenhum cliente alocado ainda.</div>';
+  renderGantt();renderTenure();
+}
+function renderGantt(){
+  const box=document.getElementById('gantt');
+  const active=state.people.filter(p=>p.active);
+  const allocated=state.clients.filter(c=>c.slot);
+  if(!allocated.length){box.innerHTML='<div class="onb-empty">Aloque clientes na Grade e informe as datas de início para ver a linha do tempo.</div>';return}
+  // janela: do menor início ao maior fim (finitos), com piso no mês atual e teto no horizonte
+  const origin=nowMI();
+  let minMI=origin,maxMI=origin+11;
+  allocated.forEach(c=>{minMI=Math.min(minMI,clientStartMI(c));const e=clientEndMI(c);if(isFinite(e))maxMI=Math.max(maxMI,e-1)});
+  maxMI=Math.min(maxMI,origin+Math.max(11,state.projection.horizon-1)+6);
+  const span=Math.max(1,maxMI-minMI+1);
+  const header=`<div class="gantt-row gantt-head"><div class="gantt-name"></div><div class="gantt-track">${Array.from({length:span}).map((_,i)=>`<div class="gantt-mlabel ${(minMI+i)===origin?'now':''}">${miToLabel(minMI+i)}</div>`).join('')}</div></div>`;
+  let rowsHtml='';
+  active.forEach(p=>{
+    const cs=allocated.filter(c=>c.ownerId===p.id);
+    if(!cs.length)return;
+    rowsHtml+=`<div class="gantt-person">${esc(p.name)}</div>`;
+    cs.forEach(c=>{
+      const start=clientStartMI(c);const end=clientEndMI(c);
+      const s0=Math.max(minMI,start);const e0=isFinite(end)?Math.min(maxMI+1,end):maxMI+1;
+      const left=((s0-minMI)/span)*100;const width=Math.max(2,((e0-s0)/span)*100);
+      const col=c.type==='ma'?'var(--red)':c.type==='pontual'?'var(--orange)':(c.subtype==='estruturacao'?'var(--med-blue)':'var(--dark-blue)');
+      const dur=clientDuration(c);const durTxt=dur==null?'contínuo':dur+'m';
+      const open=isFinite(end)?'':' gantt-open';
+      rowsHtml+=`<div class="gantt-row"><div class="gantt-name" title="${esc(c.name)}">${esc(c.name)}${c.permuta?' ⇄':''}</div><div class="gantt-track"><div class="gantt-bar${open}" style="left:${left}%;width:${width}%;background:${col}" title="${esc(c.name)} · ${miToLabel(start)} · ${durTxt}">${durTxt}</div></div></div>`;
+    });
+  });
+  if(!rowsHtml)rowsHtml='<div class="onb-empty">Nenhum cliente com consultor ativo.</div>';
+  box.innerHTML=`<div class="gantt-wrap">${header}${rowsHtml}</div>`;
+}
+function renderTenure(){
+  const tb=document.getElementById('tenure-tbody');
+  const cs=state.clients.slice().sort((a,b)=>clientStartMI(a)-clientStartMI(b));
+  if(!cs.length){tb.innerHTML='<tr><td colspan="7" class="empty-state">Nenhum cliente cadastrado.</td></tr>';return}
+  tb.innerHTML=cs.map(c=>{
+    const t=clientTenure(c);const d=clientDuration(c);const lr=clientLifetimeRevenue(c);
+    const durTxt=d==null?'contínuo':d+' meses';
+    const tenureTxt=t.ongoing?(t.elapsed+'m (em curso)'):(t.elapsed+'/'+t.total+'m');
+    let status='',scol='';
+    if(estruturacaoExcedida(c)){status='Excedendo prazo';scol='color:var(--orange);font-weight:700'}
+    else if(!clientActiveNow(c)&&d!=null&&nowMI()>=clientEndMI(c)){status='Encerrado';scol='color:var(--gray)'}
+    else if(clientActiveNow(c)){status='Ativo';scol='color:var(--green);font-weight:700'}
+    else{status='Futuro';scol='color:var(--med-blue)'}
+    return `<tr><td><b>${esc(c.name)}</b>${c.permuta?' <span class="permuta-tag">PERMUTA</span>':''}</td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${c.start?miToLabel(clientStartMI(c)):'—'}</td><td>${durTxt}</td><td>${tenureTxt}</td><td class="mono-num">${brl(lr.value)}${lr.capped?'*':''}</td><td style="${scol}">${status}</td></tr>`;
+  }).join('')+`<tr><td colspan="7" style="font-size:10px;color:var(--gray);border:none">* recorrência sem fim: receita estimada em 60 meses.</td></tr>`;
 }
 function kpi(num,lbl,cls,sub){return `<div class="kpi"><div class="k-num ${cls||''}">${num}</div><div class="k-lbl">${lbl}</div>${sub?`<div class="k-sub">${sub}</div>`:''}</div>`}
 
@@ -1164,12 +1323,8 @@ function renderAll(){
 }
 
 /* ============ INIT ============ */
-(async()=>{
-  const ok=await load();
-  if(!ok){state=defaultState();save()}
-  renderAll();
-})();
-
+if(!load())state=defaultState();
+renderAll();
 </script>
 </body>
 </html>
