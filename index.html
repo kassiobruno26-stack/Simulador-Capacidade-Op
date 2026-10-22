@@ -287,6 +287,115 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 
 @media(max-width:800px){.alloc-layout{grid-template-columns:1fr}.pool{position:static;max-height:none}}
 
+/* tipos e status */
+.type-projeto{background:rgba(212,129,10,.18);color:var(--orange)}
+.chip.type-projeto{border-left-color:var(--orange);background:var(--off-white);color:inherit}
+.placed.type-projeto{background:var(--orange);color:#fff}
+.st-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.st-ativo{background:rgba(42,125,79,.14);color:var(--green)}
+.st-pausado{background:rgba(212,129,10,.16);color:var(--orange)}
+.st-encerrado{background:rgba(192,34,37,.12);color:var(--danger)}
+.st-concluido{background:var(--light-gray);color:var(--internal)}
+
+/* botões segmentados (substituem listas suspensas curtas) */
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:2px;gap:2px}
+.seg button{background:none;border:none;font-family:inherit;font-size:11px;font-weight:600;color:var(--gray);padding:6px 11px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.seg button:hover{color:var(--navy)}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg.full{display:flex}.seg.full button{flex:1}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--dark-blue);color:#fff;font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.3px}
+.avatar.intern{background:var(--orange)}
+.avatar.sm{width:20px;height:20px;font-size:8px}
+.pick-list{display:flex;flex-wrap:wrap;gap:6px}
+.pick{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:3px 10px 3px 3px;font-family:inherit;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer}
+.pick:hover{border-color:var(--med-blue)}
+.pick.on{border-color:var(--navy);background:var(--navy);color:#fff}
+
+/* cadastro de clientes */
+.cl-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.cl-toolbar .search{flex:1;min-width:160px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px}
+.cl-count{font-size:11px;color:var(--gray);margin-bottom:10px}
+.cc-compact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.12s;display:flex;flex-direction:column;gap:8px;border-left:4px solid var(--dark-blue)}
+.cc-compact.type-projeto-b{border-left-color:var(--orange)}
+.cc-compact.dim{opacity:.6}
+.cc-compact:hover{box-shadow:0 3px 12px rgba(0,0,0,.08);transform:translateY(-1px)}
+.cc-l1{display:flex;align-items:center;gap:8px}
+.cc-name{font-size:14px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-l2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cc-l3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+.cc-l3 b{display:block;font-size:13px;color:var(--navy);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
+.cc-dates{font-size:11px;color:var(--gray)}
+.cc-icons{font-size:12px;color:var(--med-blue)}
+.tbl.clickable tbody tr{cursor:pointer}
+.tbl.clickable tbody tr:hover td{background:var(--light-blue)}
+
+/* editor lateral */
+.drawer-bg{position:fixed;inset:0;background:rgba(17,21,27,.45);z-index:500}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--cream);z-index:501;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.25)}
+.drawer[hidden],.drawer-bg[hidden]{display:none}
+.dr-head{background:var(--navy);color:var(--cream);padding:14px 18px;display:flex;align-items:center;gap:10px}
+.dr-head input{flex:1;background:transparent;border:none;border-bottom:1px dashed rgba(255,255,255,.3);color:var(--cream);font-family:inherit;font-size:17px;font-weight:800;padding:4px 0}
+.dr-head input:focus{outline:none;border-bottom-color:var(--red)}
+.dr-close{background:none;border:none;color:var(--cream);font-size:22px;cursor:pointer;line-height:1;padding:0 4px}
+.dr-body{flex:1;overflow-y:auto;padding:16px 18px}
+.dr-sec{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+.dr-sec h4{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:10px}
+.dr-row{margin-bottom:10px}
+.dr-row:last-child{margin-bottom:0}
+.dr-lbl{display:block;font-size:10px;font-weight:600;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.dr-sec .field{margin-bottom:0}
+.intern-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.intern-row input{width:80px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px}
+.dr-foot{border-top:1px solid var(--border);background:#fff;padding:12px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:10px;color:var(--gray);text-transform:uppercase;font-weight:600;letter-spacing:.3px}
+.dr-foot b{display:block;font-size:14px;color:var(--navy);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
+.dr-danger{background:none;border:none;color:var(--danger);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;padding:6px 0}
+.toggle-line{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+
+/* equipe compacta */
+.team-row{display:grid;grid-template-columns:auto 1fr auto 90px 90px auto auto;gap:10px;align-items:center;padding:8px 10px;background:var(--off-white);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.team-row.inactive{opacity:.55}
+.team-row input.nm{font-size:13px;font-weight:700;border:1px solid transparent;background:transparent;font-family:inherit;color:var(--navy);padding:4px 6px;border-radius:6px;width:100%}
+.team-row input.nm:hover,.team-row input.nm:focus{border-color:var(--border);background:#fff;outline:none}
+.team-row .hr{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gray);font-weight:600}
+.team-row .hr input{width:48px;padding:5px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px}
+@media(max-width:700px){.team-row{grid-template-columns:auto 1fr auto;}.team-row .hr{grid-column:span 1}}
+
+/* custo-hora */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.ch-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px}
+.ch-card.inactive{opacity:.55}
+.ch-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ch-head .nm{font-size:14px;font-weight:800;flex:1}
+.ch-rate{background:var(--navy);color:var(--cream);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px}
+.ch-rate .big{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.ch-rate .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:rgba(248,244,239,.65);font-weight:600}
+.ch-lines{font-size:11px;margin-top:10px}
+.ch-lines div{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--light-gray)}
+.ch-lines div:last-child{border-bottom:none}
+.ch-lines b{font-variant-numeric:tabular-nums}
+.split-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--light-gray);margin:6px 0 4px}
+.warn-note{font-size:10px;color:var(--orange);font-weight:600;margin-top:4px}
+
+@media(max-width:700px){
+  .header{flex-wrap:wrap;padding:10px 16px;gap:8px;position:static}
+  .header .tools{margin-left:0;width:100%}
+  .tabbar{top:0;padding:0 8px}
+  .page{padding:16px}
+  .fee-grid{grid-template-columns:1fr}
+  .fixed-row{grid-template-columns:1fr 110px 32px!important}
+  .client-cards{grid-template-columns:1fr}
+  .ch-grid{grid-template-columns:1fr}
+  .pool{top:56px}
+  .dr-foot{grid-template-columns:1fr 1fr 1fr}
+  .alloc-layout>*{min-width:0}
+  .grid-wrap{overflow-x:auto}
+  .cal{min-width:520px}
+  .occ-free{display:none}
+  #hire-list{overflow-x:auto}
+  .hire-row{min-width:640px}
+  #gantt{overflow-x:auto}
+}
+
 .env-badge{display:none;font-size:10px;font-weight:800;padding:4px 10px;border-radius:12px;letter-spacing:.4px;background:var(--orange);color:#fff;white-space:nowrap}
 body.env-test .env-badge{display:inline-block}
 .gate{position:fixed;inset:0;z-index:1000;background:var(--navy);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -350,45 +459,53 @@ body.env-test .env-badge{display:inline-block}
 <div class="tabbar">
   <button class="tab active" data-tab="cadastro" onclick="switchTab('cadastro')">1 · Cadastro</button>
   <button class="tab" data-tab="alocacao" onclick="switchTab('alocacao')">2 · Grade <span class="badge" id="badge-pool">0</span></button>
-  <button class="tab" data-tab="custos" onclick="switchTab('custos')">3 · Custos</button>
-  <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">4 · Projeção</button>
-  <button class="tab" data-tab="watch" onclick="switchTab('watch')">5 · Watch List <span class="badge" id="badge-watch">0</span></button>
-  <button class="tab" data-tab="painel" onclick="switchTab('painel')">6 · Painel</button>
+  <button class="tab" data-tab="custohora" onclick="switchTab('custohora')">3 · Custo-hora</button>
+  <button class="tab" data-tab="custos" onclick="switchTab('custos')">4 · Resultado</button>
+  <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">5 · Projeção</button>
+  <button class="tab" data-tab="watch" onclick="switchTab('watch')">6 · Watch List <span class="badge" id="badge-watch">0</span></button>
+  <button class="tab" data-tab="painel" onclick="switchTab('painel')">7 · Painel</button>
 </div>
 
 <!-- ABA 1: CADASTRO -->
 <div class="page active" id="page-cadastro">
   <div class="card">
-    <div class="section-title">Equipe</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px">
-      <button class="add-btn ghost" onclick="addPerson(false)">+ Adicionar consultor</button>
-      <button class="add-btn ghost" onclick="addPerson(true)">+ Adicionar estagiário</button>
-    </div>
-    <p class="help" style="margin:0 0 12px">Clique no nome para renomear. Clique no selo <b>Cons/Estag</b> para trocar o papel da pessoa.</p>
-    <div class="people-grid" id="people-grid"></div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">Fee mensal por tipo de cliente</div>
-    <div class="fee-grid">
-      <div class="fee-box"><label>Advisor</label><div class="field-money"><input type="number" step="0.01" id="fee-advisor" oninput="onFeeChange()"></div></div>
-      <div class="fee-box"><label>M&amp;A</label><div class="field-money"><input type="number" step="0.01" id="fee-ma" oninput="onFeeChange()"></div></div>
-      <div class="fee-box"><label>Pontual / Projeto</label><div class="field-money"><input type="number" step="0.01" id="fee-pontual" oninput="onFeeChange()"></div></div>
-    </div>
-    <p class="help">Cada cliente herda o fee do seu tipo. Você pode sobrescrever o valor individual na coluna "Fee".</p>
-  </div>
-
-  <div class="card">
     <div class="section-title">Clientes <button class="add-btn" onclick="addClient()">+ Cliente</button></div>
-    <div class="client-cards" id="client-cards"></div>
-    <p class="help">Cada card é um contrato. ⚑ = watch list · ⇄ = permuta (não gera receita). Os campos mudam conforme o tipo: recorrência, estruturação, parcelamento ou êxito.</p>
+    <div class="cl-toolbar">
+      <div class="seg" id="cl-view"></div>
+      <div class="seg" id="cl-type"></div>
+      <div class="seg" id="cl-status"></div>
+      <input class="search" id="cl-search" placeholder="Buscar cliente…" oninput="clFilter.q=this.value;renderClients()">
+    </div>
+    <div class="cl-count" id="cl-count"></div>
+    <div id="client-cards"></div>
+    <p class="help">Clique em um cliente para editar. ⚑ = watch list · ⇄ = permuta (não gera receita).</p>
   </div>
 
   <div class="card">
-    <div class="section-title">Custos fixos da operação (rateados por hora)</div>
+    <div class="section-title">Equipe
+      <span style="display:flex;gap:8px">
+        <button class="add-btn ghost sm" onclick="addPerson('pj')">+ Consultor</button>
+        <button class="add-btn ghost sm" onclick="addPerson('estagio')">+ Estagiário</button>
+        <button class="add-btn ghost sm" onclick="addPerson('socio')">+ Sócio</button>
+      </span>
+    </div>
+    <div id="people-grid"></div>
+    <p class="help">Horário de entrada e saída de cada pessoa. Custos e divisão do tempo dos sócios ficam na aba <b>Custo-hora</b>.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Fee padrão do Advisor</div>
+    <div class="fee-grid" style="grid-template-columns:minmax(0,320px)">
+      <div class="fee-box"><label>Fee mensal padrão</label><div class="field-money"><input type="number" step="0.01" id="fee-advisor" oninput="onFeeChange()"></div></div>
+    </div>
+    <p class="help">Usado nos advisors sem fee próprio. Cada cliente pode ter o seu valor no cadastro.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Custos fixos da operação</div>
     <div id="fixed-list"></div>
     <button class="add-btn ghost" onclick="addFixed()" style="margin-top:10px">+ Adicionar custo fixo</button>
-    <p class="help">Somados e divididos pelas horas disponíveis da equipe no mês → custo fixo por hora, que entra no custo de servir cada cliente.</p>
+    <p class="help">Divididos pelas horas operacionais da equipe no mês → custo fixo por hora. Aparece como "margem após rateio" em cada cliente.</p>
   </div>
 
   <div class="card">
@@ -421,8 +538,7 @@ body.env-test .env-badge{display:inline-block}
         <div id="grid-body"></div>
         <div class="cal-legend">
           <div class="lg"><div class="lg-dot" style="background:var(--dark-blue)"></div>Advisor</div>
-          <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>M&amp;A</div>
-          <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Pontual</div>
+          <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Projeto</div>
           <div class="lg"><div class="lg-dot" style="background:var(--internal)"></div>Interno</div>
           <div class="lg"><div class="lg-dot" style="background:#9CA3AF"></div>Almoço</div>
           <div class="lg"><div class="lg-dot" style="box-shadow:inset 0 0 0 2px var(--danger);border-radius:3px"></div>Conflito</div>
@@ -442,35 +558,38 @@ body.env-test .env-badge{display:inline-block}
   </div>
 </div>
 
-<!-- ABA 3: CUSTOS -->
+<!-- ABA 3: CUSTO-HORA -->
+<div class="page" id="page-custohora">
+  <div class="strip" id="ch-strip"></div>
+  <div class="ch-grid" id="ch-grid"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="section-title">Como o custo-hora é calculado</div>
+    <p class="help" style="margin-top:0"><b>Custo mensal</b> = remuneração + encargos (% da remuneração) + benefícios + outros + parcelas de onboarding.<br>
+    <b>Custo-hora</b> = custo mensal ÷ horas da jornada no mês (entrada − saída − almoço, × semanas). Não há "% produtiva" estimada: o que não está alocado aparece como <b>capacidade não alocada</b>, em R$.<br>
+    <b>Sócios</b>: o tempo se divide em operacional (atende clientes), gestão (estrutura da operação) e estratégico (fora da operação). Só o operacional e a gestão contam como capacidade da equipe.<br>
+    <b>Custo-hora cheio</b> = custo-hora + custo fixo por hora.</p>
+  </div>
+</div>
+
+<!-- ABA 4: RESULTADO -->
 <div class="page" id="page-custos">
   <div class="strip" id="cost-strip"></div>
   <div class="result-grid" style="margin-bottom:20px">
     <div class="big-result" id="result-box"></div>
     <div class="card" style="margin:0">
-      <div class="section-title">Ociosidade — dinheiro parado</div>
+      <div class="section-title">Para onde vai o custo das pessoas</div>
       <div id="idle-box"></div>
     </div>
   </div>
   <div class="card">
-    <div class="section-title">Custo por hora de cada pessoa</div>
-    <div style="overflow-x:auto">
-      <table class="tbl" id="cost-people-table">
-        <thead><tr><th>Pessoa</th><th>Salário</th><th>Encargos</th><th>Onboarding/mês</th><th>Custo mensal</th><th>Horas/mês</th><th>Custo/hora</th></tr></thead>
-        <tbody id="cost-people-tbody"></tbody>
-      </table>
-    </div>
-    <p class="help">Custo/hora = custo mensal ÷ horas disponíveis no mês. O onboarding é a soma das parcelas mensais de cada item comprado.</p>
-  </div>
-  <div class="card">
-    <div class="section-title">Custo de servir e margem por cliente <span style="font-size:10px;color:var(--gray);font-weight:600;text-transform:none;letter-spacing:0">só clientes alocados</span></div>
+    <div class="section-title">Margem por cliente <span style="font-size:10px;color:var(--gray);font-weight:600;text-transform:none;letter-spacing:0">clientes ativos no mês</span></div>
     <div style="overflow-x:auto">
       <table class="tbl" id="cost-client-table">
-        <thead><tr><th>Cliente</th><th>Tipo</th><th>Consultor</th><th>Horas/mês</th><th>Custo serviço</th><th>Custo adic.</th><th>Receita (comp.)</th><th>Margem R$</th><th>Margem %</th></tr></thead>
+        <thead><tr><th>Cliente</th><th>Tipo</th><th>Equipe</th><th>Horas/mês</th><th>Receita (comp.)</th><th>Custo direto</th><th>Custo adic.</th><th>Margem de contribuição</th><th>%</th><th>Após rateio fixo</th></tr></thead>
         <tbody id="cost-client-tbody"></tbody>
       </table>
     </div>
-    <p class="help">Custo de servir = horas do cliente no mês × (custo/hora do dono + custo fixo/hora). Aloque na aba 2 para "realizar" o cliente.</p>
+    <p class="help"><b>Custo direto</b> = horas do consultor × custo-hora dele + horas de cada estagiário × custo-hora dele. <b>Margem de contribuição</b> = receita − custo direto − custos adicionais: é a métrica para decidir sobre o cliente. <b>Após rateio</b> desconta também o custo fixo por hora.</p>
   </div>
 </div>
 
@@ -478,8 +597,11 @@ body.env-test .env-badge{display:inline-block}
 <div class="page" id="page-projecao">
   <div class="card">
     <div class="section-title">Horizonte da projeção</div>
-    <div class="field" style="max-width:220px"><label>Meses à frente</label><input type="number" id="pj-horizon" min="3" max="24" oninput="saveProjHorizon()"></div>
-    <p class="help">A base é a operação de hoje (pessoas ativas + clientes alocados, permutas contam R$ 0). Os 3 cenários abaixo partem dessa base e mudam só as premissas de crescimento. As contratações e o horizonte são os mesmos para os três.</p>
+    <div class="row2" style="max-width:480px">
+      <div class="field"><label>Meses à frente</label><input type="number" id="pj-horizon" min="3" max="24" oninput="saveProjHorizon()"></div>
+      <div class="field field-money"><label>Receita/mês de um projeto novo</label><input type="number" step="0.01" id="fee-projeto" oninput="onFeeChange()"></div>
+    </div>
+    <p class="help">A base é a operação de hoje (pessoas ativas + clientes ativos, permutas contam R$ 0). Advisor novo entra com o fee padrão do Cadastro. Os 3 cenários abaixo partem dessa base e mudam só as premissas de crescimento. As contratações e o horizonte são os mesmos para os três.</p>
   </div>
 
   <div class="card">
@@ -545,9 +667,7 @@ body.env-test .env-badge{display:inline-block}
     <div id="gantt"></div>
     <div class="proj-legend" style="margin-top:10px">
       <div class="lg"><div class="lg-dot" style="background:var(--dark-blue)"></div>Advisor</div>
-      <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>M&A</div>
-      <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Pontual</div>
-      <div class="lg"><div class="lg-dot" style="background:var(--med-blue)"></div>Estruturação</div>
+      <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Projeto</div>
     </div>
   </div>
   <div class="chart-card" style="margin-top:16px">
@@ -560,6 +680,10 @@ body.env-test .env-badge{display:inline-block}
     </div>
   </div>
 </div>
+
+<!-- EDITOR DE CLIENTE (lateral) -->
+<div class="drawer-bg" id="drawer-bg" hidden onclick="closeClient()"></div>
+<div class="drawer" id="drawer" hidden role="dialog" aria-label="Editar cliente"></div>
 
 <script>
 /* ============ CONST ============ */
@@ -574,17 +698,17 @@ function defaultState(){
   const p1=nid(),p2=nid();
   return {
     people:[
-      {id:p1,name:'Kassio',isIntern:false,active:true,start:7,end:19,hasManagement:true,mgmtSplit:30,salary:0,encargos:0,onbItems:[]},
-      {id:p2,name:'Ariana',isIntern:false,active:true,start:10,end:18,hasManagement:false,mgmtSplit:0,salary:0,encargos:0,onbItems:[]}
+      newPerson(p1,'Kassio','socio'),
+      newPerson(p2,'Ariana','pj')
     ],
     clients:[], tasks:[],
-    fees:{advisor:0,ma:0,pontual:0},
+    fees:{advisor:0,projeto:0},
     fixed:[{id:nid(),name:'Aluguel',value:0},{id:nid(),name:'Softwares',value:0}],
     params:{attendance:75,weeks:4.33,lunch:1},
     projection:{horizon:12,hires:[],activeScenario:'base',scenarios:{
-      conservador:{newClients:{advisor:0,ma:0,pontual:0},ramp:3,churn:3,adjust:5},
-      base:{newClients:{advisor:1,ma:0,pontual:0},ramp:2,churn:2,adjust:5},
-      agressivo:{newClients:{advisor:2,ma:1,pontual:0},ramp:1,churn:1,adjust:5}
+      conservador:{newClients:{advisor:0,projeto:0},ramp:3,churn:3,adjust:5},
+      base:{newClients:{advisor:1,projeto:0},ramp:2,churn:2,adjust:5},
+      agressivo:{newClients:{advisor:2,projeto:1},ramp:1,churn:1,adjust:5}
     }}
   };
 }
@@ -696,16 +820,29 @@ function normalize(){
       agressivo:scenarioDefault({advisor:(oldNC.advisor||1)*2,ma:(oldNC.ma||0)*2||1,pontual:(oldNC.pontual||0)*2},1,1,5)
     };
   }
-  ['conservador','base','agressivo'].forEach(k=>{const s=pj.scenarios[k];s.newClients=s.newClients||{advisor:0,ma:0,pontual:0};if(s.ramp==null)s.ramp=2;if(s.churn==null)s.churn=2;if(s.adjust==null)s.adjust=5});
+  ['conservador','base','agressivo'].forEach(k=>{const s=pj.scenarios[k];s.newClients=s.newClients||{advisor:0,projeto:0};if(s.ramp==null)s.ramp=2;if(s.churn==null)s.churn=2;if(s.adjust==null)s.adjust=5;
+    if(s.newClients.projeto==null)s.newClients.projeto=(s.newClients.ma||0)+(s.newClients.pontual||0)}); // M&A e Pontual viraram Projeto
   pj.horizon=pj.horizon||12;pj.hires=pj.hires||[];pj.activeScenario=pj.activeScenario||'base';
   delete pj.newClients;delete pj.fixedGrowth;
   state.projection=pj;
+  state.fees=state.fees||{};
+  if(state.fees.projeto==null)state.fees.projeto=state.fees.pontual||0;
   state.people.forEach(p=>{
     if(!p.onbItems){
       p.onbItems=[];
       if(p.onboarding&&p.onboarding>0)p.onbItems.push({id:nid(),desc:'Equipamentos',value:p.onboarding,parcelas:p.onbParcelas||12});
     }
     delete p.onboarding;delete p.onbParcelas;
+    // vínculo e custo-hora (v4): encargos passam a ser % da remuneração, sem mudar o custo
+    if(!p.contract)p.contract=p.isIntern?'estagio':(p.hasManagement?'socio':'pj');
+    if(p.benefits==null)p.benefits=0;
+    if(p.otherCosts==null)p.otherCosts=0;
+    if(p.encargosPct==null){
+      const sal=+p.salary||0,enc=+p.encargos||0;
+      if(sal>0)p.encargosPct=enc/sal*100;else{p.encargosPct=0;p.otherCosts+=enc}
+    }
+    if(!p.split)p.split=p.contract==='socio'?{gestao:p.hasManagement?(p.mgmtSplit||0):0,estrategico:0}:{gestao:0,estrategico:0};
+    p.isIntern=p.contract==='estagio';
   });
   state.clients.forEach(c=>{
     if(!c.watch)c.watch={on:false,level:'media',reason:'',next:''};
@@ -721,6 +858,21 @@ function normalize(){
     if(c.addMonthly==null)c.addMonthly=0;
     if(c.addOnce==null)c.addOnce=0;
     if(c.addOnceOffset==null)c.addOnceOffset=0;
+    // v4: só Advisor e Projeto; datas de início/fim explícitas; status; estagiários por volume
+    const sMI=ymToMI(c.start);
+    if(c.type==='ma'||c.type==='pontual'){
+      c.legacyType=c.type;
+      if(c.type==='ma'&&!(c.totalValue>0)){c.totalValue=(c.upfront||0)+(c.dealValue||0)*((c.successPct||0)/100);c.parcelas=1}
+      c.type='projeto';
+      if(c.end==null)c.end=sMI!=null?miToYM(sMI+Math.max(1,c.duration||1)-1):'';
+    }
+    if(c.type!=='projeto')c.type='advisor';
+    if(c.end==null)c.end=(c.subtype==='estruturacao'&&sMI!=null)?miToYM(sMI+Math.max(1,c.duration||3)-1):'';
+    if(c.projectKind==null)c.projectKind='';
+    if(c.firstParcel==null)c.firstParcel=c.start||'';
+    if(!c.status)c.status='ativo';
+    ['pausedAt','resumeAt','endedAt','churnReason','churnNote'].forEach(k=>{if(c[k]==null)c[k]=''});
+    if(!Array.isArray(c.interns))c.interns=[];
   });
 }
 function saveAndRender(){readParams();save();renderAll()}
@@ -728,86 +880,127 @@ function readParams(){state.params.attendance=numv('p-attendance',75);state.para
 function numv(id,def){const el=document.getElementById(id);if(!el)return def;const v=parseFloat(el.value);return isNaN(v)?def:v}
 
 /* ============ HELPERS ============ */
-function typeClass(t){return t==='ma'?'type-ma':t==='pontual'?'type-pontual':'type-advisor'}
-function typeLabel(t){return t==='ma'?'M&A':t==='pontual'?'Pontual':'Advisor'}
+const CLIENT_STATUS={ativo:'Ativo',pausado:'Pausado',encerrado:'Encerrado',concluido:'Concluído'};
+const CHURN_REASONS={preco:'Preço',resultado:'Resultado percebido',encerrou:'Encerrou a operação',internalizou:'Internalizou',inadimplencia:'Inadimplência',outro:'Outro'};
+const CONTRACTS={socio:'Sócio',pj:'PJ',estagio:'Estágio'};
+function typeClass(t){return t==='projeto'?'type-projeto':'type-advisor'}
+function typeLabel(t){return t==='projeto'?'Projeto':'Advisor'}
+function clientKindLabel(c){return c.type==='projeto'&&c.projectKind?c.projectKind:typeLabel(c.type)}
+function personById(id){return state.people.find(p=>p.id===id)}
+function initials(name){const w=String(name||'?').trim().split(/\s+/);return ((w[0]||'?')[0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase()}
+function avatar(p,sm){return p?`<span class="avatar ${p.isIntern?'intern':''} ${sm?'sm':''}" title="${esc(p.name)}">${esc(initials(p.name))}</span>`:''}
 function freqMonth(f){return f==='quinzenal'?state.params.weeks/2:state.params.weeks}
 function freqWeek(f){return f==='quinzenal'?0.5:1}
 function brl(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2})}
+function brl0(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0})}
 function num2(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function num1(v){return (isFinite(v)?v:0).toLocaleString('pt-BR',{maximumFractionDigits:1})}
+
+/* ===== Pessoas: custo e tempo ===== */
+function newPerson(id,name,contract){const intern=contract==='estagio';return {id,name,contract,isIntern:intern,active:true,start:intern?10:9,end:intern?16:18,salary:0,encargosPct:0,benefits:0,otherCosts:0,onbItems:[],split:contract==='socio'?{gestao:'',estrategico:''}:{gestao:0,estrategico:0}}}
 function onbMonthly(p){return (p.onbItems||[]).reduce((s,i)=>s+((i.parcelas>0)?(i.value||0)/i.parcelas:0),0)}
-function personMonthlyCost(p){return (p.salary||0)+(p.encargos||0)+onbMonthly(p)}
-function personWeekHours(p){return Math.max(0,(p.end-p.start-state.params.lunch)*5)}
+function personEncargos(p){return (+p.salary||0)*(+p.encargosPct||0)/100}
+function personMonthlyCost(p){return (+p.salary||0)+personEncargos(p)+(+p.benefits||0)+(+p.otherCosts||0)+onbMonthly(p)}
+function personWeekHours(p){return Math.max(0,(p.end-p.start-state.params.lunch)*5)} // jornada
 function personMonthHours(p){return personWeekHours(p)*state.params.weeks}
-function clientFee(c){if(c.feeOverride!==undefined&&c.feeOverride!==null&&c.feeOverride!=='')return parseFloat(c.feeOverride)||0;return state.fees[c.type]||0}
-function clientRevenue(c){return c.permuta?0:clientFee(c)}
+function personRate(p){const h=personMonthHours(p);return p&&p.active&&h>0?personMonthlyCost(p)/h:0}
+function personSplit(p){ // frações do tempo; só sócios dividem
+  if(p.contract!=='socio')return {op:1,gestao:0,estr:0};
+  const s=p.split||{};const g=Math.max(0,+s.gestao||0)/100,e=Math.max(0,+s.estrategico||0)/100;
+  return {op:Math.max(0,1-g-e),gestao:g,estr:e};
+}
+function personSplitUndefined(p){return p.contract==='socio'&&(p.split?.gestao===''||p.split?.gestao==null)&&(p.split?.estrategico===''||p.split?.estrategico==null)}
+function personCapWeekHours(p){const s=personSplit(p);return personWeekHours(p)*(s.op+s.gestao)} // capacidade operacional (sem o estratégico)
+function personMgmtWeekHours(p){return personWeekHours(p)*personSplit(p).gestao}
+function personStratWeekHours(p){return personWeekHours(p)*personSplit(p).estr}
+function clientFee(c){if(c.feeOverride!==undefined&&c.feeOverride!==null&&c.feeOverride!=='')return parseFloat(c.feeOverride)||0;return c.type==='advisor'?(state.fees.advisor||0):0}
+
 /* ===== Contrato no tempo ===== */
 const MONTH_NAMES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 function ymToMI(ym){if(!ym||typeof ym!=='string'||ym.indexOf('-')<0)return null;const p=ym.split('-');const y=+p[0],m=+p[1];if(!y||!m)return null;return y*12+(m-1)}
+function miToYM(mi){const y=Math.floor(mi/12),m=((mi%12)+12)%12+1;return y+'-'+String(m).padStart(2,'0')}
 function miToLabel(mi){const y=Math.floor(mi/12);const m=((mi%12)+12)%12;return MONTH_NAMES[m]+'/'+String(y).slice(2)}
+function ymLabel(ym){const mi=ymToMI(ym);return mi==null?'—':miToLabel(mi)}
 function nowMI(){const d=new Date();return d.getFullYear()*12+d.getMonth()}
+function nowYM(){return miToYM(nowMI())}
 function clientStartMI(c){const mi=ymToMI(c.start);return mi==null?nowMI():mi}
-function clientDuration(c){ // meses de ocupação de agenda; null = contínuo
-  if(c.type==='advisor')return c.subtype==='estruturacao'?Math.max(1,c.duration||3):null;
-  if(c.type==='pontual')return Math.max(1,c.duration||1);
-  if(c.type==='ma')return Math.max(1,c.duration||1);
-  return null;
+function clientDuration(c){ // meses entre início e fim previsto; null = contínuo
+  const e=ymToMI(c.end);
+  if(e==null)return c.type==='projeto'?Math.max(1,c.parcelas||1):null;
+  return Math.max(1,e-clientStartMI(c)+1);
 }
-function clientEndMI(c){const d=clientDuration(c);return d==null?Infinity:clientStartMI(c)+d}
-function clientActiveAt(c,mi){return mi>=clientStartMI(c)&&mi<clientEndMI(c)}
+function clientClosedFromMI(c){ // encerrado/concluído: primeiro mês sem atividade
+  if(c.status!=='encerrado'&&c.status!=='concluido')return Infinity;
+  const s=ymToMI(c.endedAt);return s!=null?s+1:nowMI();
+}
+function clientEndMI(c){const d=clientDuration(c);return Math.min(d==null?Infinity:clientStartMI(c)+d,clientClosedFromMI(c))} // exclusivo
+function clientPausedAt(c,mi){
+  if(c.status!=='pausado')return false;
+  const p=ymToMI(c.pausedAt),r=ymToMI(c.resumeAt);
+  return mi>=(p==null?nowMI():p)&&(r==null||mi<r);
+}
+function clientActiveAt(c,mi){return mi>=clientStartMI(c)&&mi<clientEndMI(c)&&!clientPausedAt(c,mi)}
+function clientCancelledAt(c,mi){return c.status==='encerrado'&&mi>=clientClosedFromMI(c)} // churn: param as parcelas também
 function clientRevenueAt(c,mi,regime){ // regime: 'cash' | 'accrual'
-  if(c.permuta)return 0;
-  const age=mi-clientStartMI(c);const d=clientDuration(c);
-  if(c.type==='advisor'){return clientActiveAt(c,mi)?clientFee(c):0}
-  if(c.type==='pontual'){
-    const total=c.totalValue||0;
-    if(regime==='cash'){const par=Math.max(1,c.parcelas||1);return (age>=0&&age<par)?total/par:0}
-    const dur=Math.max(1,d||1);return (age>=0&&age<dur)?total/dur:0;
-  }
-  if(c.type==='ma'){
-    let r=0;const dur=Math.max(1,d||1);
-    if(age===0)r+=(c.upfront||0);
-    if(age===dur-1)r+=(c.dealValue||0)*((c.successPct||0)/100);
-    return r;
-  }
-  return 0;
+  if(c.permuta||clientCancelledAt(c,mi)||clientPausedAt(c,mi))return 0;
+  if(c.type==='advisor')return clientActiveAt(c,mi)?clientFee(c):0;
+  const total=+c.totalValue||0;
+  if(regime==='cash'){const par=Math.max(1,c.parcelas||1);const f=ymToMI(c.firstParcel);const age=mi-(f==null?clientStartMI(c):f);return (age>=0&&age<par)?total/par:0}
+  if(!clientActiveAt(c,mi))return 0;
+  const dur=clientDuration(c);const age=mi-clientStartMI(c);return (age>=0&&age<dur)?total/dur:0; // competência: valor diluído no prazo previsto
 }
-function clientAddCostAt(c,mi){let a=0;const age=mi-clientStartMI(c);if(clientActiveAt(c,mi))a+=(c.addMonthly||0);if(age===(c.addOnceOffset||0))a+=(c.addOnce||0);return a}
+function clientAddCostAt(c,mi){let a=0;const age=mi-clientStartMI(c);if(clientActiveAt(c,mi))a+=(c.addMonthly||0);if(age===(c.addOnceOffset||0)&&!clientCancelledAt(c,mi))a+=(c.addOnce||0);return a}
 function clientAgendaHoursAt(c,mi){return clientActiveAt(c,mi)?clientMonthHours(c):0}
 function clientCashNow(c){return clientRevenueAt(c,nowMI(),'cash')}
 function clientAccrualNow(c){return clientRevenueAt(c,nowMI(),'accrual')}
 function clientAddCostNow(c){return clientAddCostAt(c,nowMI())}
 function clientActiveNow(c){return clientActiveAt(c,nowMI())}
-function estruturacaoExcedida(c){return c.type==='advisor'&&c.subtype==='estruturacao'&&nowMI()>=clientEndMI(c)}
+function clientOccupiesNow(c){const mi=nowMI();return mi<clientEndMI(c)&&!clientPausedAt(c,mi)} // ocupa agenda (inclui quem ainda vai começar)
+function clientOverdue(c){return c.status==='ativo'&&isFinite(clientEndMI(c))&&nowMI()>=clientEndMI(c)} // passou do fim previsto e segue ativo
 function clientTenure(c){ // meses já decorridos e total planejado
-  const d=clientDuration(c);const elapsed=Math.max(0,nowMI()-clientStartMI(c)+1);
-  return {elapsed:d==null?elapsed:Math.min(elapsed,d),total:d,ongoing:d==null};
+  const d=clientDuration(c);const elapsed=Math.max(0,Math.min(nowMI(),clientEndMI(c)-1)-clientStartMI(c)+1);
+  return {elapsed:d==null?elapsed:Math.min(elapsed,d),total:d,ongoing:d==null&&!isFinite(clientEndMI(c))};
 }
 function clientLifetimeRevenue(c){ // receita total (competência) ao longo de toda a duração
-  const d=clientDuration(c);const start=clientStartMI(c);const span=d==null?60:d;let sum=0;
+  const start=clientStartMI(c);const end=clientEndMI(c);const span=isFinite(end)?end-start:60;let sum=0;
   for(let i=0;i<span;i++)sum+=clientRevenueAt(c,start+i,'accrual');
-  return {value:sum,capped:d==null};
+  return {value:sum,capped:!isFinite(end)};
 }
-function clientMonthHours(c){const fm=freqMonth(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fm+(c.opHours||0)*fm}
-function clientWeekHours(c){const fw=freqWeek(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fw+(c.opHours||0)*fw}
+
+/* ===== Horas e custo de servir ===== */
+function clientConsMonthHours(c){const fm=freqMonth(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fm+(c.opHours||0)*fm}
+function clientConsWeekHours(c){const fw=freqWeek(c.freq);return (c.meetingDur||0)*(state.params.attendance/100)*fw+(c.opHours||0)*fw}
+function clientInternWeekHours(c,pid){return (c.interns||[]).filter(i=>!pid||i.personId===pid).reduce((s,i)=>s+(+i.hours||0),0)}
+function clientMonthHours(c){return clientConsMonthHours(c)+clientInternWeekHours(c)*state.params.weeks}
+function clientDirectCost(c){ // horas × custo-hora de cada pessoa da equipe do cliente
+  const owner=personById(c.ownerId);let v=owner?clientConsMonthHours(c)*personRate(owner):0;
+  (c.interns||[]).forEach(i=>{const p=personById(i.personId);if(p)v+=(+i.hours||0)*state.params.weeks*personRate(p)});
+  return v;
+}
 function taskWeekHours(t){return (t.hours||0)}
 function fixedTotal(){return state.fixed.reduce((s,f)=>s+(parseFloat(f.value)||0),0)}
-function teamMonthHours(){return state.people.filter(p=>p.active).reduce((s,p)=>s+personMonthHours(p),0)}
+function teamMonthHours(){return state.people.filter(p=>p.active).reduce((s,p)=>s+personCapWeekHours(p)*state.params.weeks,0)}
 function fixedPerHour(){const t=teamMonthHours();return t>0?fixedTotal()/t:0}
-function personWeekLoad(p){
-  let l=0;
-  if(p.hasManagement)l+=personWeekHours(p)*(p.mgmtSplit/100);
-  state.clients.forEach(c=>{if(c.ownerId===p.id&&c.slot)l+=clientWeekHours(c)});
-  state.tasks.forEach(t=>{if(t.ownerId===p.id&&t.slot)l+=taskWeekHours(t)});
-  return l;
-}
-function personLoadSplit(p){
-  const mgmt=p.hasManagement?personWeekHours(p)*(p.mgmtSplit/100):0;
-  let cli=0,intr=0;
-  state.clients.forEach(c=>{if(c.ownerId===p.id&&c.slot)cli+=clientWeekHours(c)});
+function personLoadSplit(p){ // horas/semana
+  const mgmt=personMgmtWeekHours(p);let cli=0,intr=0;
+  state.clients.forEach(c=>{
+    if(!clientOccupiesNow(c))return;
+    if(c.ownerId===p.id&&c.slot)cli+=clientConsWeekHours(c);
+    cli+=clientInternWeekHours(c,p.id);
+  });
   state.tasks.forEach(t=>{if(t.ownerId===p.id&&t.slot)intr+=taskWeekHours(t)});
   return {mgmt,cli,intr};
 }
-function personOccupation(p){const cap=personWeekHours(p);return cap>0?(personWeekLoad(p)/cap)*100:0}
+function personWeekLoad(p){const s=personLoadSplit(p);return s.mgmt+s.cli+s.intr}
+function personOccupation(p){const cap=personCapWeekHours(p);return cap>0?(personWeekLoad(p)/cap)*100:0}
+function costBreakdownNow(){ // para onde vai o custo das pessoas no mês (soma = custo das pessoas)
+  const W=state.params.weeks,active=state.people.filter(p=>p.active);
+  let direct=0,mgmt=0,intr=0,strat=0,total=0;
+  active.forEach(p=>{const r=personRate(p);total+=personMonthlyCost(p);mgmt+=personMgmtWeekHours(p)*W*r;strat+=personStratWeekHours(p)*W*r;
+    state.tasks.forEach(t=>{if(t.ownerId===p.id&&t.slot)intr+=taskWeekHours(t)*W*r})});
+  state.clients.filter(clientActiveNow).forEach(c=>direct+=clientDirectCost(c));
+  return {direct,mgmt,intr,strat,idle:total-direct-mgmt-intr-strat,total};
+}
 
 /* ============ TABS ============ */
 function switchTab(t){
@@ -815,154 +1008,249 @@ function switchTab(t){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
   if(t==='alocacao')renderAllocation();
+  if(t==='custohora')renderCustoHora();
   if(t==='custos')renderCosts();
   if(t==='projecao')renderProjection();
   if(t==='watch')renderWatch();
   if(t==='painel')renderPainel();
 }
+function segHtml(opts,cur,onclick){return Object.entries(opts).map(([k,l])=>`<button class="${cur===k?'on':''}" onclick="${onclick.replace('$',k)}">${l}</button>`).join('')}
 
-/* ============ CADASTRO: PEOPLE ============ */
+/* ============ CADASTRO: EQUIPE ============ */
 function renderPeople(){
   const g=document.getElementById('people-grid');
-  g.innerHTML=state.people.map(p=>{
-    const cost=personMonthlyCost(p);
-    const onbItems=(p.onbItems||[]).map(it=>`
-      <div class="onb-item">
-        <input value="${esc(it.desc)}" placeholder="Item" onchange="updOnb('${p.id}','${it.id}','desc',this.value)">
-        <input type="number" step="0.01" value="${it.value||''}" placeholder="R$" onchange="updOnb('${p.id}','${it.id}','value',+this.value)">
-        <input type="number" min="1" value="${it.parcelas}" placeholder="x" onchange="updOnb('${p.id}','${it.id}','parcelas',+this.value)">
-        <button class="del-btn" onclick="delOnb('${p.id}','${it.id}')">×</button>
-      </div>`).join('');
-    return `<div class="person-card ${p.active?'':'inactive'}">
-      <div class="pc-head">
-        <div class="name-wrap"><span class="pen">✎</span><input class="pc-name-in" value="${esc(p.name)}" onchange="updP('${p.id}','name',this.value)"></div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <button class="pill ${p.isIntern?'pill-int':'pill-cons'}" title="Trocar papel" onclick="toggleRole('${p.id}')">${p.isIntern?'Estag':'Cons'}</button>
-          <button class="mini-toggle ${p.active?'':'off'}" title="Ativar/desativar" onclick="updP('${p.id}','active',${!p.active})"></button>
-          <button class="del-btn" title="Remover" onclick="delPerson('${p.id}')">×</button>
-        </div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Entrada</label><input type="number" min="6" max="22" value="${p.start}" onchange="updP('${p.id}','start',+this.value)"></div>
-        <div class="field"><label>Saída</label><input type="number" min="7" max="23" value="${p.end}" onchange="updP('${p.id}','end',+this.value)"></div>
-      </div>
-      <div class="row2">
-        <div class="field field-money"><label>Salário</label><input type="number" step="0.01" value="${p.salary||''}" placeholder="0,00" onchange="updP('${p.id}','salary',+this.value)"></div>
-        <div class="field field-money"><label>Encargos</label><input type="number" step="0.01" value="${p.encargos||''}" placeholder="0,00" onchange="updP('${p.id}','encargos',+this.value)"></div>
-      </div>
-      <div class="onb-box">
-        <div class="oh"><span>Onboarding (equipamentos)</span><button class="add-btn sm" onclick="addOnb('${p.id}')">+ Item</button></div>
-        ${onbItems||'<div class="onb-empty">Sem itens. Ex: notebook, monitor, teclado…</div>'}
-        <div class="onb-total">Onboarding/mês: ${brl(onbMonthly(p))}</div>
-      </div>
-      <div class="field" style="display:flex;align-items:center;gap:8px;margin-top:8px">
-        <label style="margin:0">Faz gestão?</label>
-        <button class="mini-toggle ${p.hasManagement?'':'off'}" onclick="updP('${p.id}','hasManagement',${!p.hasManagement})"></button>
-        ${p.hasManagement?`<input type="range" min="10" max="80" step="5" value="${p.mgmtSplit}" oninput="updP('${p.id}','mgmtSplit',+this.value)" style="flex:1;accent-color:var(--red)"><span style="font-size:11px;font-weight:700;color:var(--dark-blue);white-space:nowrap">${p.mgmtSplit}%</span>`:''}
-      </div>
-      <div class="cost-line"><b>Custo mensal:</b> <span class="val">${brl(cost)}</span></div>
-    </div>`;
-  }).join('');
+  if(!state.people.length){g.innerHTML='<div class="onb-empty">Ninguém cadastrado.</div>';return}
+  g.innerHTML=state.people.map(p=>`<div class="team-row ${p.active?'':'inactive'}">
+      ${avatar(p)}
+      <input class="nm" value="${esc(p.name)}" onchange="updP('${p.id}','name',this.value)" aria-label="Nome">
+      <div class="seg">${segHtml(CONTRACTS,p.contract,`setContract('${p.id}','$')`)}</div>
+      <label class="hr">Entra <input type="number" min="6" max="22" value="${p.start}" onchange="updP('${p.id}','start',+this.value)"></label>
+      <label class="hr">Sai <input type="number" min="7" max="23" value="${p.end}" onchange="updP('${p.id}','end',+this.value)"></label>
+      <button class="mini-toggle ${p.active?'':'off'}" title="${p.active?'Ativo':'Inativo'}" onclick="updP('${p.id}','active',${!p.active})"></button>
+      <button class="del-btn" title="Remover" onclick="delPerson('${p.id}')">×</button>
+    </div>`).join('');
 }
 
+/* ============ CADASTRO: CLIENTES ============ */
+const CL_VIEWS={cards:'Cartões',table:'Tabela'};
+const CL_TYPES={todos:'Todos',advisor:'Advisor',projeto:'Projeto'};
+const STATUS_ORDER={ativo:0,pausado:1,concluido:2,encerrado:3};
+const clFilter={view:'cards',type:'todos',status:'ativo',q:''};
+try{const v=localStorage.getItem('aust_cl_view');if(CL_VIEWS[v])clFilter.view=v}catch(e){}
+function setClFilter(k,v){clFilter[k]=v;if(k==='view'){try{localStorage.setItem('aust_cl_view',v)}catch(e){}}renderClients()}
+function clientMatches(c){
+  if(clFilter.type!=='todos'&&c.type!==clFilter.type)return false;
+  if(clFilter.status!=='todos'&&c.status!==clFilter.status)return false;
+  const q=clFilter.q.trim().toLowerCase();
+  return !q||(c.name+' '+(c.projectKind||'')).toLowerCase().includes(q);
+}
+function clientMarginNow(c){
+  if(!clientActiveNow(c))return null;
+  const rev=clientAccrualNow(c),cost=clientDirectCost(c)+clientAddCostNow(c);
+  return {rev,cost,marg:rev-cost,pct:rev>0?(rev-cost)/rev*100:null};
+}
+function clientValueText(c){
+  if(c.type==='advisor')return c.permuta?'permuta':brl0(clientFee(c))+'/mês';
+  return (c.permuta?'permuta · ':'')+brl0(+c.totalValue||0)+(c.parcelas>1?` · ${c.parcelas}x`:'');
+}
+function clientPeriodText(c){
+  const end=c.status==='encerrado'||c.status==='concluido'?ymLabel(c.endedAt):(c.end?ymLabel(c.end):'contínuo');
+  return `${c.start?ymLabel(c.start):'—'} → ${end}`;
+}
+function marginText(m){if(!m)return '—';if(m.pct==null)return brl0(m.marg);return num1(m.pct)+'%'}
+function marginClass(m){return !m?'':m.marg>=0?'margin-pos':'margin-neg'}
+function statusPill(c){return `<span class="st-pill st-${c.status}">${CLIENT_STATUS[c.status]}</span>`}
+function internsText(c){return (c.interns||[]).map(i=>{const p=personById(i.personId);return p?`${avatar(p,true)} <span style="font-size:11px">${num1(+i.hours||0)}h/sem</span>`:''}).join(' ')}
 function renderClients(){
+  const counts={todos:state.clients.length};Object.keys(CLIENT_STATUS).forEach(k=>counts[k]=state.clients.filter(c=>c.status===k).length);
+  const stOpts={};Object.entries(CLIENT_STATUS).forEach(([k,l])=>stOpts[k]=`${l==='Concluído'?'Concluídos':l+'s'} ${counts[k]}`);stOpts.todos='Todos '+counts.todos;
+  document.getElementById('cl-view').innerHTML=segHtml(CL_VIEWS,clFilter.view,"setClFilter('view','$')");
+  document.getElementById('cl-type').innerHTML=segHtml(CL_TYPES,clFilter.type,"setClFilter('type','$')");
+  document.getElementById('cl-status').innerHTML=segHtml(stOpts,clFilter.status,"setClFilter('status','$')");
   const g=document.getElementById('client-cards');
-  if(!state.clients.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><b>Nenhum cliente ainda</b>Clique em "+ Cliente".</div>`;return}
-  const consOpts=sel=>state.people.filter(x=>x.active).map(x=>`<option value="${x.id}" ${sel===x.id?'selected':''}>${esc(x.name)}</option>`).join('');
-  g.innerHTML=state.clients.map(c=>{
-    const excedida=estruturacaoExcedida(c);
-    // bloco financeiro por tipo
-    let fin='';
-    if(c.type==='advisor'){
-      fin=`<div class="row2">
-        <div class="field"><label>Subtipo</label><select onchange="updC('${c.id}','subtype',this.value)"><option value="recorrencia" ${c.subtype!=='estruturacao'?'selected':''}>Recorrência</option><option value="estruturacao" ${c.subtype==='estruturacao'?'selected':''}>Estruturação</option></select></div>
-        <div class="field field-money"><label>Fee mensal</label><input type="number" step="0.01" placeholder="${num2(state.fees.advisor||0)}" value="${c.feeOverride??''}" onchange="updC('${c.id}','feeOverride',this.value)"></div>
-      </div>
-      ${c.subtype==='estruturacao'?`<div class="field"><label>Duração da estruturação (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>`:`<div class="fin-note">Recorrência: fee mensal enquanto o cliente ficar na operação.</div>`}`;
-    } else if(c.type==='pontual'){
-      fin=`<div class="row2">
-        <div class="field field-money"><label>Valor total</label><input type="number" step="0.01" value="${c.totalValue||''}" placeholder="12000,00" onchange="updC('${c.id}','totalValue',+this.value)"></div>
-        <div class="field"><label>Nº de parcelas</label><input type="number" min="1" value="${c.parcelas}" onchange="updC('${c.id}','parcelas',+this.value)"></div>
-      </div>
-      <div class="field"><label>Duração do trabalho / agenda (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>
-      <div class="fin-note">Competência: ${brl((c.totalValue||0)/Math.max(1,c.duration))}/mês por ${c.duration}m · Caixa: ${brl((c.totalValue||0)/Math.max(1,c.parcelas))}/mês por ${c.parcelas}x</div>`;
-    } else if(c.type==='ma'){
-      const successFee=(c.dealValue||0)*((c.successPct||0)/100);
-      fin=`<div class="row2">
-        <div class="field field-money"><label>Valor à vista</label><input type="number" step="0.01" value="${c.upfront||''}" placeholder="0,00" onchange="updC('${c.id}','upfront',+this.value)"></div>
-        <div class="field"><label>Duração até o êxito (meses)</label><input type="number" min="1" value="${c.duration}" onchange="updC('${c.id}','duration',+this.value)"></div>
-      </div>
-      <div class="row2">
-        <div class="field field-money"><label>Valor do contrato (deal)</label><input type="number" step="0.01" value="${c.dealValue||''}" placeholder="0,00" onchange="updC('${c.id}','dealValue',+this.value)"></div>
-        <div class="field"><label>% de êxito</label><input type="number" step="0.5" value="${c.successPct||''}" placeholder="0" onchange="updC('${c.id}','successPct',+this.value)"></div>
-      </div>
-      <div class="fin-note">Êxito: ${brl(successFee)} no mês ${c.duration} (valor cheio) + ${brl(c.upfront||0)} à vista no início.</div>`;
-    }
-    return `<div class="client-card ${excedida?'excedida':''}">
-      <div class="cc-top">
-        <div class="name-wrap"><span class="pen">✎</span><input class="pc-name-in" value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)"></div>
-        <div style="display:flex;gap:4px;align-items:center">
-          <button class="flag-btn ${c.watch.on?'on':''}" title="Watch list" onclick="toggleWatch('${c.id}')">⚑</button>
-          <button class="flag-btn permuta-btn ${c.permuta?'on':''}" title="Permuta (não gera receita)" onclick="togglePermuta('${c.id}')">⇄</button>
-          <button class="del-btn" onclick="delClient('${c.id}')">×</button>
-        </div>
-      </div>
-      ${excedida?`<div class="excede-badge">⚠ Estruturação excedendo o prazo — converta para recorrência ou revise.</div>`:''}
-      <div class="row2">
-        <div class="field"><label>Tipo</label><select onchange="updC('${c.id}','type',this.value)">
-          <option value="advisor" ${c.type==='advisor'?'selected':''}>Advisor</option>
-          <option value="ma" ${c.type==='ma'?'selected':''}>M&A</option>
-          <option value="pontual" ${c.type==='pontual'?'selected':''}>Pontual</option></select></div>
-        <div class="field"><label>Início (mês/ano)</label><input type="month" value="${esc(c.start)}" onchange="updC('${c.id}','start',this.value)"></div>
-      </div>
-      <div class="fin-box">${fin}</div>
-      <div class="row3">
-        <div class="field"><label>Frequência</label><select onchange="updC('${c.id}','freq',this.value)"><option value="semanal" ${c.freq==='semanal'?'selected':''}>Semanal</option><option value="quinzenal" ${c.freq==='quinzenal'?'selected':''}>Quinzenal</option></select></div>
-        <div class="field"><label>Reunião (h)</label><input type="number" step="0.5" min="0" value="${c.meetingDur}" onchange="updC('${c.id}','meetingDur',+this.value)"></div>
-        <div class="field"><label>Operac. (h)</label><input type="number" step="0.5" min="0" value="${c.opHours}" onchange="updC('${c.id}','opHours',+this.value)"></div>
-      </div>
-      <div class="cc-sub">Custos adicionais</div>
-      <div class="row3">
-        <div class="field field-money"><label>Mensal</label><input type="number" step="0.01" value="${c.addMonthly||''}" placeholder="0,00" onchange="updC('${c.id}','addMonthly',+this.value)"></div>
-        <div class="field field-money"><label>Único</label><input type="number" step="0.01" value="${c.addOnce||''}" placeholder="0,00" onchange="updC('${c.id}','addOnce',+this.value)"></div>
-        <div class="field"><label>Mês do único</label><input type="number" min="0" value="${c.addOnceOffset}" title="0 = mês de início" onchange="updC('${c.id}','addOnceOffset',+this.value)"></div>
-      </div>
-      <div class="field"><label>Consultor responsável</label><select onchange="updC('${c.id}','ownerId',this.value)"><option value="">—</option>${consOpts(c.ownerId)}</select></div>
-    </div>`;
-  }).join('');
+  if(!state.clients.length){g.className='';g.innerHTML=`<div class="empty-state"><b>Nenhum cliente ainda</b>Clique em "+ Cliente".</div>`;document.getElementById('cl-count').textContent='';return}
+  const list=state.clients.filter(clientMatches).sort((a,b)=>(STATUS_ORDER[a.status]-STATUS_ORDER[b.status])||a.name.localeCompare(b.name,'pt-BR'));
+  document.getElementById('cl-count').textContent=`${list.length} de ${state.clients.length} clientes`;
+  if(!list.length){g.className='';g.innerHTML='<div class="empty-state"><b>Nenhum cliente neste filtro</b>Troque os filtros acima.</div>';return}
+  if(clFilter.view==='table'){
+    g.className='';
+    g.innerHTML=`<div style="overflow-x:auto"><table class="tbl clickable"><thead><tr><th>Cliente</th><th>Tipo</th><th>Status</th><th>Consultor</th><th>Estagiário</th><th>Período</th><th>Fee / valor</th><th>Horas/mês</th><th>Margem</th></tr></thead><tbody>`+
+      list.map(c=>{const o=personById(c.ownerId);const m=clientMarginNow(c);
+        return `<tr onclick="openClient('${c.id}')"><td><b>${esc(c.name)}</b>${c.watch.on?' <span style="color:var(--red)">⚑</span>':''}${c.permuta?' <span class="permuta-tag">PERMUTA</span>':''}</td>
+          <td><span class="type-tag ${typeClass(c.type)}">${esc(clientKindLabel(c))}</span></td><td>${statusPill(c)}</td>
+          <td>${o?esc(o.name):'—'}</td><td>${internsText(c)||'—'}</td><td style="white-space:nowrap">${clientPeriodText(c)}</td>
+          <td class="mono-num" style="white-space:nowrap">${clientValueText(c)}</td><td class="mono-num">${num1(clientMonthHours(c))}</td><td class="mono-num ${marginClass(m)}">${marginText(m)}</td></tr>`}).join('')+
+      `</tbody></table></div>`;
+    return;
+  }
+  g.className='client-cards';
+  g.innerHTML=list.map(c=>{const o=personById(c.ownerId);const m=clientMarginNow(c);
+    return `<div class="cc-compact ${c.type==='projeto'?'type-projeto-b':''} ${c.status==='ativo'?'':'dim'}" onclick="openClient('${c.id}')" tabindex="0" onkeydown="if(event.key==='Enter')openClient('${c.id}')">
+      <div class="cc-l1"><span class="cc-name">${esc(c.name)}</span><span class="cc-icons">${c.watch.on?'<span style="color:var(--red)" title="Watch list">⚑</span>':''}${c.permuta?' <span title="Permuta">⇄</span>':''}</span>${statusPill(c)}</div>
+      <div class="cc-l2"><span class="type-tag ${typeClass(c.type)}">${esc(clientKindLabel(c))}</span>${o?`${avatar(o,true)}<span style="font-size:11px;font-weight:600">${esc(o.name.split(' ')[0])}</span>`:'<span style="font-size:11px;color:var(--gray)">sem consultor</span>'}${internsText(c)}</div>
+      <div class="cc-l3"><div>${c.type==='advisor'?'Fee':'Valor'}<b>${clientValueText(c)}</b></div><div>Margem<b class="${marginClass(m)}">${marginText(m)}</b></div><div>Período<b style="font-size:11px">${clientPeriodText(c)}</b></div></div>
+      ${clientOverdue(c)?'<div class="excede-badge" style="margin:0">⚠ Passou do fim previsto e segue ativo</div>':''}
+    </div>`}).join('');
 }
 
+/* ============ EDITOR DE CLIENTE ============ */
+let editingClient=null;
+function openClient(id){editingClient=id;document.getElementById('drawer').hidden=false;document.getElementById('drawer-bg').hidden=false;renderDrawer();const n=document.getElementById('dr-name');if(n&&n.value==='Novo cliente'){n.focus();n.select()}}
+function closeClient(){editingClient=null;document.getElementById('drawer').hidden=true;document.getElementById('drawer-bg').hidden=true;renderClients()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editingClient)closeClient()});
+function curClient(){return state.clients.find(x=>x.id===editingClient)}
+function drField(label,inner,cls){return `<div class="field ${cls||''}"><label>${label}</label>${inner}</div>`}
+function drMonth(c,k){return `<input type="month" value="${esc(c[k]||'')}" onchange="updC('${c.id}','${k}',this.value)">`}
+function drNum(c,k,attrs){return `<input type="number" ${attrs||''} value="${c[k]===''||c[k]==null?'':c[k]}" onchange="updC('${c.id}','${k}',this.value===''?'':+this.value)">`}
+function renderDrawer(){
+  const c=curClient();const d=document.getElementById('drawer');
+  if(!c){closeClient();return}
+  const body=d.querySelector('.dr-body');const scroll=body?body.scrollTop:0;
+  const kinds=[...new Set(state.clients.map(x=>x.projectKind).filter(Boolean))].sort();
+  const cons=state.people.filter(p=>(p.active&&!p.isIntern)||p.id===c.ownerId);
+  const interns=state.people.filter(p=>(p.active&&p.isIntern)||(c.interns||[]).some(i=>i.personId===p.id));
+  let contrato=`<div class="dr-row"><span class="dr-lbl">Tipo</span><div class="seg">${segHtml({advisor:'Advisor',projeto:'Projeto'},c.type,`setC('${c.id}','type','$')`)}</div></div>`;
+  if(c.type==='projeto')contrato+=`<div class="dr-row">${drField('Tipo de projeto',`<input list="dl-kinds" value="${esc(c.projectKind)}" placeholder="Ex.: Valuation, M&A, Viabilidade" onchange="updC('${c.id}','projectKind',this.value.trim())"><datalist id="dl-kinds">${kinds.map(k=>`<option value="${esc(k)}">`).join('')}</datalist>`)}</div>`;
+  contrato+=`<div class="dr-row"><span class="dr-lbl">Status</span><div class="seg">${segHtml(CLIENT_STATUS,c.status,`setClientStatus('${c.id}','$')`)}</div></div>
+    <div class="dr-row row2">${drField('Início',drMonth(c,'start'))}${drField(c.type==='advisor'?'Fim (vazio = contínuo)':'Fim previsto',drMonth(c,'end'))}</div>`;
+  if(c.status==='pausado')contrato+=`<div class="dr-row row2">${drField('Pausado desde',drMonth(c,'pausedAt'))}${drField('Retorno previsto',drMonth(c,'resumeAt'))}</div>`;
+  if(c.status==='concluido')contrato+=`<div class="dr-row">${drField('Concluído em',drMonth(c,'endedAt'))}</div>`;
+  if(c.status==='encerrado')contrato+=`<div class="dr-row">${drField('Saída (último mês de contrato)',drMonth(c,'endedAt'))}</div>
+    <div class="dr-row"><span class="dr-lbl">Motivo do churn</span><div class="seg">${segHtml(CHURN_REASONS,c.churnReason,`setC('${c.id}','churnReason','$')`)}</div></div>
+    <div class="dr-row">${drField(c.churnReason==='outro'?'Qual foi o motivo?':'Observação',`<input value="${esc(c.churnNote)}" onchange="updC('${c.id}','churnNote',this.value)">`)}</div>`;
+  contrato+=`<div class="dr-row" style="display:flex;gap:18px;flex-wrap:wrap">
+      <span class="toggle-line"><button class="mini-toggle ${c.watch.on?'':'off'}" onclick="toggleWatch('${c.id}')"></button>Watch list</span>
+      <span class="toggle-line"><button class="mini-toggle ${c.permuta?'':'off'}" onclick="togglePermuta('${c.id}')"></button>Permuta (não gera receita)</span></div>`;
+  let fin;
+  if(c.type==='advisor')fin=`<div class="dr-row">${drField('Fee mensal',`<input type="number" step="0.01" placeholder="${num2(state.fees.advisor||0)} (padrão)" value="${c.feeOverride??''}" onchange="updC('${c.id}','feeOverride',this.value)">`,'field-money')}</div>`;
+  else fin=`<div class="dr-row row2">${drField('Valor total',drNum(c,'totalValue','step="0.01" placeholder="0,00"'),'field-money')}${drField('Nº de parcelas',drNum(c,'parcelas','min="1"'))}</div>
+    <div class="dr-row">${drField('1ª parcela',drMonth(c,'firstParcel'))}</div>`;
+  fin+=`<div class="fin-note" id="dr-fin-note">${finNote(c)}</div>`;
+  const equipe=`<div class="dr-row"><span class="dr-lbl">Consultor responsável</span><div class="pick-list">${cons.map(p=>`<button class="pick ${c.ownerId===p.id?'on':''}" onclick="setC('${c.id}','ownerId',${c.ownerId===p.id?"''":`'${p.id}'`})">${avatar(p,true)}${esc(p.name)}</button>`).join('')||'<span class="onb-empty">Cadastre um consultor na Equipe.</span>'}</div></div>
+    <div class="dr-row"><span class="dr-lbl">Frequência das reuniões</span><div class="seg">${segHtml({semanal:'Semanal',quinzenal:'Quinzenal'},c.freq,`setC('${c.id}','freq','$')`)}</div></div>
+    <div class="dr-row row2">${drField('Reunião (h por encontro)',drNum(c,'meetingDur','step="0.5" min="0"'))}${drField('Operacional do consultor (h)',drNum(c,'opHours','step="0.5" min="0"'))}</div>
+    <div class="dr-row"><span class="dr-lbl">Estagiários (sob demanda, h/semana)</span><div class="pick-list">${interns.map(p=>{const on=(c.interns||[]).some(i=>i.personId===p.id);return `<button class="pick ${on?'on':''}" onclick="toggleIntern('${c.id}','${p.id}')">${avatar(p,true)}${esc(p.name)}</button>`}).join('')||'<span class="onb-empty">Nenhum estagiário ativo.</span>'}</div>
+      ${(c.interns||[]).map(i=>{const p=personById(i.personId);return p?`<div class="intern-row">${avatar(p,true)}<span style="font-size:12px;font-weight:600;flex:1">${esc(p.name)}</span><input type="number" step="0.5" min="0" value="${i.hours}" onchange="updIntern('${c.id}','${i.personId}',+this.value)"><span style="font-size:11px;color:var(--gray)">h/sem</span></div>`:''}).join('')}</div>`;
+  const extras=`<div class="row3">${drField('Mensal',drNum(c,'addMonthly','step="0.01" placeholder="0,00"'),'field-money')}${drField('Único',drNum(c,'addOnce','step="0.01" placeholder="0,00"'),'field-money')}${drField('Mês do único',drNum(c,'addOnceOffset','min="0" title="0 = mês de início"'))}</div>`;
+  d.innerHTML=`<div class="dr-head"><input id="dr-name" value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)" aria-label="Nome do cliente"><button class="dr-close" onclick="closeClient()" title="Fechar (Esc)">×</button></div>
+    <div class="dr-body">
+      <div class="dr-sec"><h4>Contrato</h4>${contrato}</div>
+      <div class="dr-sec"><h4>Financeiro</h4>${fin}</div>
+      <div class="dr-sec"><h4>Equipe e horas</h4>${equipe}</div>
+      <div class="dr-sec"><h4>Custos adicionais</h4>${extras}</div>
+      <button class="dr-danger" onclick="delClient('${c.id}')">Excluir cliente</button>
+    </div>
+    <div class="dr-foot" id="dr-foot">${drawerStats(c)}</div>`;
+  d.querySelector('.dr-body').scrollTop=scroll;
+}
+function finNote(c){
+  if(c.permuta)return 'Permuta: não entra na receita.';
+  if(c.type==='advisor')return `Entra no MRR: ${brl(clientFee(c))}/mês enquanto estiver ativo.`;
+  const par=Math.max(1,c.parcelas||1),dur=clientDuration(c);
+  return `Caixa: ${par}× de ${brl((+c.totalValue||0)/par)} a partir de ${ymLabel(c.firstParcel||c.start)} · Competência: ${brl((+c.totalValue||0)/dur)}/mês por ${dur} ${dur>1?'meses':'mês'}`;
+}
+function drawerStats(c){
+  const m=clientMarginNow(c);
+  return `<div>Horas/mês<b>${num1(clientMonthHours(c))}h</b></div><div>Custo direto/mês<b>${brl0(clientDirectCost(c))}</b></div><div>Margem agora<b class="${marginClass(m)}">${m?brl0(m.marg)+(m.pct!=null?' · '+num1(m.pct)+'%':''):'fora do período'}</b></div>`;
+}
+function refreshDrawerStats(){const c=curClient();if(!c)return;const f=document.getElementById('dr-foot');if(f)f.innerHTML=drawerStats(c);const n=document.getElementById('dr-fin-note');if(n)n.innerHTML=finNote(c)}
+
+/* ============ CADASTRO: OUTROS ============ */
 function renderFixed(){
   const g=document.getElementById('fixed-list');
   g.innerHTML=state.fixed.map(f=>`
-    <div style="display:grid;grid-template-columns:1fr 180px 40px;gap:8px;margin-bottom:8px;align-items:center">
-      <input style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px" value="${esc(f.name)}" onchange="updFixed('${f.id}','name',this.value)">
+    <div class="fixed-row" style="display:grid;grid-template-columns:1fr 180px 40px;gap:8px;margin-bottom:8px;align-items:center">
+      <input style="padding:7px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;min-width:0" value="${esc(f.name)}" onchange="updFixed('${f.id}','name',this.value)">
       <div class="field-money" style="margin:0;position:relative"><input type="number" step="0.01" style="width:100%;padding:7px 8px 7px 28px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px" value="${f.value||''}" placeholder="0,00" onchange="updFixed('${f.id}','value',+this.value)"><span style="position:absolute;left:8px;top:8px;font-size:11px;color:var(--gray);font-weight:600">R$</span></div>
       <button class="del-btn" onclick="delFixed('${f.id}')">×</button>
     </div>`).join('') +
     `<div class="cost-line" style="max-width:440px"><b>Total fixo/mês:</b> <span class="val">${brl(fixedTotal())}</span> · <b>por hora:</b> <span class="val">${brl(fixedPerHour())}</span></div>`;
 }
-function renderFeesInputs(){document.getElementById('fee-advisor').value=state.fees.advisor||'';document.getElementById('fee-ma').value=state.fees.ma||'';document.getElementById('fee-pontual').value=state.fees.pontual||''}
+function renderFeesInputs(){document.getElementById('fee-advisor').value=state.fees.advisor||'';document.getElementById('fee-projeto').value=state.fees.projeto||''}
 function renderParams(){document.getElementById('p-attendance').value=state.params.attendance;document.getElementById('p-weeks').value=state.params.weeks;document.getElementById('p-lunch').value=state.params.lunch}
 
+/* ============ CUSTO-HORA ============ */
+function renderCustoHora(){
+  const ap=state.people.filter(p=>p.active);const fph=fixedPerHour();const W=state.params.weeks;
+  const cost=ap.reduce((s,p)=>s+personMonthlyCost(p),0);const hrs=ap.reduce((s,p)=>s+personMonthHours(p),0);
+  const bd=costBreakdownNow();
+  document.getElementById('ch-strip').innerHTML=`
+    <div class="strip-card"><div class="strip-num n-navy">${brl(cost)}</div><div class="strip-lbl">Custo da equipe/mês</div></div>
+    <div class="strip-card"><div class="strip-num n-blue">${brl(hrs>0?cost/hrs:0)}</div><div class="strip-lbl">Custo-hora médio</div></div>
+    <div class="strip-card"><div class="strip-num n-navy">${brl(fph)}</div><div class="strip-lbl">Custo fixo por hora</div></div>
+    <div class="strip-card"><div class="strip-num ${bd.idle>0?'n-red':'n-green'}">${brl(bd.idle)}</div><div class="strip-lbl">${bd.idle>=0?'Capacidade não alocada/mês':'Sobrecarga (horas além da jornada)'}</div></div>`;
+  const g=document.getElementById('ch-grid');
+  if(!state.people.length){g.innerHTML='<div class="empty-state"><b>Ninguém cadastrado</b>Adicione pessoas no Cadastro.</div>';return}
+  g.innerHTML=state.people.map(p=>{
+    const mc=personMonthlyCost(p),mh=personMonthHours(p),rate=mh>0?mc/mh:0,s=personSplit(p),ld=personLoadSplit(p);
+    const capW=personCapWeekHours(p),free=capW-(ld.mgmt+ld.cli+ld.intr);
+    const salLbl=p.contract==='estagio'?'Bolsa':p.contract==='socio'?'Pró-labore':'Remuneração (PJ)';
+    const onb=(p.onbItems||[]).map(it=>`<div class="onb-item">
+        <input value="${esc(it.desc)}" placeholder="Item" onchange="updOnb('${p.id}','${it.id}','desc',this.value)">
+        <input type="number" step="0.01" value="${it.value||''}" placeholder="R$" onchange="updOnb('${p.id}','${it.id}','value',+this.value)">
+        <input type="number" min="1" value="${it.parcelas}" placeholder="x" onchange="updOnb('${p.id}','${it.id}','parcelas',+this.value)">
+        <button class="del-btn" onclick="delOnb('${p.id}','${it.id}')">×</button></div>`).join('');
+    const splitHtml=p.contract==='socio'?`<div class="dr-lbl" style="margin-top:12px">Divisão do tempo do sócio</div>
+      <div class="row3">${drField('Operacional',`<input value="${num1(s.op*100)}%" disabled>`)}
+        ${drField('Gestão %',`<input type="number" min="0" max="100" step="5" value="${p.split.gestao===''?'':p.split.gestao}" placeholder="—" onchange="updSplit('${p.id}','gestao',this.value)">`)}
+        ${drField('Estratégico %',`<input type="number" min="0" max="100" step="5" value="${p.split.estrategico===''?'':p.split.estrategico}" placeholder="—" onchange="updSplit('${p.id}','estrategico',this.value)">`)}</div>
+      <div class="split-bar"><div style="width:${s.op*100}%;background:#3a9d68"></div><div style="width:${s.gestao*100}%;background:var(--med-blue)"></div><div style="width:${s.estr*100}%;background:var(--internal)"></div></div>
+      ${personSplitUndefined(p)?'<div class="warn-note">Divisão ainda não definida: por enquanto conta 100% como operacional.</div>':''}
+      ${s.gestao+s.estr>1?'<div class="warn-note">Gestão + estratégico passam de 100%.</div>':''}`:'';
+    return `<div class="ch-card ${p.active?'':'inactive'}">
+      <div class="ch-head">${avatar(p)}<span class="nm">${esc(p.name)}</span><span class="pill ${p.isIntern?'pill-int':'pill-cons'}">${CONTRACTS[p.contract]}</span></div>
+      <div class="row2">${drField(salLbl,`<input type="number" step="0.01" value="${p.salary||''}" placeholder="0,00" onchange="updP('${p.id}','salary',+this.value)">`,'field-money')}
+        ${drField('Encargos (%)',`<input type="number" step="0.01" min="0" value="${p.encargosPct?+(+p.encargosPct).toFixed(2):''}" placeholder="0" onchange="updP('${p.id}','encargosPct',+this.value)">`)}</div>
+      <div class="row2">${drField('Benefícios/mês',`<input type="number" step="0.01" value="${p.benefits||''}" placeholder="0,00" title="VR, VT, plano de saúde…" onchange="updP('${p.id}','benefits',+this.value)">`,'field-money')}
+        ${drField('Outros/mês',`<input type="number" step="0.01" value="${p.otherCosts||''}" placeholder="0,00" onchange="updP('${p.id}','otherCosts',+this.value)">`,'field-money')}</div>
+      <div class="onb-box"><div class="oh"><span>Onboarding (equipamentos)</span><button class="add-btn sm" onclick="addOnb('${p.id}')">+ Item</button></div>
+        ${onb||'<div class="onb-empty">Sem itens. Ex.: notebook, monitor…</div>'}<div class="onb-total">Onboarding/mês: ${brl(onbMonthly(p))}</div></div>
+      ${splitHtml}
+      <div class="ch-rate"><div><div class="lbl">Custo-hora</div><div class="big">${brl(rate)}</div></div><div style="text-align:right"><div class="lbl">Cheio (+ fixo)</div><div style="font-size:14px;font-weight:700">${brl(rate+fph)}</div></div></div>
+      <div class="ch-lines">
+        <div><span>Custo mensal</span><b>${brl(mc)}</b></div>
+        <div><span>Jornada</span><b>${num1(personWeekHours(p))}h/sem · ${num1(mh)}h/mês</b></div>
+        <div><span>Clientes</span><b>${num1(ld.cli)}h/sem · ${brl(ld.cli*W*rate)}</b></div>
+        ${ld.mgmt>0?`<div><span>Gestão</span><b>${num1(ld.mgmt)}h/sem · ${brl(ld.mgmt*W*rate)}</b></div>`:''}
+        ${ld.intr>0?`<div><span>Interno</span><b>${num1(ld.intr)}h/sem · ${brl(ld.intr*W*rate)}</b></div>`:''}
+        ${s.estr>0?`<div><span>Estratégico (fora da operação)</span><b>${num1(personStratWeekHours(p))}h/sem · ${brl(personStratWeekHours(p)*W*rate)}</b></div>`:''}
+        <div><span>${free>=0?'Livre (não alocado)':'Sobrecarga'}</span><b class="${free>=0?'':'margin-neg'}">${num1(Math.abs(free))}h/sem · ${brl(Math.abs(free)*W*rate)}</b></div>
+      </div>
+    </div>`}).join('');
+}
+
 /* ============ MUTATIONS ============ */
-function updP(id,k,v){const p=state.people.find(x=>x.id===id);if(!p)return;p[k]=v;save();renderPeople();updateBadges()}
-function toggleRole(id){const p=state.people.find(x=>x.id===id);if(!p)return;p.isIntern=!p.isIntern;save();renderPeople()}
-function addOnb(id){const p=state.people.find(x=>x.id===id);if(!p)return;p.onbItems.push({id:nid(),desc:'',value:0,parcelas:12});save();renderPeople()}
-function updOnb(pid,iid,k,v){const p=state.people.find(x=>x.id===pid);if(!p)return;const it=p.onbItems.find(x=>x.id===iid);if(!it)return;it[k]=v;save();renderPeople()}
-function delOnb(pid,iid){const p=state.people.find(x=>x.id===pid);if(!p)return;p.onbItems=p.onbItems.filter(x=>x.id!==iid);save();renderPeople()}
-function updC(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c[k]=v;if(k==='ownerId'&&!v)c.slot=null;save();renderClients();updateBadges()}
+function updP(id,k,v){const p=personById(id);if(!p)return;p[k]=v;save();renderPeople();updateBadges();if(document.getElementById('page-custohora').classList.contains('active'))renderCustoHora()}
+function setContract(id,k){const p=personById(id);if(!p)return;p.contract=k;p.isIntern=k==='estagio';if(!p.split)p.split={gestao:'',estrategico:''};save();renderPeople();renderClients()}
+function updSplit(id,k,v){const p=personById(id);if(!p)return;p.split[k]=v===''?'':Math.max(0,Math.min(100,+v));save();renderCustoHora()}
+function addOnb(id){const p=personById(id);if(!p)return;p.onbItems.push({id:nid(),desc:'',value:0,parcelas:12});save();renderCustoHora()}
+function updOnb(pid,iid,k,v){const p=personById(pid);if(!p)return;const it=p.onbItems.find(x=>x.id===iid);if(!it)return;it[k]=v;save();renderCustoHora()}
+function delOnb(pid,iid){const p=personById(pid);if(!p)return;p.onbItems=p.onbItems.filter(x=>x.id!==iid);save();renderCustoHora()}
+function afterClientEdit(redraw){if(redraw)renderDrawer();else refreshDrawerStats();renderClients();updateBadges()}
+function updC(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c[k]=v;if(k==='ownerId'&&!v)c.slot=null;save();afterClientEdit(false)} // campos digitados: não redesenha o editor
+function setC(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c[k]=v;if(k==='ownerId'&&!v)c.slot=null;if(k==='type'&&v==='projeto'&&!c.end&&c.start)c.end=miToYM(clientStartMI(c)+2);save();afterClientEdit(true)}
+function setClientStatus(id,st){const c=state.clients.find(x=>x.id===id);if(!c)return;c.status=st;
+  if((st==='encerrado'||st==='concluido')&&!c.endedAt)c.endedAt=nowYM();
+  if(st==='pausado'&&!c.pausedAt)c.pausedAt=nowYM();
+  save();afterClientEdit(true)}
+function toggleIntern(id,pid){const c=state.clients.find(x=>x.id===id);if(!c)return;
+  if(c.interns.some(i=>i.personId===pid))c.interns=c.interns.filter(i=>i.personId!==pid);else c.interns.push({id:nid(),personId:pid,hours:2});
+  save();afterClientEdit(true)}
+function updIntern(id,pid,h){const c=state.clients.find(x=>x.id===id);if(!c)return;const i=c.interns.find(x=>x.personId===pid);if(!i)return;i.hours=Math.max(0,h||0);save();afterClientEdit(false)}
 function updFixed(id,k,v){const f=state.fixed.find(x=>x.id===id);if(!f)return;f[k]=v;save();renderFixed()}
-function onFeeChange(){state.fees.advisor=numv('fee-advisor',0);state.fees.ma=numv('fee-ma',0);state.fees.pontual=numv('fee-pontual',0);save();renderClients()}
-function addPerson(isIntern){state.people.push({id:nid(),name:isIntern?'Novo estagiário':'Novo consultor',isIntern,active:true,start:isIntern?10:9,end:isIntern?16:18,hasManagement:false,mgmtSplit:0,salary:0,encargos:0,onbItems:[]});save();renderPeople();updateBadges()}
-function delPerson(id){if(!confirm('Remover esta pessoa? Os clientes dela ficam sem consultor.'))return;state.people=state.people.filter(p=>p.id!==id);state.clients.forEach(c=>{if(c.ownerId===id){c.ownerId='';c.slot=null}});state.tasks.forEach(t=>{if(t.ownerId===id){t.ownerId='';t.slot=null}});save();renderPeople();renderClients();updateBadges()}
-function addClient(){state.clients.push({id:nid(),name:'Novo cliente',type:'advisor',subtype:'recorrencia',freq:'semanal',meetingDur:1,opHours:3,feeOverride:'',start:'',duration:3,totalValue:0,parcelas:1,upfront:0,dealValue:0,successPct:0,addMonthly:0,addOnce:0,addOnceOffset:0,ownerId:'',slot:null,permuta:false,watch:{on:false,level:'media',reason:'',next:''}});save();renderClients();updateBadges()}
-function togglePermuta(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.permuta=!c.permuta;save();renderClients()}
-function delClient(id){state.clients=state.clients.filter(c=>c.id!==id);save();renderClients();updateBadges()}
+function onFeeChange(){state.fees.advisor=numv('fee-advisor',0);state.fees.projeto=numv('fee-projeto',0);save();renderClients()}
+function addPerson(contract){const name={pj:'Novo consultor',estagio:'Novo estagiário',socio:'Novo sócio'}[contract];state.people.push(newPerson(nid(),name,contract));save();renderPeople();updateBadges()}
+function delPerson(id){if(!confirm('Remover esta pessoa? Os clientes dela ficam sem consultor.'))return;state.people=state.people.filter(p=>p.id!==id);state.clients.forEach(c=>{if(c.ownerId===id){c.ownerId='';c.slot=null}c.interns=(c.interns||[]).filter(i=>i.personId!==id)});state.tasks.forEach(t=>{if(t.ownerId===id){t.ownerId='';t.slot=null}});save();renderPeople();renderClients();updateBadges()}
+function addClient(){
+  const c={id:nid(),name:'Novo cliente',type:'advisor',projectKind:'',status:'ativo',subtype:'recorrencia',freq:'semanal',meetingDur:1,opHours:3,feeOverride:'',start:nowYM(),end:'',firstParcel:'',duration:3,totalValue:0,parcelas:1,upfront:0,dealValue:0,successPct:0,addMonthly:0,addOnce:0,addOnceOffset:0,ownerId:'',slot:null,interns:[],permuta:false,pausedAt:'',resumeAt:'',endedAt:'',churnReason:'',churnNote:'',watch:{on:false,level:'media',reason:'',next:''}};
+  state.clients.push(c);save();renderClients();updateBadges();openClient(c.id);
+}
+function togglePermuta(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.permuta=!c.permuta;save();afterClientEdit(!!editingClient)}
+function delClient(id){const c=state.clients.find(x=>x.id===id);if(!c||!confirm(`Excluir "${c.name}"? Para quem saiu, prefira o status Encerrado: assim ele entra no histórico de churn.`))return;state.clients=state.clients.filter(x=>x.id!==id);save();if(editingClient===id)closeClient();else renderClients();updateBadges()}
 function addFixed(){state.fixed.push({id:nid(),name:'Novo custo',value:0});save();renderFixed()}
 function delFixed(id){state.fixed=state.fixed.filter(f=>f.id!==id);save();renderFixed()}
 function updateBadges(){
-  document.getElementById('badge-pool').textContent=state.clients.filter(c=>!c.slot).length;
+  document.getElementById('badge-pool').textContent=state.clients.filter(c=>!c.slot&&clientOccupiesNow(c)).length;
   document.getElementById('badge-watch').textContent=state.clients.filter(c=>c.watch&&c.watch.on).length;
 }
 
@@ -970,12 +1258,12 @@ function updateBadges(){
 function renderAllocation(){renderPool();renderTaskPool();renderGridTabs();renderGrid();renderOccPanel();renderInsights()}
 function renderPool(){
   const list=document.getElementById('pool-list');
-  const pend=state.clients.filter(c=>!c.slot);
+  const pend=state.clients.filter(c=>!c.slot&&clientOccupiesNow(c));
   if(!pend.length){list.innerHTML=`<div class="pool-empty">Tudo alocado 🎯</div>`;return}
   list.innerHTML=pend.map(c=>`
     <div class="chip ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)">
       <div class="chip-name">${esc(c.name)}${c.freq==='quinzenal'?'<span class="freq-tag">15/15</span>':''}</div>
-      <div class="chip-meta">${typeLabel(c.type)} · reun ${num2(c.meetingDur)}h · oper ${num2(c.opHours)}h</div>
+      <div class="chip-meta">${esc(clientKindLabel(c))} · reun ${num2(c.meetingDur)}h · oper ${num2(c.opHours)}h</div>
     </div>`).join('');
 }
 function renderTaskPool(){
@@ -1017,18 +1305,21 @@ function renderGrid(){
     DAYS.forEach(day=>{
       const outside=(h<p.start||h>=p.end);
       const lunch=(h===lunchHour&&!outside);
-      const cli=state.clients.filter(c=>c.ownerId===p.id&&c.slot&&c.slot.day===day&&c.slot.hour===h);
+      const cli=state.clients.filter(c=>c.ownerId===p.id&&c.slot&&c.slot.day===day&&c.slot.hour===h&&clientOccupiesNow(c));
       const tsk=state.tasks.filter(t=>t.ownerId===p.id&&t.slot&&t.slot.day===day&&t.slot.hour===h);
       const conflict=(cli.length+tsk.length)>1;
       let cls='slot';if(outside)cls+=' outside';if(lunch)cls+=' lunch';if(conflict)cls+=' conflict';
       let inner='';
-      cli.forEach(c=>{inner+=`<div class="placed ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)" title="${esc(c.name)}"><span class="x" onclick="event.stopPropagation();unassign('${c.id}','client')">×</span><span>${esc(c.name)}${c.freq==='quinzenal'?' <b>15/15</b>':''}</span><span class="pf">${typeLabel(c.type)}</span></div>`});
+      cli.forEach(c=>{inner+=`<div class="placed ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)" title="${esc(c.name)}"><span class="x" onclick="event.stopPropagation();unassign('${c.id}','client')">×</span><span>${esc(c.name)}${c.freq==='quinzenal'?' <b>15/15</b>':''}</span><span class="pf">${esc(clientKindLabel(c))}</span></div>`});
       tsk.forEach(t=>{inner+=`<div class="placed task" draggable="true" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)" title="${esc(t.name)}"><span class="x" onclick="event.stopPropagation();unassign('${t.id}','task')">×</span><span>${esc(t.name)}</span><span class="pf">interno ${num2(t.hours)}h</span></div>`});
       const drop=outside?'':`ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'${p.id}','${day}',${h})"`;
       html+=`<div class="${cls}" ${drop}>${inner}</div>`;
     });
   }
   html+='</div>';
+  // estagiário: volume por cliente, sem horário fixo
+  const vol=state.clients.filter(c=>clientOccupiesNow(c)&&clientInternWeekHours(c,p.id)>0);
+  if(vol.length)html=`<div class="insight ins-info" style="margin:10px">${esc(p.name)} atende sob demanda: ${vol.map(c=>`<b>${esc(c.name)}</b> ${num1(clientInternWeekHours(c,p.id))}h`).join(' · ')} = <b>${num1(vol.reduce((s,c)=>s+clientInternWeekHours(c,p.id),0))}h/sem</b> sem horário fixo. Já contam na ocupação.</div>`+html;
   document.getElementById('grid-body').innerHTML=html;
   attachPoolDrop();
 }
@@ -1052,7 +1343,7 @@ function renderOccPanel(){
   const active=state.people.filter(p=>p.active);
   if(!active.length){list.innerHTML='<div style="color:rgba(255,255,255,.5);font-size:12px">Nenhuma pessoa ativa.</div>';return}
   list.innerHTML=active.map(p=>{
-    const cap=personWeekHours(p);const s=personLoadSplit(p);const load=s.mgmt+s.cli+s.intr;const occ=cap>0?(load/cap)*100:0;
+    const cap=personCapWeekHours(p);const s=personLoadSplit(p);const load=s.mgmt+s.cli+s.intr;const occ=cap>0?(load/cap)*100:0;
     const w=x=>cap>0?Math.min(100,(x/cap)*100):0;
     const mgmtW=w(s.mgmt),cliW=w(s.cli),intrW=w(s.intr);const freeW=Math.max(0,100-mgmtW-cliW-intrW);
     const over=occ>100;const pctCol=over?'color:#FCA5A5':occ>85?'color:#FCD34D':'color:#6EE7B7';
@@ -1071,20 +1362,20 @@ function renderOccPanel(){
   }).join('');
 }
 function freeSlackClients(p){
-  const cap=personWeekHours(p);const free=cap-personWeekLoad(p);
-  const owned=state.clients.filter(c=>c.ownerId===p.id&&c.slot);
-  let avg=owned.length?owned.reduce((s,c)=>s+clientWeekHours(c),0)/owned.length:(1*(state.params.attendance/100)+3);
+  const cap=personCapWeekHours(p);const free=cap-personWeekLoad(p);
+  const owned=state.clients.filter(c=>c.ownerId===p.id&&c.slot&&clientOccupiesNow(c));
+  let avg=owned.length?owned.reduce((s,c)=>s+clientConsWeekHours(c),0)/owned.length:(p.isIntern?2:1*(state.params.attendance/100)+3);
   return avg>0?Math.max(0,Math.floor(free/avg)):0;
 }
 function renderInsights(){
   const box=document.getElementById('insights');const ins=[];
   const active=state.people.filter(p=>p.active);
-  const allocated=state.clients.filter(c=>c.slot);const pending=state.clients.filter(c=>!c.slot);
+  const live=state.clients.filter(clientOccupiesNow);const allocated=live.filter(c=>c.slot);const pending=live.filter(c=>!c.slot);
   const conflicts=[];
-  active.forEach(p=>{const map={};state.clients.filter(c=>c.ownerId===p.id&&c.slot).forEach(c=>{const k=c.slot.day+c.slot.hour;map[k]=(map[k]||0)+1});state.tasks.filter(t=>t.ownerId===p.id&&t.slot).forEach(t=>{const k=t.slot.day+t.slot.hour;map[k]=(map[k]||0)+1});if(Object.values(map).some(v=>v>1))conflicts.push(p.name)});
+  active.forEach(p=>{const map={};allocated.filter(c=>c.ownerId===p.id).forEach(c=>{const k=c.slot.day+c.slot.hour;map[k]=(map[k]||0)+1});state.tasks.filter(t=>t.ownerId===p.id&&t.slot).forEach(t=>{const k=t.slot.day+t.slot.hour;map[k]=(map[k]||0)+1});if(Object.values(map).some(v=>v>1))conflicts.push(p.name)});
   if(conflicts.length)ins.push({t:'danger',h:`<b>Conflito de horário:</b> ${conflicts.join(', ')} tem dois itens no mesmo horário.`});
   active.forEach(p=>{const occ=personOccupation(p);if(occ>100)ins.push({t:'danger',h:`<b>${esc(p.name)}</b> em ${occ.toFixed(0)}% — acima da capacidade. Vira hora extra ou atraso.`});else if(occ>85)ins.push({t:'warn',h:`<b>${esc(p.name)}</b> em ${occ.toFixed(0)}% — zona de risco.`})});
-  if(pending.length)ins.push({t:'info',h:`${pending.length} cliente(s) não alocado(s). Não entram no resultado até irem pra grade.`});
+  if(pending.length)ins.push({t:'info',h:`${pending.length} cliente(s) sem horário na grade. A receita já conta; falta reservar a agenda do consultor.`});
   const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
   if(active.length&&avgOcc<=70&&allocated.length)ins.push({t:'ok',h:`Ocupação média ${avgOcc.toFixed(0)}% — folga saudável pra crescer sem contratar.`});
   const cons=active.filter(p=>!p.isIntern);
@@ -1093,55 +1384,65 @@ function renderInsights(){
   box.innerHTML=ins.map(i=>`<div class="insight ins-${i.t}">${i.h}</div>`).join('');
 }
 
-/* ============ CUSTOS ============ */
+/* ============ RESULTADO ============ */
 function renderCosts(){
-  const fph=fixedPerHour();
-  const allocated=state.clients.filter(c=>c.slot);
-  const activeNow=allocated.filter(c=>clientActiveNow(c));
-  const receitaComp=activeNow.reduce((s,c)=>s+clientAccrualNow(c),0);
-  const receitaCaixa=allocated.reduce((s,c)=>s+clientCashNow(c),0);
-  const addCosts=allocated.reduce((s,c)=>s+clientAddCostNow(c),0);
-  const custoPessoas=state.people.filter(p=>p.active).reduce((s,p)=>s+personMonthlyCost(p),0);
-  const custoFixos=fixedTotal();
-  const resultado=receitaComp-custoPessoas-custoFixos-addCosts;
-  const resultadoCaixa=receitaCaixa-custoPessoas-custoFixos-addCosts;
+  const fph=fixedPerHour(),now=nowMI();
+  const live=state.clients.filter(clientActiveNow);
+  const adv=live.filter(c=>c.type==='advisor'&&!c.permuta);
+  const mrr=adv.reduce((s,c)=>s+clientFee(c),0);
+  const paused=state.clients.filter(c=>c.type==='advisor'&&!c.permuta&&clientPausedAt(c,now));
+  const projs=state.clients.filter(c=>c.type==='projeto');
+  const parcelas=projs.reduce((s,c)=>s+clientCashNow(c),0),nParc=projs.filter(c=>clientCashNow(c)>0).length;
+  const receitaComp=state.clients.reduce((s,c)=>s+clientAccrualNow(c),0);
+  const receitaCaixa=state.clients.reduce((s,c)=>s+clientCashNow(c),0);
+  const addCosts=state.clients.reduce((s,c)=>s+clientAddCostNow(c),0);
+  const bd=costBreakdownNow(),custoFixos=fixedTotal();
+  const contrib=receitaComp-bd.direct-addCosts,contribPct=receitaComp>0?contrib/receitaComp*100:0;
+  const resultado=contrib-bd.mgmt-bd.intr-bd.strat-bd.idle-custoFixos;
+  const resultadoCaixa=receitaCaixa-bd.total-custoFixos-addCosts;
   const margemPct=receitaComp>0?(resultado/receitaComp)*100:0;
   document.getElementById('cost-strip').innerHTML=`
+    <div class="strip-card"><div class="strip-num n-blue">${brl(mrr)}</div><div class="strip-lbl">MRR Advisor · ${adv.length} ativos</div>${paused.length?`<div class="k-sub">+ ${brl0(paused.reduce((s,c)=>s+clientFee(c),0))} em pausa (${paused.length})</div>`:''}</div>
+    <div class="strip-card"><div class="strip-num n-blue">${brl(parcelas)}</div><div class="strip-lbl">Parcelas de projetos no mês · ${nParc}</div></div>
     <div class="strip-card"><div class="strip-num n-green">${brl(receitaComp)}</div><div class="strip-lbl">Receita compet./mês</div></div>
-    <div class="strip-card"><div class="strip-num n-blue">${brl(receitaCaixa)}</div><div class="strip-lbl">Receita caixa/mês</div></div>
-    <div class="strip-card"><div class="strip-num n-navy">${brl(custoPessoas)}</div><div class="strip-lbl">Pessoas/mês</div></div>
-    <div class="strip-card"><div class="strip-num n-navy">${brl(custoFixos+addCosts)}</div><div class="strip-lbl">Fixo + adic./mês</div></div>
-    <div class="strip-card"><div class="strip-num ${resultado>=0?'n-green':'n-red'}">${brl(resultado)}</div><div class="strip-lbl">Result. compet./mês</div></div>
-    <div class="strip-card"><div class="strip-num ${margemPct>=0?'n-blue':'n-red'}">${num2(margemPct)}%</div><div class="strip-lbl">Margem</div></div>`;
+    <div class="strip-card"><div class="strip-num ${contrib>=0?'n-green':'n-red'}">${brl(contrib)}</div><div class="strip-lbl">Margem de contribuição · ${num1(contribPct)}%</div></div>
+    <div class="strip-card"><div class="strip-num ${resultado>=0?'n-green':'n-red'}">${brl(resultado)}</div><div class="strip-lbl">Resultado/mês · ${num1(margemPct)}%</div></div>`;
+  const line=(l,v,sign)=>`<div class="bd-line"><span>${l}</span><span class="${sign}">${sign==='plus'?'+':'−'} ${brl(Math.abs(v))}</span></div>`;
   document.getElementById('result-box').innerHTML=`
-    <div class="lbl">Resultado do mês atual (${miToLabel(nowMI())})</div><div class="num">${brl(resultado)}</div>
+    <div class="lbl">Resultado do mês atual (${miToLabel(now)})</div><div class="num">${brl(resultado)}</div>
     <div class="sub">Competência · margem ${num2(margemPct)}% · caixa do mês ${brl(resultadoCaixa)}</div>
     <div class="breakdown">
-      <div class="bd-line"><span>Receita (competência)</span><span class="plus">+ ${brl(receitaComp)}</span></div>
-      <div class="bd-line"><span>Custo das pessoas</span><span class="minus">− ${brl(custoPessoas)}</span></div>
-      <div class="bd-line"><span>Custos fixos</span><span class="minus">− ${brl(custoFixos)}</span></div>
-      <div class="bd-line"><span>Custos adicionais (clientes)</span><span class="minus">− ${brl(addCosts)}</span></div>
+      ${line('Receita (competência)',receitaComp,'plus')}
+      ${line('Custo direto da equipe nos clientes',bd.direct,'minus')}
+      ${line('Custos adicionais dos clientes',addCosts,'minus')}
+      <div class="bd-line total" style="font-size:12px"><span>Margem de contribuição</span><span class="${contrib>=0?'plus':'minus'}">${brl(contrib)}</span></div>
+      ${line('Gestão',bd.mgmt,'minus')}
+      ${bd.intr>0?line('Afazeres internos',bd.intr,'minus'):''}
+      ${bd.strat>0?line('Estratégico dos sócios',bd.strat,'minus'):''}
+      ${bd.idle>=0?line('Capacidade não alocada',bd.idle,'minus'):line('Sobrecarga (horas além da jornada)',bd.idle,'plus')}
+      ${line('Custos fixos',custoFixos,'minus')}
       <div class="bd-line total"><span>Resultado</span><span class="${resultado>=0?'plus':'minus'}">${brl(resultado)}</span></div>
     </div>`;
-  const teamH=teamMonthHours();let usedH=0;
-  state.people.filter(p=>p.active).forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
-  activeNow.forEach(c=>usedH+=clientMonthHours(c));
-  state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
-  const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;const usePct=teamH>0?(usedH/teamH)*100:0;
+  const parts=[['Clientes',bd.direct,'#3a9d68'],['Gestão',bd.mgmt,'var(--med-blue)'],['Interno',bd.intr,'var(--orange)'],['Estratégico',bd.strat,'var(--internal)'],['Não alocado',Math.max(0,bd.idle),'var(--light-gray)']];
+  const tot=Math.max(1,parts.reduce((s,x)=>s+x[1],0));
   document.getElementById('idle-box').innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-      <div><div class="strip-num n-red" style="font-size:26px">${brl(idleCost)}</div><div class="strip-lbl">custo da hora ociosa/mês</div></div>
-      <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--dark-blue)">${num2(idleH)}h</div><div class="strip-lbl">horas paradas/mês</div></div>
+      <div><div class="strip-num ${bd.idle>0?'n-red':'n-green'}" style="font-size:26px">${brl(Math.abs(bd.idle))}</div><div class="strip-lbl">${bd.idle>=0?'pagos em horas não alocadas/mês':'de sobrecarga/mês'}</div></div>
+      <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--dark-blue)">${brl(bd.total)}</div><div class="strip-lbl">custo da equipe/mês</div></div>
     </div>
-    <div class="occ-track" style="background:var(--light-gray);height:20px"><div class="occ-seg" style="width:${Math.min(100,usePct)}%;background:var(--dark-blue)"></div></div>
-    <p class="help">${num2(usePct)}% da capacidade usada neste mês. As ${num2(idleH)}h restantes são pagas sem gerar receita — espaço pra vender mais.</p>`;
-  const tb1=document.getElementById('cost-people-tbody');const ap=state.people.filter(p=>p.active);
-  tb1.innerHTML=ap.length?ap.map(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);const cph=mh>0?cost/mh:0;
-    return `<tr><td><b>${esc(p.name)}</b></td><td class="mono-num">${brl(p.salary||0)}</td><td class="mono-num">${brl(p.encargos||0)}</td><td class="mono-num">${brl(onbMonthly(p))}</td><td class="mono-num"><b>${brl(cost)}</b></td><td class="mono-num">${num2(mh)}</td><td class="mono-num"><b>${brl(cph)}</b></td></tr>`}).join(''):`<tr><td colspan="7" class="empty-state">Nenhuma pessoa ativa.</td></tr>`;
+    <div class="bar-track" style="height:22px;display:flex">${parts.map(x=>x[1]>0?`<div style="width:${x[1]/tot*100}%;background:${x[2]}" title="${x[0]}: ${brl(x[1])}"></div>`:'').join('')}</div>
+    <div class="legend-list" style="margin-top:12px">${parts.filter(x=>x[1]>0).map(x=>`<div class="legend-item"><span class="ld" style="background:${x[2]}"></span>${x[0]} <b>${brl(x[1])}</b></div>`).join('')}</div>
+    <p class="help">O que não está alocado é custo pago sem gerar receita: espaço para vender mais antes de contratar.</p>`;
+  const rows=live.map(c=>{const mh=clientMonthHours(c),rev=clientAccrualNow(c),dir=clientDirectCost(c),adic=clientAddCostNow(c),marg=rev-dir-adic;
+    return {c,mh,rev,dir,adic,marg,pct:rev>0?marg/rev*100:null,afterFix:marg-mh*fph}}).sort((a,b)=>b.marg-a.marg);
   const tb2=document.getElementById('cost-client-tbody');
-  tb2.innerHTML=activeNow.length?activeNow.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph);const adic=clientAddCostNow(c);const rev=clientAccrualNow(c);const marg=rev-custo-adic;const mp=rev>0?(marg/rev)*100:0;
-    const revCell=c.permuta?`<span style="color:var(--gray)">${brl(clientFee(c))}</span><span class="permuta-tag">PERMUTA</span>`:brl(rev);
-    return `<tr><td><b>${esc(c.name)}</b></td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${owner?esc(owner.name):'—'}</td><td class="mono-num">${num2(mh)}</td><td class="mono-num">${brl(custo)}</td><td class="mono-num">${brl(adic)}</td><td class="mono-num">${revCell}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${brl(marg)}</td><td class="mono-num ${marg>=0?'margin-pos':'margin-neg'}">${c.permuta?'—':num2(mp)+'%'}</td></tr>`}).join(''):`<tr><td colspan="9" class="empty-state"><b>Nenhum cliente ativo neste mês</b>Aloque na Grade e confira as datas de início.</td></tr>`;
+  if(!rows.length){tb2.innerHTML=`<tr><td colspan="10" class="empty-state"><b>Nenhum cliente ativo neste mês</b>Confira status e datas no Cadastro.</td></tr>`;return}
+  const sum=k=>rows.reduce((s,r)=>s+r[k],0);
+  tb2.innerHTML=rows.map(r=>{const c=r.c,o=personById(c.ownerId);
+    const team=`${o?avatar(o,true):''}${(c.interns||[]).map(i=>avatar(personById(i.personId),true)).join('')}`;
+    const revCell=c.permuta?`<span style="color:var(--gray)">${brl(0)}</span><span class="permuta-tag">PERMUTA</span>`:brl(r.rev);
+    return `<tr><td><b>${esc(c.name)}</b></td><td><span class="type-tag ${typeClass(c.type)}">${esc(clientKindLabel(c))}</span></td><td style="white-space:nowrap">${team||'—'}</td><td class="mono-num">${num1(r.mh)}</td><td class="mono-num">${revCell}</td><td class="mono-num">${brl(r.dir)}</td><td class="mono-num">${brl(r.adic)}</td><td class="mono-num ${r.marg>=0?'margin-pos':'margin-neg'}">${brl(r.marg)}</td><td class="mono-num ${r.marg>=0?'margin-pos':'margin-neg'}">${r.pct==null?'—':num1(r.pct)+'%'}</td><td class="mono-num ${r.afterFix>=0?'':'margin-neg'}">${brl(r.afterFix)}</td></tr>`}).join('')+
+    `<tr style="font-weight:800"><td>Total</td><td></td><td></td><td class="mono-num">${num1(sum('mh'))}</td><td class="mono-num">${brl(sum('rev'))}</td><td class="mono-num">${brl(sum('dir'))}</td><td class="mono-num">${brl(sum('adic'))}</td><td class="mono-num">${brl(sum('marg'))}</td><td class="mono-num">${sum('rev')>0?num1(sum('marg')/sum('rev')*100)+'%':'—'}</td><td class="mono-num">${brl(sum('afterFix'))}</td></tr>`;
 }
 
 /* ============ PROJECAO ============ */
@@ -1158,10 +1459,9 @@ function renderScenarioEditor(){
     const s=state.projection.scenarios[sc.k];
     return `<div class="scen-col" style="border-top:3px solid ${sc.color}">
       <div class="scen-name">${sc.label}</div>
-      <div class="row3">
-        <div class="field"><label>Adv/mês</label><input type="number" min="0" step="1" value="${s.newClients.advisor||0}" onchange="updScen('${sc.k}','newClients','advisor',+this.value)"></div>
-        <div class="field"><label>M&A/mês</label><input type="number" min="0" step="1" value="${s.newClients.ma||0}" onchange="updScen('${sc.k}','newClients','ma',+this.value)"></div>
-        <div class="field"><label>Pont/mês</label><input type="number" min="0" step="1" value="${s.newClients.pontual||0}" onchange="updScen('${sc.k}','newClients','pontual',+this.value)"></div>
+      <div class="row2">
+        <div class="field"><label>Advisors novos/mês</label><input type="number" min="0" step="1" value="${s.newClients.advisor||0}" onchange="updScen('${sc.k}','newClients','advisor',+this.value)"></div>
+        <div class="field"><label>Projetos novos/mês</label><input type="number" min="0" step="1" value="${s.newClients.projeto||0}" onchange="updScen('${sc.k}','newClients','projeto',+this.value)"></div>
       </div>
       <div class="row3">
         <div class="field"><label>Ramp (m)</label><input type="number" min="1" step="1" value="${s.ramp}" onchange="updScen('${sc.k}','ramp',null,+this.value)"></div>
@@ -1196,19 +1496,20 @@ function setActiveScenario(k){state.projection.activeScenario=k;save();renderPro
 function avgHoursType(t){
   const cs=state.clients.filter(c=>c.type===t);
   if(cs.length)return cs.reduce((s,c)=>s+clientMonthHours(c),0)/cs.length;
-  const d={advisor:[1,3],ma:[1.5,6],pontual:[1,4]}[t]||[1,3];
+  const d={advisor:[1,3],projeto:[1,5]}[t]||[1,3];
   return (d[0]*(state.params.attendance/100)+d[1])*state.params.weeks;
 }
 // simula um cenário mês a mês: base pelos contratos reais (datas/durações) + pipeline com ramp/churn
 function simulate(scenKey){
   const pj=state.projection;const s=pj.scenarios[scenKey];const months=[];
-  const allocated=state.clients.filter(c=>c.slot);
+  const allocated=state.clients; // datas e status de cada contrato decidem quando ele conta
   const basePeople=state.people.filter(p=>p.active);
   const basePeopleCost=basePeople.reduce((sum,p)=>sum+personMonthlyCost(p),0);
-  const baseCapacity=basePeople.reduce((sum,p)=>sum+personMonthHours(p),0);
-  const taskDemand=state.tasks.filter(t=>t.slot).reduce((a,t)=>a+taskWeekHours(t)*state.params.weeks,0);
-  const newRevPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*(state.fees[t]||0),0);
-  const newDemPerMonth=['advisor','ma','pontual'].reduce((a,t)=>a+(s.newClients[t]||0)*avgHoursType(t),0);
+  const baseCapacity=basePeople.reduce((sum,p)=>sum+personCapWeekHours(p)*state.params.weeks,0);
+  // demanda fixa: afazeres internos + gestão (mesma conta da ocupação na Grade)
+  const taskDemand=state.tasks.filter(t=>t.slot).reduce((a,t)=>a+taskWeekHours(t)*state.params.weeks,0)+basePeople.reduce((sum,p)=>sum+personMgmtWeekHours(p)*state.params.weeks,0);
+  const newRevPerMonth=['advisor','projeto'].reduce((a,t)=>a+(s.newClients[t]||0)*(state.fees[t]||0),0);
+  const newDemPerMonth=['advisor','projeto'].reduce((a,t)=>a+(s.newClients[t]||0)*avgHoursType(t),0);
   const churn=(s.churn||0)/100;const ramp=Math.max(1,s.ramp||1);
   const origin=nowMI();
   let cash=0,estouroMonth=null,paybackMonth=null;
@@ -1289,7 +1590,7 @@ function renderProjResults(){
 }
 
 /* ============ WATCH LIST ============ */
-function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch.on=!c.watch.on;save();renderClients();updateBadges();if(document.getElementById('page-watch').classList.contains('active'))renderWatch()}
+function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch.on=!c.watch.on;save();afterClientEdit(!!editingClient);if(document.getElementById('page-watch').classList.contains('active'))renderWatch()}
 function updWatch(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch[k]=v;save();if(k==='level')renderWatch()}
 function renderWatch(){
   const grid=document.getElementById('watch-grid');const empty=document.getElementById('watch-empty');
@@ -1312,17 +1613,17 @@ function bar(label,fillPct,color,valText){
   return `<div class="bar-row"><div class="bar-lbl" title="${label}">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,Math.min(100,fillPct))}%;background:${color}"></div></div><div class="bar-val">${valText}</div></div>`;
 }
 function renderPainel(){
-  const allocated=state.clients.filter(c=>c.slot);const active=state.people.filter(p=>p.active);
-  const activeNow=allocated.filter(c=>clientActiveNow(c));
-  const receita=activeNow.reduce((s,c)=>s+clientAccrualNow(c),0);
+  const active=state.people.filter(p=>p.active);
+  const activeNow=state.clients.filter(c=>clientActiveNow(c));const allocated=activeNow;
+  const receita=state.clients.reduce((s,c)=>s+clientAccrualNow(c),0);
   const custoPessoas=active.reduce((s,p)=>s+personMonthlyCost(p),0);
   const custoFixos=fixedTotal();const custoTotal=custoPessoas+custoFixos;const resultado=receita-custoTotal;
   const margemPct=receita>0?(resultado/receita)*100:0;
   const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
   const teamH=teamMonthHours();let usedH=0;
-  active.forEach(p=>{if(p.hasManagement)usedH+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
+  active.forEach(p=>usedH+=personMgmtWeekHours(p)*state.params.weeks);
   activeNow.forEach(c=>usedH+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
-  const idleH=Math.max(0,teamH-usedH);const avgCH=teamH>0?custoPessoas/teamH:0;const idleCost=idleH*avgCH;
+  const idleH=Math.max(0,teamH-usedH);const idleCost=Math.max(0,costBreakdownNow().idle);
   const watchCount=state.clients.filter(c=>c.watch&&c.watch.on).length;
   const consCount=active.filter(p=>!p.isIntern).length;const ratio=consCount?allocated.length/consCount:0;
 
@@ -1331,19 +1632,18 @@ function renderPainel(){
     ${kpi(brl(custoTotal),'Custo total/mês','n-navy',brl(custoPessoas)+' pessoas')}
     ${kpi(brl(resultado),'Resultado/mês',resultado>=0?'n-green':'n-red',num2(margemPct)+'% de margem')}
     ${kpi(num2(avgOcc)+'%','Ocupação média',avgOcc>85?'n-red':avgOcc>70?'n-orange':'n-green')}
-    ${kpi(allocated.length+'/'+state.clients.length,'Clientes alocados','n-blue')}
+    ${kpi(activeNow.length+'','Clientes ativos','n-blue',activeNow.filter(c=>c.type==='advisor').length+' advisors · '+activeNow.filter(c=>c.type==='projeto').length+' projetos')}
     ${kpi(active.length+'','Pessoas ativas','n-navy',consCount+' consultores')}
     ${kpi(brl(idleCost),'Custo ociosidade','n-red',num2(idleH)+'h paradas')}
     ${kpi(watchCount+'','Em atenção',watchCount>0?'n-orange':'n-green')}
     ${kpi(num2(ratio),'Clientes/consultor',ratio>8?'n-red':'n-blue')}`;
 
   // receita por tipo
-  const revByType={advisor:0,ma:0,pontual:0};activeNow.forEach(c=>revByType[c.type]+=clientAccrualNow(c));
-  const maxRev=Math.max(1,revByType.advisor,revByType.ma,revByType.pontual);
+  const revByType={advisor:0,projeto:0};state.clients.forEach(c=>revByType[c.type]+=clientAccrualNow(c));
+  const maxRev=Math.max(1,revByType.advisor,revByType.projeto);
   document.getElementById('chart-revtype').innerHTML=
     bar('Advisor',revByType.advisor/maxRev*100,'var(--dark-blue)',brl(revByType.advisor))+
-    bar('M&A',revByType.ma/maxRev*100,'var(--red)',brl(revByType.ma))+
-    bar('Pontual',revByType.pontual/maxRev*100,'var(--orange)',brl(revByType.pontual));
+    bar('Projeto',revByType.projeto/maxRev*100,'var(--orange)',brl(revByType.projeto));
 
   // ocupação por pessoa
   document.getElementById('chart-occ').innerHTML=active.length?active.map(p=>{const o=personOccupation(p);const col=o>100?'var(--danger)':o>85?'var(--orange)':'var(--green)';return bar(esc(p.name),o,col,num2(o)+'%')}).join(''):'<div class="onb-empty">Sem pessoas ativas.</div>';
@@ -1362,7 +1662,7 @@ function renderPainel(){
     </div>`;
 
   // horas da equipe (stacked)
-  let hMgmt=0,hCli=0,hInt=0;active.forEach(p=>{if(p.hasManagement)hMgmt+=personWeekHours(p)*(p.mgmtSplit/100)*state.params.weeks});
+  let hMgmt=0,hCli=0,hInt=0;active.forEach(p=>hMgmt+=personMgmtWeekHours(p)*state.params.weeks);
   activeNow.forEach(c=>hCli+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>hInt+=taskWeekHours(t)*state.params.weeks);
   const totH=Math.max(1,teamH);const wg=x=>x/totH*100;
   document.getElementById('chart-hours').innerHTML=`
@@ -1380,16 +1680,16 @@ function renderPainel(){
 
   // margem por cliente
   const fph=fixedPerHour();
-  const rows=activeNow.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=mh*(oCPH+fph)+clientAddCostNow(c);return {name:c.name+(c.permuta?' ⇄':''),marg:clientAccrualNow(c)-custo,type:c.type}}).sort((a,b)=>b.marg-a.marg);
+  const rows=activeNow.map(c=>({name:c.name+(c.permuta?' ⇄':''),marg:clientAccrualNow(c)-clientDirectCost(c)-clientAddCostNow(c),type:c.type})).sort((a,b)=>b.marg-a.marg);
   const maxM=Math.max(1,...rows.map(r=>Math.abs(r.marg)));
-  document.getElementById('chart-margin').innerHTML=rows.length?rows.map(r=>bar(esc(r.name),Math.abs(r.marg)/maxM*100,r.marg>=0?'var(--green)':'var(--danger)',brl(r.marg))).join(''):'<div class="onb-empty">Nenhum cliente alocado ainda.</div>';
+  document.getElementById('chart-margin').innerHTML=(rows.length?'<p class="help" style="margin:-8px 0 10px">Margem de contribuição (sem rateio do fixo).</p>':'')+(rows.length?rows.map(r=>bar(esc(r.name),Math.abs(r.marg)/maxM*100,r.marg>=0?'var(--green)':'var(--danger)',brl(r.marg))).join(''):'<div class="onb-empty">Nenhum cliente ativo.</div>');
   renderGantt();renderTenure();
 }
 function renderGantt(){
   const box=document.getElementById('gantt');
   const active=state.people.filter(p=>p.active);
-  const allocated=state.clients.filter(c=>c.slot);
-  if(!allocated.length){box.innerHTML='<div class="onb-empty">Aloque clientes na Grade e informe as datas de início para ver a linha do tempo.</div>';return}
+  const allocated=state.clients.filter(c=>c.status==='ativo'||c.status==='pausado');
+  if(!allocated.length){box.innerHTML='<div class="onb-empty">Nenhum cliente ativo para mostrar na linha do tempo.</div>';return}
   // janela: do menor início ao maior fim (finitos), com piso no mês atual e teto no horizonte
   const origin=nowMI();
   let minMI=origin,maxMI=origin+11;
@@ -1406,7 +1706,7 @@ function renderGantt(){
       const start=clientStartMI(c);const end=clientEndMI(c);
       const s0=Math.max(minMI,start);const e0=isFinite(end)?Math.min(maxMI+1,end):maxMI+1;
       const left=((s0-minMI)/span)*100;const width=Math.max(2,((e0-s0)/span)*100);
-      const col=c.type==='ma'?'var(--red)':c.type==='pontual'?'var(--orange)':(c.subtype==='estruturacao'?'var(--med-blue)':'var(--dark-blue)');
+      const col=c.type==='projeto'?'var(--orange)':'var(--dark-blue)';
       const dur=clientDuration(c);const durTxt=dur==null?'contínuo':dur+'m';
       const open=isFinite(end)?'':' gantt-open';
       rowsHtml+=`<div class="gantt-row"><div class="gantt-name" title="${esc(c.name)}">${esc(c.name)}${c.permuta?' ⇄':''}</div><div class="gantt-track"><div class="gantt-bar${open}" style="left:${left}%;width:${width}%;background:${col}" title="${esc(c.name)} · ${miToLabel(start)} · ${durTxt}">${durTxt}</div></div></div>`;
@@ -1423,12 +1723,10 @@ function renderTenure(){
     const t=clientTenure(c);const d=clientDuration(c);const lr=clientLifetimeRevenue(c);
     const durTxt=d==null?'contínuo':d+' meses';
     const tenureTxt=t.ongoing?(t.elapsed+'m (em curso)'):(t.elapsed+'/'+t.total+'m');
-    let status='',scol='';
-    if(estruturacaoExcedida(c)){status='Excedendo prazo';scol='color:var(--orange);font-weight:700'}
-    else if(!clientActiveNow(c)&&d!=null&&nowMI()>=clientEndMI(c)){status='Encerrado';scol='color:var(--gray)'}
-    else if(clientActiveNow(c)){status='Ativo';scol='color:var(--green);font-weight:700'}
-    else{status='Futuro';scol='color:var(--med-blue)'}
-    return `<tr><td><b>${esc(c.name)}</b>${c.permuta?' <span class="permuta-tag">PERMUTA</span>':''}</td><td><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span></td><td>${c.start?miToLabel(clientStartMI(c)):'—'}</td><td>${durTxt}</td><td>${tenureTxt}</td><td class="mono-num">${brl(lr.value)}${lr.capped?'*':''}</td><td style="${scol}">${status}</td></tr>`;
+    let status=statusPill(c),scol='';
+    if(clientOverdue(c)){status='Passou do fim previsto';scol='color:var(--orange);font-weight:700'}
+    else if(c.status==='ativo'&&clientStartMI(c)>nowMI()){status='Futuro';scol='color:var(--med-blue)'}
+    return `<tr><td><b>${esc(c.name)}</b>${c.permuta?' <span class="permuta-tag">PERMUTA</span>':''}</td><td><span class="type-tag ${typeClass(c.type)}">${esc(clientKindLabel(c))}</span></td><td>${c.start?miToLabel(clientStartMI(c)):'—'}</td><td>${durTxt}</td><td>${tenureTxt}</td><td class="mono-num">${brl(lr.value)}${lr.capped?'*':''}</td><td style="${scol}">${status}</td></tr>`;
   }).join('')+`<tr><td colspan="7" style="font-size:10px;color:var(--gray);border:none">* recorrência sem fim: receita estimada em 60 meses.</td></tr>`;
 }
 function kpi(num,lbl,cls,sub){return `<div class="kpi"><div class="k-num ${cls||''}">${num}</div><div class="k-lbl">${lbl}</div>${sub?`<div class="k-sub">${sub}</div>`:''}</div>`}
@@ -1438,16 +1736,18 @@ function exportJSON(){dl(new Blob([JSON.stringify(state,null,2)],{type:'applicat
 function importJSON(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(!o.people||!o.clients)throw 0;state=o;if(!state.params)state.params={attendance:75,weeks:4.33,lunch:1};normalize();save();renderAll();switchTab('cadastro');alert('Backup restaurado.')}catch(err){alert('Arquivo inválido.')}};r.readAsText(file);ev.target.value=''}
 function exportCSV(){
   const fph=fixedPerHour();
-  const rows=[['Cliente','Tipo','Frequencia','Consultor','Alocado','Dia','Hora','Horas/mes','Fee','Custo de servir','Margem R$','Margem %','Watch','Nivel','Motivo']];
-  state.clients.forEach(c=>{const owner=state.people.find(p=>p.id===c.ownerId);const mh=clientMonthHours(c);const oCPH=owner?(personMonthHours(owner)>0?personMonthlyCost(owner)/personMonthHours(owner):0):0;const custo=c.slot?mh*(oCPH+fph):0;const fee=clientFee(c);const marg=c.slot?fee-custo:0;const mp=fee>0&&c.slot?(marg/fee)*100:0;
-    rows.push([c.name,typeLabel(c.type),c.freq,owner?owner.name:'',c.slot?'Sim':'Nao',c.slot?c.slot.day:'',c.slot?c.slot.hour+':00':'',num2(mh),num2(fee),num2(custo),num2(marg),num2(mp),c.watch&&c.watch.on?'Sim':'',c.watch?c.watch.level:'',c.watch?c.watch.reason:''])});
-  rows.push([]);rows.push(['Pessoa','Papel','Salario','Encargos','Onboarding/mes','Custo mensal','Horas/mes','Custo/hora']);
-  state.people.filter(p=>p.active).forEach(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);rows.push([p.name,p.isIntern?'Estagiario':'Consultor',num2(p.salary||0),num2(p.encargos||0),num2(onbMonthly(p)),num2(cost),num2(mh),num2(mh>0?cost/mh:0)])});
-  rows.push([]);rows.push(['Afazer interno','Consultor','Horas/sem','Alocado']);
-  state.tasks.forEach(t=>{const owner=state.people.find(p=>p.id===t.ownerId);rows.push([t.name,owner?owner.name:'',num2(t.hours),t.slot?'Sim':'Nao'])});
+  const rows=[['Cliente','Tipo','Tipo de projeto','Status','Inicio','Fim previsto','Saida/conclusao','Motivo churn','Consultor','Estagiarios (h/sem)','Permuta','Fee mensal','Valor total projeto','Parcelas','Horas/mes','Receita comp. mes','Custo direto','Custo adic.','Margem contribuicao','Margem %','Apos rateio fixo','Watch','Nivel','Motivo watch']];
+  state.clients.forEach(c=>{const owner=personById(c.ownerId);const act=clientActiveNow(c);const mh=clientMonthHours(c);const rev=clientAccrualNow(c);const dir=act?clientDirectCost(c):0;const adic=clientAddCostNow(c);const marg=rev-dir-adic;
+    const est=(c.interns||[]).map(i=>{const p=personById(i.personId);return p?p.name+' '+num1(i.hours)+'h':''}).filter(Boolean).join(', ');
+    rows.push([c.name,typeLabel(c.type),c.projectKind||'',CLIENT_STATUS[c.status],c.start||'',c.end||'',c.endedAt||'',c.status==='encerrado'?(CHURN_REASONS[c.churnReason]||'')+(c.churnNote?' - '+c.churnNote:''):'',owner?owner.name:'',est,c.permuta?'Sim':'',c.type==='advisor'?num2(clientFee(c)):'',c.type==='projeto'?num2(+c.totalValue||0):'',c.type==='projeto'?c.parcelas:'',num2(mh),num2(rev),num2(dir),num2(adic),act?num2(marg):'',act&&rev>0?num2(marg/rev*100):'',act?num2(marg-mh*fph):'',c.watch&&c.watch.on?'Sim':'',c.watch?c.watch.level:'',c.watch?c.watch.reason:''])});
+  rows.push([]);rows.push(['Pessoa','Vinculo','Remuneracao','Encargos %','Encargos R$','Beneficios','Outros','Onboarding/mes','Custo mensal','Horas/mes','Custo-hora','Gestao %','Estrategico %']);
+  state.people.filter(p=>p.active).forEach(p=>{const cost=personMonthlyCost(p);const mh=personMonthHours(p);const sp=personSplit(p);rows.push([p.name,CONTRACTS[p.contract],num2(p.salary||0),num2(p.encargosPct||0),num2(personEncargos(p)),num2(p.benefits||0),num2(p.otherCosts||0),num2(onbMonthly(p)),num2(cost),num2(mh),num2(mh>0?cost/mh:0),num2(sp.gestao*100),num2(sp.estr*100)])});
+  rows.push([]);rows.push(['Afazer interno','Responsavel','Horas/sem','Alocado']);
+  state.tasks.forEach(t=>{const owner=personById(t.ownerId);rows.push([t.name,owner?owner.name:'',num2(t.hours),t.slot?'Sim':'Nao'])});
   const csv='\ufeff'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\r\n');
   dl(new Blob([csv],{type:'text/csv;charset=utf-8'}),'austcapital_simulador.csv');
 }
+
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function resetAll(){if(!confirm('Zerar TODOS os dados na nuvem? Faça um Backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
 
@@ -1456,10 +1756,12 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function renderAll(){
   renderPeople();renderClients();renderFixed();renderFeesInputs();renderParams();updateBadges();
   if(document.getElementById('page-alocacao').classList.contains('active'))renderAllocation();
+  if(document.getElementById('page-custohora').classList.contains('active'))renderCustoHora();
   if(document.getElementById('page-custos').classList.contains('active'))renderCosts();
   if(document.getElementById('page-projecao').classList.contains('active'))renderProjection();
   if(document.getElementById('page-watch').classList.contains('active'))renderWatch();
   if(document.getElementById('page-painel').classList.contains('active'))renderPainel();
+  if(editingClient)renderDrawer();
 }
 
 /* ============ INIT ============ */
