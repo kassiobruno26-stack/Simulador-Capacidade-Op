@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="env.js"></script>
-<script src="coo.js"></script>
+<script src="coo.js?v=3"></script>
 <style>
 :root{
   /* Padrão Aust Capital: cores do logo oficial (azul acinzentado, bege, vermelho) + neutros quentes.
@@ -638,6 +638,26 @@ body.env-test .env-badge{display:inline-block}
 .op-ab .op-pr>.op-acts{grid-column:2;justify-content:flex-start}
 .op-note{padding:12px 16px;border-radius:8px;background:rgba(168,106,18,.08);border:1px solid rgba(168,106,18,.25);font-size:12.5px;margin-bottom:16px;line-height:1.5}
 .dr-op .tag-crit,.dr-op .tag-warn,.dr-op .tag-ok{margin-right:4px}
+
+/* indicadores (números grandes) */
+.ind-grupo{margin-bottom:22px}
+.bn-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.bn{background:#fff;border:1px solid var(--border);border-radius:8px;padding:15px 16px 13px 18px;position:relative;overflow:hidden;min-width:0}
+.bn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--navy)}
+.bn-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray)}
+.bn-v{font-family:var(--display);font-size:34px;font-weight:700;line-height:1.05;margin-top:6px;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bn-v small{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--gray);margin-left:3px}
+.bn-v.alerta{color:var(--danger)}
+.bn-d{margin-top:6px;font-size:11.5px;font-weight:700;line-height:1.35}
+.bn-d.bom{color:var(--green)}.bn-d.ruim{color:var(--danger)}.bn-d.neutro{color:var(--gray)}
+.bn-d span{font-weight:500;color:var(--gray)}
+.bn-s{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.35}
+.ind-pick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.ind-nota{font-size:12px;color:var(--gray);background:#fff;border:1px dashed var(--line-strong);border-radius:8px;padding:12px 14px;margin-top:12px}
+.ind-tbl{overflow-x:auto;margin-top:16px}
+.ind-tbl td,.ind-tbl th{white-space:nowrap}
+@media(max-width:1000px){.bn-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.bn-v{font-size:27px}.bn{padding:13px 12px 11px 15px}}
 @media(max-width:1000px){
   .op-grid{grid-template-columns:1fr}
   .op-prow{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
@@ -709,7 +729,7 @@ body.env-test .env-badge{display:inline-block}
   <button class="tab" data-tab="churn" onclick="switchTab('churn')">8 · Churn</button>
   <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">9 · Projeção</button>
   <button class="tab" data-tab="watch" onclick="switchTab('watch')">10 · Watch List <span class="badge" id="badge-watch">0</span></button>
-  <button class="tab" data-tab="painel" onclick="switchTab('painel')">11 · Painel</button>
+  <button class="tab" data-tab="painel" onclick="switchTab('painel')">11 · Indicadores</button>
 </div>
 
 <!-- ABA: MEU DIA -->
@@ -987,10 +1007,12 @@ body.env-test .env-badge{display:inline-block}
   </div>
 </div>
 
-<!-- ABA 6: PAINEL -->
+<!-- ABA 11: INDICADORES (inclui o antigo Painel) -->
 <div class="page" id="page-painel">
-  <div class="page-head"><h1>Painel</h1><p>Visão consolidada da operação.</p></div>
-  <div class="kpi-grid" id="kpi-grid"></div>
+  <div class="page-head"><h1>Indicadores</h1><p id="ind-sub">Números da operação no mês, comparados com o mês anterior.</p></div>
+  <div id="ind-geral"></div>
+  <div id="ind-pessoas"></div>
+  <div class="section-title">Gráficos financeiros e de capacidade</div>
   <div class="charts-grid">
     <div class="chart-card"><h3>Receita por tipo de cliente</h3><div id="chart-revtype"></div></div>
     <div class="chart-card"><h3>Ocupação por pessoa</h3><div id="chart-occ"></div></div>
@@ -1042,7 +1064,7 @@ function defaultState(){
       newPerson(p2,'Ariana','pj')
     ],
     clients:[], tasks:[],
-    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[], promessas:{}, vinculosMonday:{},
+    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[], promessas:{}, vinculosMonday:{}, indicadores:{},
     fees:{advisor:0,projeto:0},
     fixed:[{id:nid(),name:'Aluguel',value:0},{id:nid(),name:'Softwares',value:0}],
     params:{attendance:75,weeks:4.33,lunch:1},
@@ -1232,6 +1254,7 @@ function normalize(){
   const obj=o=>o&&typeof o==='object'&&!Array.isArray(o);
   if(!obj(state.promessas))state.promessas={};
   if(!obj(state.vinculosMonday))state.vinculosMonday={};
+  if(!obj(state.indicadores))state.indicadores={}; // retratos mensais da aba Indicadores
   // a aba lê 60 dias de reuniões: marcação sem mexer há 120 dias já não tem efeito (promessa manual aberta fica)
   const corteP=new Date(Date.now()-120*864e5).toISOString();
   Object.keys(state.promessas).forEach(id=>{const o=state.promessas[id];if(!obj(o)||((o.atualizado||'')<corteP&&!(o.origem==='manual'&&o.estado==='aberta')))delete state.promessas[id]});
@@ -1987,31 +2010,22 @@ function renderWatch(){
 function bar(label,fillPct,color,valText){
   return `<div class="bar-row"><div class="bar-lbl" title="${label}">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,Math.min(100,fillPct))}%;background:${color}"></div></div><div class="bar-val">${valText}</div></div>`;
 }
-function renderPainel(){
-  const active=state.people.filter(p=>p.active);
-  const activeNow=state.clients.filter(c=>clientActiveNow(c));const allocated=activeNow;
+function indFinanceiro(){ // números do antigo Painel, mês atual
+  const active=state.people.filter(p=>p.active),activeNow=state.clients.filter(c=>clientActiveNow(c));
   const receita=state.clients.reduce((s,c)=>s+clientAccrualNow(c),0);
-  const custoPessoas=active.reduce((s,p)=>s+personMonthlyCost(p),0);
-  const custoFixos=fixedTotal();const custoTotal=custoPessoas+custoFixos;const resultado=receita-custoTotal;
-  const margemPct=receita>0?(resultado/receita)*100:0;
-  const avgOcc=active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0;
-  const teamH=teamMonthHours();let usedH=0;
-  active.forEach(p=>usedH+=personMgmtWeekHours(p)*state.params.weeks);
+  const custoPessoas=active.reduce((s,p)=>s+personMonthlyCost(p),0),custoFixos=fixedTotal(),custoTotal=custoPessoas+custoFixos,resultado=receita-custoTotal;
+  let usedH=0;active.forEach(p=>usedH+=personMgmtWeekHours(p)*state.params.weeks);
   activeNow.forEach(c=>usedH+=clientMonthHours(c));state.tasks.filter(t=>t.slot).forEach(t=>usedH+=taskWeekHours(t)*state.params.weeks);
-  const idleH=Math.max(0,teamH-usedH);const idleCost=Math.max(0,costBreakdownNow().idle);
-  const watchCount=state.clients.filter(c=>c.watch&&c.watch.on).length;
-  const consCount=active.filter(p=>!p.isIntern).length;const ratio=consCount?allocated.length/consCount:0;
-
-  document.getElementById('kpi-grid').innerHTML=`
-    ${kpi(brl(receita),'Receita/mês','n-green')}
-    ${kpi(brl(custoTotal),'Custo total/mês','n-navy',brl(custoPessoas)+' pessoas')}
-    ${kpi(brl(resultado),'Resultado/mês',resultado>=0?'n-green':'n-red',num2(margemPct)+'% de margem')}
-    ${kpi(num2(avgOcc)+'%','Ocupação média',avgOcc>85?'n-red':avgOcc>70?'n-orange':'n-green')}
-    ${kpi(activeNow.length+'','Clientes ativos','n-blue',activeNow.filter(c=>c.type==='advisor').length+' advisors · '+activeNow.filter(c=>c.type==='projeto').length+' projetos')}
-    ${kpi(active.length+'','Pessoas ativas','n-navy',consCount+' consultores')}
-    ${kpi(brl(idleCost),'Custo ociosidade','n-orange',num2(idleH)+'h paradas')}
-    ${kpi(watchCount+'','Em atenção',watchCount>0?'n-orange':'n-green')}
-    ${kpi(num2(ratio),'Clientes/consultor',ratio>8?'n-orange':'n-blue')}`;
+  return {receita,custoPessoas,custoFixos,custoTotal,resultado,margem:receita>0?resultado/receita*100:null,
+    ocupacao:active.length?active.reduce((s,p)=>s+personOccupation(p),0)/active.length:0,
+    idleH:Math.max(0,teamMonthHours()-usedH),idleCost:Math.max(0,costBreakdownNow().idle)};
+}
+function renderPainel(){
+  renderIndicadores();
+  const active=state.people.filter(p=>p.active);
+  const activeNow=state.clients.filter(c=>clientActiveNow(c));
+  const {custoPessoas,custoFixos,custoTotal,idleH}=indFinanceiro();
+  const teamH=teamMonthHours();
 
   // receita por tipo
   const revByType={advisor:0,projeto:0};state.clients.forEach(c=>revByType[c.type]+=clientAccrualNow(c));
@@ -2418,7 +2432,7 @@ function runImport(){
 /* ============ OPERAÇÃO: monday + Granola ============ */
 // Regras do Painel do COO (coo.js). O monday chega pela função sync-monday (a cada 30 min) e o Granola por uma
 // rotina 3x ao dia; aqui só lemos as duas tabelas. Concluir, editar e apagar promessas fica em state.promessas.
-const OP={monday:null,mondayAt:'',prazos:null,granola:[],granolaAt:'',ok:false,carregando:false,erro:'',model:null,promKey:'',sync:false,carga:0,
+const OP={monday:null,mondayAt:'',prazos:null,granola:[],granolaAt:'',reunioes:[],reunioesCli:[],ok:false,carregando:false,erro:'',model:null,promKey:'',sync:false,carga:0,
   ui:{sub:'hoje',fTipo:'',fQuem:'',todos:false,pFiltro:'todos',pPasta:'',pBusca:'',aberto:{},prEstado:'abertas',prQuem:'',prProj:'',ed:null,draft:null,novo:false}};
 const OP_SUBS={hoje:'Hoje',promessas:'Promessas',projetos:'Projetos',abertura:'Abertura',desempenho:'Desempenho'};
 const AUTO_IMPORT=/^painel_coo_promessas/;
@@ -2429,17 +2443,17 @@ function haQuanto(iso){if(!iso)return '';const m=Math.max(0,Math.round((Date.now
 function opDt(s){if(!s)return '—';const [y,m,d]=String(s).slice(0,10).split('-');return d+'/'+m+(y!==String(new Date().getFullYear())?'/'+y.slice(2):'')}
 function opPct(v){return v==null||isNaN(v)?'—':v+'%'}
 function opWho(n){return `<span class="op-who"><span class="avatar sm">${esc(initials(n))}</span>${esc(String(n).split(' ')[0])}</span>`}
-function opTxt(s){return String(s||'').replace(/\\([~*_#&<>()[\]-])/g,'$1')} // tira os escapes de markdown que vêm do Granola
+function opTxt(s){return String(s||'').replace(/\\([~*_#&<>()[\]-])/g,'$1').replace(/&(apos|#39);/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')} // tira escapes de markdown e entidades que vêm do Granola
 function opLink(url,txt,cls){return url?`<a class="${cls||'op-lnk'}" href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`:txt}
 
 async function opLoad(){
   if(!sb||OP.carregando)return;
   OP.carregando=true;if(opAtiva()&&!OP.ok)renderOperacao();
   try{
-    const desde=new Date(Date.now()-60*864e5).toISOString();
+    const hj=new Date(),desde=new Date(Math.min(Date.now()-60*864e5,new Date(hj.getFullYear(),hj.getMonth()-1,1).getTime())).toISOString(); // 60 dias e o mês anterior inteiro
     const [s,g]=await Promise.all([
       sb.from('sync_snapshots').select('id,payload,updated_at'),
-      sb.from('granola_meetings').select('id,titulo,data,url,criador,externos,resumo,synced_at').gte('data',desde).order('data',{ascending:false})]);
+      sb.from('granola_meetings').select('id,titulo,data,url,criador,externos,equipe,resumo,synced_at').gte('data',desde).order('data',{ascending:false})]);
     if(s.error)throw s.error;if(g.error)throw g.error;
     const snap={};(s.data||[]).forEach(r=>{snap[r.id]=r});
     OP.monday=snap.monday?snap.monday.payload:null;OP.mondayAt=snap.monday?snap.monday.updated_at:'';
@@ -2451,18 +2465,34 @@ async function opLoad(){
   OP.carregando=false;opCompute();updateBadges();
   // recarga em segundo plano não pode tirar o foco de quem está digitando
   if(opAtiva()){if(opDigitando())renderOpHead();else renderOperacao()}
+  if(document.getElementById('page-painel').classList.contains('active'))renderIndicadores();
   if(editingClient&&!document.getElementById('drawer').contains(document.activeElement))renderDrawer();
 }
 function opDigitando(){const a=document.activeElement;return !!(a&&a.closest&&a.closest('.op-ed,#op-busca'))}
 function opCompute(){
-  OP.promKey=JSON.stringify(state.promessas||{});OP.model=null;
+  OP.promKey=JSON.stringify(state.promessas||{});OP.model=null;OP.modelTodas=null;OP.reunioesCli=[];
   if(!OP.monday||typeof COO==='undefined')return;
-  const granola=OP.granola.map(r=>({id:r.id,titulo:r.titulo,data:isoLocal(r.data),url:r.url||'',criador:r.criador||'',externos:r.externos||0}));
+  const todas=OP.granola.map(r=>({id:r.id,titulo:r.titulo,data:isoLocal(r.data),url:r.url||'',criador:r.criador||'',externos:r.externos||0}));
+  const h=new Date(),corte=new Date(h.getFullYear(),h.getMonth(),h.getDate()-30).getTime();
+  const granola=todas.filter(g=>new Date(g.data).getTime()>=corte); // promessas: mesma janela de 30 dias do Painel do COO
   const resumos={};OP.granola.forEach(r=>{resumos[r.id]=r.resumo||''});
+  // a mesma reunião gravada por duas pessoas conta uma vez (mesmo título e mesmo horário); junta quem estava
+  const unicas={};OP.granola.forEach(r=>{const k=normTxt(r.titulo)+'|'+new Date(r.data).getTime(),u=unicas[k];
+    if(!u)unicas[k]={...r,equipe:(r.equipe||[]).slice()};else{u.externos=Math.max(u.externos||0,r.externos||0);(r.equipe||[]).forEach(n=>{if(!u.equipe.includes(n))u.equipe.push(n)})}});
+  OP.reunioes=Object.values(unicas);
   // sem a agenda conectada, as reuniões gravadas no Granola contam como as reuniões feitas com o cliente (1h cada)
-  const agendas={Granola:OP.granola.map(r=>({id:'g:'+r.id,titulo:r.titulo,inicio:new Date(r.data).toISOString(),fim:new Date(new Date(r.data).getTime()+36e5).toISOString(),dia_inteiro:false,original:'',participantes:2,externos:r.externos||0,resposta:'accepted',tipo_evento:'DEFAULT',status:'',link:r.url||''}))};
-  try{OP.model=COO.calcular({monday:OP.monday,prazos:OP.prazos,agendas,granola,resumos,overrides:state.promessas||{}});OP.erro=''}
-  catch(e){console.error(e);OP.erro='Não foi possível calcular a operação: '+e.message}
+  const agendas={Granola:OP.reunioes.map(r=>({id:'g:'+r.id,titulo:r.titulo,inicio:new Date(r.data).toISOString(),fim:new Date(new Date(r.data).getTime()+36e5).toISOString(),dia_inteiro:false,original:'',participantes:2,externos:r.externos||0,resposta:'accepted',tipo_evento:'DEFAULT',status:'',link:r.url||''}))};
+  try{
+    OP.model=COO.calcular({monday:OP.monday,prazos:OP.prazos,agendas,granola,resumos,overrides:state.promessas||{}});OP.erro='';
+    const porId={};OP.reunioes.forEach(r=>{porId['g:'+r.id]=r});
+    OP.reunioesCli=OP.model.eventos.filter(e=>e.tipo==='cliente').map(e=>({dia:e.dia,projeto:e.projeto,equipe:(porId[e.id]||{}).equipe||[]}));
+    OP.base={agendas,todas,resumos};
+  }catch(e){console.error(e);OP.erro='Não foi possível calcular a operação: '+e.message}
+}
+function opModeloCompleto(){ // promessas de todas as reuniões carregadas (mês anterior inteiro), só para os indicadores
+  if(!OP.model||!OP.base)return OP.model;
+  if(!OP.modelTodas){try{OP.modelTodas=COO.calcular({monday:OP.monday,prazos:OP.prazos,agendas:OP.base.agendas,granola:OP.base.todas,resumos:OP.base.resumos,overrides:state.promessas||{}})}catch(e){OP.modelTodas=OP.model}}
+  return OP.modelTodas;
 }
 function opOpen(){if(!OP.ok||Date.now()-OP.carga>6e5)opLoad();renderOperacao()}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&loaded&&opAtiva()&&Date.now()-OP.carga>6e5)opLoad()});
@@ -2685,6 +2715,156 @@ function opDesempenho(m){
   const rank=`<table class="tbl"><thead><tr><th>Pessoa</th><th>Combinados</th><th>Lançados</th><th>Disciplina</th><th>Horas até lançar</th><th>Sem tarefa</th></tr></thead><tbody>${m.consultores.map(c=>`<tr><td><b>${esc(c.pessoa)}</b></td><td class="mono-num">${c.passos}</td><td class="mono-num">${c.lancados}</td><td class="mono-num"><b>${opPct(c.pctDisciplina)}</b></td><td class="mono-num">${c.horasLancar==null?'—':c.horasLancar+'h'}</td><td class="mono-num">${c.semTarefa}</td></tr>`).join('')}</tbody></table>`;
   return `<div class="op-people">${cards}</div><div class="card"><div class="section-title">Granola → monday por pessoa <span class="cnt">próximos passos com mais de 24h que viraram tarefa no quadro do cliente</span></div><div style="overflow-x:auto">${rank}</div></div>
     <p class="help">Prazo original = 1ª data de entrega do card. Adiado = data empurrada depois do planejamento. Horas em reunião ficam de fora até a agenda ser conectada.</p>`;
+}
+
+/* ============ INDICADORES (aba 11, com os gráficos do antigo Painel) ============ */
+// Contagens (entregas, adiamentos, reuniões) comparam com o mesmo período do mês anterior; taxas e carteira, com o mês
+// anterior inteiro. O que não dá para recompor do passado (atrasadas, promessas abertas, custos) compara com o último
+// retrato do mês anterior, guardado em state.indicadores.
+let indPessoaSel='';try{indPessoaSel=localStorage.getItem('aust_ind_pessoa')||''}catch(e){}
+const primNome=n=>normTxt(n).split(' ')[0];
+const noMes=(ds,ym,dd)=>!!ds&&ds.slice(0,7)===ym&&(!dd||ds.slice(8,10)<=dd);
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function indPeriodo(){
+  const h=new Date(),mi=nowMI(),ultAnt=new Date(h.getFullYear(),h.getMonth(),0).getDate(),ant=MESES[(mi+11)%12];
+  const dd=String(h.getDate()).padStart(2,'0'),ddAnt=String(Math.min(h.getDate(),ultAnt)).padStart(2,'0');
+  return {mi,ym:miToYM(mi),ymAnt:miToYM(mi-1),dd,ddAnt,hoje:todayStr(),fimAnt:miToYM(mi-1)+'-'+String(ultAnt).padStart(2,'0'),
+    rotPer:`${ant} (1 a ${+ddAnt})`,rotMes:ant,rotFim:`fim de ${ant}`};
+}
+function indPessoas(m){ // pessoas do monday e do cadastro, casadas pelo primeiro nome; estagiários no fim
+  const l=[];
+  (m?m.pessoasTime:[]).forEach(n=>l.push({nome:n,monday:n,cad:null}));
+  state.people.filter(p=>p.active).forEach(p=>{const x=l.find(y=>primNome(y.nome)===primNome(p.name));if(x){x.cad=p;x.nome=p.name}else l.push({nome:p.name,monday:null,cad:p})});
+  l.forEach(x=>{x.estagio=!!(x.cad&&x.cad.isIntern)});
+  return l.sort((a,b)=>(a.estagio-b.estagio)||a.nome.localeCompare(b.nome));
+}
+function churnMedio(ate){ // churn mensal de advisors (logos), média dos 12 meses anteriores a 'ate'
+  const saiu=state.clients.filter(c=>c.status==='encerrado'),r=[];
+  for(let m=ate-12;m<ate;m++){const base=state.clients.filter(c=>c.type==='advisor'&&clientActiveAt(c,m)).length;if(base>0)r.push(saiu.filter(c=>c.type==='advisor'&&churnMI(c)===m).length/base)}
+  return r.length?r.reduce((a,b)=>a+b,0)/r.length*100:null;
+}
+function indCalc(m,pes){ // pes: item de indPessoas ou null (operação toda)
+  const P=indPeriodo(),r={},meu=n=>!pes||primNome(n)===primNome(pes.nome);
+  if(m){
+    const T=(m.tarefas||[]).filter(t=>!pes||(pes.monday&&t.pessoas.includes(pes.monday)));
+    const ent=(ym,dd)=>T.filter(t=>t.feita&&t.original&&noMes(t.conclusao,ym,dd));
+    const prazo=xs=>xs.length?Math.round(100*xs.filter(t=>t.noPrazo).length/xs.length):null;
+    const adi=(ym,dd)=>T.reduce((s,t)=>s+(t.adDias||[]).filter(d=>noMes(ymdOf(new Date(d*864e5+432e5)),ym,dd)).length,0);
+    Object.assign(r,{entregas:ent(P.ym,P.dd).length,entregasAnt:ent(P.ymAnt,P.ddAnt).length,noPrazo:prazo(ent(P.ym)),noPrazoAnt:prazo(ent(P.ymAnt)),
+      atrasadas:T.filter(t=>t.emJogo&&t.atrasoReal>0&&!t.doCliente).length,adiamentos:adi(P.ym,P.dd),adiamentosAnt:adi(P.ymAnt,P.ddAnt)});
+    const reu=OP.reunioesCli.filter(x=>!pes||x.equipe.some(meu));
+    r.reunioes=reu.filter(x=>noMes(x.dia,P.ym,P.dd)).length;r.reunioesAnt=reu.filter(x=>noMes(x.dia,P.ymAnt,P.ddAnt)).length;
+    const deAust=ps=>ps.filter(p=>p.lado==='aust'&&(!pes||(p.donos||[]).some(meu)));
+    const prom=deAust(m.promessas),todas=deAust((opModeloCompleto()||m).promessas);
+    const comb=ym=>todas.filter(p=>p.origem==='granola'&&!p.recente&&noMes(p.data,ym));
+    const disc=xs=>xs.length?Math.round(100*xs.filter(p=>p.horas_ate_lancar!==null).length/xs.length):null;
+    Object.assign(r,{promessas:prom.filter(p=>p.estado==='aberta').length,semTarefa:prom.filter(p=>p.situacao==='sem tarefa').length,
+      combinados:comb(P.ym).length,disciplina:disc(comb(P.ym)),disciplinaAnt:disc(comb(P.ymAnt))});
+    if(!pes){const semReu=ref=>{const ini=addDays(ref,-30);return m.projetos.filter(pj=>!OP.reunioesCli.some(x=>x.projeto===pj.projeto&&x.dia>ini&&x.dia<=ref)).length};
+      r.semReuniao=semReu(P.hoje);r.semReuniaoAnt=semReu(P.fimAnt)}
+  }
+  const cs=!pes?state.clients:pes.cad&&!pes.estagio?state.clients.filter(c=>c.ownerId===pes.cad.id):null;
+  if(cs){
+    const cart=mi=>{const at=cs.filter(c=>clientActiveAt(c,mi)),rec=cs.reduce((s,c)=>s+clientRevenueAt(c,mi,'accrual'),0);
+      const custo=at.reduce((s,c)=>s+clientDirectCost(c),0)+cs.reduce((s,c)=>s+clientAddCostAt(c,mi),0);
+      return {ativos:at.length,adv:at.filter(c=>c.type==='advisor').length,mrr:at.filter(c=>c.type==='advisor'&&!c.permuta).reduce((s,c)=>s+clientFee(c),0),receita:rec,margem:rec>0?(rec-custo)/rec*100:null}};
+    r.cart=cart(P.mi);r.cartAnt=cart(P.mi-1);
+  }
+  if(!pes){
+    const ch=mi=>state.clients.filter(c=>c.status==='encerrado'&&churnMI(c)===mi);
+    const casa=mi=>{const at=state.clients.filter(c=>clientActiveAt(c,mi));return at.length?at.reduce((s,c)=>s+(mi-clientStartMI(c)+1),0)/at.length:null};
+    Object.assign(r,{churns:ch(P.mi),churnsAnt:ch(P.mi-1),churnMedio:churnMedio(P.mi),churnMedioAnt:churnMedio(P.mi-1),
+      pausados:state.clients.filter(c=>c.status==='pausado'),casa:casa(P.mi),casaAnt:casa(P.mi-1),fin:indFinanceiro()});
+  }
+  return r;
+}
+function indRetratoAnt(){return (state.indicadores||{})[indPeriodo().ymAnt]||null}
+function indGuardar(R,calc){ // retrato do mês (no máximo a cada 3h) para o mês seguinte comparar o que não dá para recompor
+  const ym=indPeriodo().ym,a=state.indicadores[ym];
+  if(a&&Date.now()-new Date(a.em).getTime()<108e5)return;
+  const pessoas={};calc.forEach(([x,r])=>{pessoas[primNome(x.nome)]={atrasadas:r.atrasadas,promessas:r.promessas,semTarefa:r.semTarefa}});
+  state.indicadores[ym]={em:new Date().toISOString(),geral:{atrasadas:R.atrasadas,promessas:R.promessas,semTarefa:R.semTarefa,pausados:R.pausados.length,
+    custo:Math.round(R.fin.custoTotal),resultado:Math.round(R.fin.resultado),ocupacao:Math.round(R.fin.ocupacao*10)/10,ociosidade:Math.round(R.fin.idleCost)},pessoas};
+  Object.keys(state.indicadores).sort().slice(0,-13).forEach(k=>delete state.indicadores[k]);
+  save();
+}
+function indDelta(v,ant,rot,o={}){ // ▲▼ com cor pelo sentido bom do número
+  if(v==null||ant==null)return `<div class="bn-d neutro"><span>${o.semBase||'sem base de comparação'}</span></div>`;
+  const f=o.fmt||(x=>Math.round(x).toLocaleString('pt-BR')),d=v-ant;
+  if(Math.abs(d)<(o.pp?0.05:0.5))return `<div class="bn-d neutro">= <span>sem variação vs ${rot} (${f(ant)})</span></div>`;
+  const good=o.bom==='neutro'?null:((o.bom||'up')==='up')===(d>0);
+  return `<div class="bn-d ${good==null?'neutro':good?'bom':'ruim'}">${d>0?'▲':'▼'} ${o.pp?num1(Math.abs(d))+' p.p.':f(Math.abs(d))} <span>vs ${rot}: ${f(ant)}</span></div>`;
+}
+function bn(l,v,delta,sub,alerta){return `<div class="bn"><div class="bn-l">${l}</div><div class="bn-v${alerta?' alerta':''}">${v}</div>${delta||''}${sub?`<div class="bn-s">${sub}</div>`:''}</div>`}
+const indPct=x=>x==null?'—':x+'%';
+const SEM_RETRATO={semBase:'comparação a partir do próximo mês'};
+function indGrupo(titulo,dica,tiles){return `<div class="ind-grupo"><div class="section-title">${titulo}<span class="cnt">${dica}</span></div><div class="bn-grid">${tiles}</div></div>`}
+function indTilesEntregas(r,P,a){
+  return bn('Entregas no mês',r.entregas,indDelta(r.entregas,r.entregasAnt,P.rotPer),'tarefas concluídas com data de entrega')+
+    bn('No prazo original',indPct(r.noPrazo),indDelta(r.noPrazo,r.noPrazoAnt,P.rotMes,{pp:1,fmt:indPct}),'das entregas do mês',r.noPrazo!=null&&r.noPrazo<50)+
+    bn('Atrasadas agora',r.atrasadas,indDelta(r.atrasadas,a.atrasadas,P.rotFim,{bom:'down',...SEM_RETRATO}),'em andamento, pelo prazo original',r.atrasadas>0)+
+    bn('Adiamentos no mês',r.adiamentos,indDelta(r.adiamentos,r.adiamentosAnt,P.rotPer,{bom:'down'}),'datas empurradas depois do planejamento');
+}
+function indTilesCarteira(c,ca,P){
+  return bn('Clientes ativos',c.ativos,indDelta(c.ativos,ca.ativos,P.rotMes),`${c.adv} advisors · ${c.ativos-c.adv} projetos`)+
+    bn('MRR',brl0(c.mrr),indDelta(c.mrr,ca.mrr,P.rotMes,{fmt:brl0}),'fee mensal dos advisors ativos')+
+    bn('Receita do mês',brl0(c.receita),indDelta(c.receita,ca.receita,P.rotMes,{fmt:brl0}),'por competência')+
+    bn('Margem de contribuição',c.margem==null?'—':num1(c.margem)+'%',indDelta(c.margem,ca.margem,P.rotMes,{pp:1,fmt:x=>num1(x)+'%'}),'receita menos horas e custos diretos',c.margem!=null&&c.margem<0);
+}
+function renderIndicadores(){
+  const g=document.getElementById('ind-geral');if(!g)return;
+  if(!OP.ok&&!OP.carregando&&sb&&loaded)opLoad(); // esta aba também usa o monday e o Granola
+  const m=OP.model,P=indPeriodo(),R=indCalc(m,null),a=(indRetratoAnt()||{}).geral||{};
+  document.getElementById('ind-sub').textContent=`${MESES[P.mi%12].replace(/^./,c=>c.toUpperCase())} até o dia ${+P.dd}. Contagens comparam com ${P.rotPer}; taxas e carteira, com ${P.rotMes} inteiro.`;
+  let html='';
+  if(m){
+    html+=indGrupo('Entregas · monday','prazo original = 1ª data de entrega do card',indTilesEntregas(R,P,a));
+    html+=indGrupo('Relacionamento · Granola','reuniões gravadas e próximos passos',
+      bn('Reuniões com clientes',R.reunioes,indDelta(R.reunioes,R.reunioesAnt,P.rotPer),'gravadas no mês')+
+      bn('Clientes sem reunião',R.semReuniao,indDelta(R.semReuniao,R.semReuniaoAnt,P.rotFim,{bom:'down'}),'há 30 dias ou mais',R.semReuniao>0)+
+      bn('Promessas abertas',R.promessas,indDelta(R.promessas,a.promessas,P.rotFim,{bom:'down',...SEM_RETRATO}),`${R.semTarefa} sem tarefa no monday`)+
+      bn('Combinados → tarefa',indPct(R.disciplina),indDelta(R.disciplina,R.disciplinaAnt,P.rotMes,{pp:1,fmt:indPct}),`dos ${R.combinados} combinados do mês viraram tarefa no monday`,R.disciplina!=null&&R.disciplina<50));
+  }else html+=`<div class="ind-nota" style="margin:0 0 22px">${!OP.ok||OP.carregando?'Lendo o monday e o Granola…':'Entregas e relacionamento aparecem depois da primeira leitura do monday.'}</div>`;
+  html+=indGrupo('Carteira e margem','cadastro',indTilesCarteira(R.cart,R.cartAnt,P));
+  html+=indGrupo('Retenção','churn e pausas',
+    bn('Churns no mês',R.churns.length,indDelta(R.churns.length,R.churnsAnt.length,P.rotMes,{bom:'down'}),R.churns.length?brl0(R.churns.reduce((s,c)=>s+mrrOf(c),0))+' de MRR perdido':'nenhum cliente saiu',R.churns.length>0)+
+    bn('Churn mensal médio',R.churnMedio==null?'—':num1(R.churnMedio)+'%',indDelta(R.churnMedio,R.churnMedioAnt,'média até '+P.rotMes,{bom:'down',pp:1,fmt:x=>num1(x)+'%'}),'advisors, média de 12 meses')+
+    bn('Em pausa',R.pausados.length,indDelta(R.pausados.length,a.pausados,P.rotFim,{bom:'down',...SEM_RETRATO}),brl0(R.pausados.reduce((s,c)=>s+mrrOf(c),0))+'/mês parados')+
+    bn('Tempo médio de casa',R.casa==null?'—':num1(R.casa)+' m',indDelta(R.casa,R.casaAnt,P.rotMes,{fmt:x=>num1(x)+' m'}),'dos clientes ativos, em meses'));
+  const f=R.fin;
+  html+=indGrupo('Financeiro e capacidade','mês atual',
+    bn('Custo total/mês',brl0(f.custoTotal),indDelta(f.custoTotal,a.custo,P.rotFim,{bom:'down',fmt:brl0,...SEM_RETRATO}),brl0(f.custoPessoas)+' em pessoas')+
+    bn('Resultado/mês',brl0(f.resultado),indDelta(f.resultado,a.resultado,P.rotFim,{fmt:brl0,...SEM_RETRATO}),f.margem==null?'':num1(f.margem)+'% de margem',f.resultado<0)+
+    bn('Ocupação média',num1(f.ocupacao)+'%',indDelta(f.ocupacao,a.ocupacao,P.rotFim,{bom:'neutro',pp:1,fmt:x=>num1(x)+'%',...SEM_RETRATO}),'da capacidade da equipe',f.ocupacao>85)+
+    bn('Custo de ociosidade',brl0(f.idleCost),indDelta(f.idleCost,a.ociosidade,P.rotFim,{bom:'down',fmt:brl0,...SEM_RETRATO}),num1(f.idleH)+'h paradas no mês'));
+  g.innerHTML=html;
+  renderIndPessoas(m,R,P);
+}
+function indEscolher(v){indPessoaSel=v;try{localStorage.setItem('aust_ind_pessoa',v)}catch(e){}renderIndicadores()}
+function renderIndPessoas(m,R,P){
+  const box=document.getElementById('ind-pessoas'),lista=indPessoas(m);
+  if(!lista.length){box.innerHTML='';return}
+  const calc=lista.map(x=>[x,indCalc(m,x)]),[sel,r]=calc.find(([x])=>primNome(x.nome)===indPessoaSel)||calc[0];
+  const a=((indRetratoAnt()||{}).pessoas||{})[primNome(sel.nome)]||{},nome1=sel.nome.split(' ')[0];
+  const chips=`<div class="ind-pick">${lista.map(x=>`<button class="pick ${x===sel?'on':''}" data-v="${esc(primNome(x.nome))}" onclick="indEscolher(this.dataset.v)">${avatar(x.cad||{name:x.nome},true)}${esc(x.nome.split(' ')[0])}${x.estagio?' · estágio':''}</button>`).join('')}</div>`;
+  let html='';
+  if(m){
+    html+=indGrupo('Entregas',`tarefas de ${esc(nome1)} no monday`,indTilesEntregas(r,P,a));
+    html+=indGrupo(sel.estagio?'Promessas':'Relacionamento',sel.estagio?'próximos passos em que é dona':'reuniões em que estava e próximos passos em que é dono',
+      (sel.estagio?'':bn('Reuniões com clientes',r.reunioes,indDelta(r.reunioes,r.reunioesAnt,P.rotPer),'gravadas no mês'))+
+      bn('Promessas abertas',r.promessas,indDelta(r.promessas,a.promessas,P.rotFim,{bom:'down',...SEM_RETRATO}),'da Aust, em aberto')+
+      bn('Sem tarefa no monday',r.semTarefa,indDelta(r.semTarefa,a.semTarefa,P.rotFim,{bom:'down',...SEM_RETRATO}),'combinados com mais de 24h',r.semTarefa>0)+
+      bn('Combinados → tarefa',indPct(r.disciplina),indDelta(r.disciplina,r.disciplinaAnt,P.rotMes,{pp:1,fmt:indPct}),`dos ${r.combinados} combinados do mês`,r.disciplina!=null&&r.disciplina<50));
+  }
+  if(r.cart)html+=indGrupo('Carteira e margem',`clientes com ${esc(nome1)} como consultor responsável`,indTilesCarteira(r.cart,r.cartAnt,P));
+  else if(!sel.estagio)html+=`<div class="ind-nota">${esc(nome1)} não está no Cadastro. Cadastre na aba Cadastro para ver carteira, MRR e margem.</div>`;
+  // comparativo
+  const td=v=>`<td class="mono-num">${v==null?'—':v}</td>`,cart=(x,k,f)=>x.cart?td(f(x.cart[k])):td(null);
+  const linha=(nome,x,est)=>`<td><b>${esc(nome)}</b></td>${m?td(x.entregas)+td(indPct(x.noPrazo))+td(x.atrasadas)+td(x.adiamentos)+td(est?null:x.reunioes)+td(x.promessas)+td(x.semTarefa)+td(indPct(x.disciplina)):''}${cart(x,'ativos',v=>v)}${cart(x,'mrr',brl0)}${cart(x,'margem',v=>v==null?'—':num1(v)+'%')}`;
+  const tabela=`<div class="ind-tbl"><table class="tbl"><thead><tr><th>Pessoa</th>${m?'<th>Entregas no mês</th><th>No prazo</th><th>Atrasadas</th><th>Adiamentos</th><th>Reuniões</th><th>Promessas abertas</th><th>Sem tarefa</th><th>Combinados → tarefa</th>':''}<th>Clientes</th><th>MRR</th><th>Margem</th></tr></thead>
+    <tbody>${calc.map(([x,y])=>`<tr>${linha(x.nome,y,x.estagio)}</tr>`).join('')}<tr class="tot">${linha('Operação',R,false)}</tr></tbody></table></div>`;
+  box.innerHTML=`<div class="ind-grupo"><div class="section-title">Por pessoa<span class="cnt">clique para ver os números de cada um</span></div>${chips}${html}${tabela}</div>`;
+  if(m)indGuardar(R,calc);
 }
 
 /* ============ EXPORT / IMPORT ============ */
