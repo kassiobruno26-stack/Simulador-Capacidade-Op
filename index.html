@@ -6,6 +6,7 @@
 <title>AustCapital — Simulador de Capacidade & Custos</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="env.js"></script>
 <style>
 :root{
   --navy:#11151B; --red:#C02225; --cream:#F8F4EF;
@@ -285,20 +286,63 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--nav
 .avail-chip:hover{border-color:var(--med-blue);background:var(--light-blue)}
 
 @media(max-width:800px){.alloc-layout{grid-template-columns:1fr}.pool{position:static;max-height:none}}
+
+.env-badge{display:none;font-size:10px;font-weight:800;padding:4px 10px;border-radius:12px;letter-spacing:.4px;background:var(--orange);color:#fff;white-space:nowrap}
+body.env-test .env-badge{display:inline-block}
+.gate{position:fixed;inset:0;z-index:1000;background:var(--navy);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gate-card{background:var(--cream);border-radius:12px;padding:32px 28px;width:100%;max-width:360px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.gate-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.gate-brand .header-stripe{height:24px}
+.gate-brand span{font-weight:800;font-size:16px}
+.gate-brand b{color:var(--red)}
+.gate-sub{font-size:12px;color:var(--gray);margin-bottom:22px}
+.gate-card label{display:block;font-size:11px;font-weight:700;color:var(--dark-blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.gate-card input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;margin-bottom:14px;background:#fff}
+.gate-card input:focus{outline:2px solid var(--med-blue);outline-offset:-1px}
+.gate-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.gate-btn:disabled{opacity:.6;cursor:wait}
+.gate-btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--border);margin-top:8px}
+.gate-err{font-size:12px;color:var(--danger);min-height:16px;margin-bottom:10px}
+.gate-msg{font-size:13px;line-height:1.5;margin-bottom:18px}
 </style>
 </head>
 <body>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand"><div class="header-stripe"></div><span>AUST<b>CAPITAL</b></span></div>
+    <div class="gate-sub">Simulador de Capacidade &amp; Custos</div>
+    <form id="login-form" hidden onsubmit="doLogin(event)">
+      <label for="login-email">E-mail</label>
+      <input id="login-email" type="email" autocomplete="username" required>
+      <label for="login-pass">Senha</label>
+      <input id="login-pass" type="password" autocomplete="current-password" required>
+      <div class="gate-err" id="login-err"></div>
+      <button class="gate-btn" id="login-btn" type="submit">Entrar</button>
+    </form>
+    <div id="gate-info">
+      <div class="gate-msg" id="gate-msg">Conectando…</div>
+      <div id="gate-actions" hidden>
+        <button class="gate-btn" onclick="location.reload()">Tentar de novo</button>
+        <button class="gate-btn ghost" onclick="doLogout()">Sair</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="header">
   <div class="header-stripe"></div>
   <span class="brand">AUST<b>CAPITAL</b></span>
   <span style="color:var(--red);font-size:12px;font-weight:600">Simulador de Capacidade &amp; Custos</span>
   <span id="sync-status" class="sync-status" title="Estado da sincronização">•••</span>
+  <span class="env-badge" title="Você está editando uma cópia dos dados. Nada aqui afeta a versão oficial.">AMBIENTE DE TESTE</span>
   <div class="tools">
     <button class="tool-btn" onclick="exportCSV()">Exportar planilha</button>
     <button class="tool-btn" onclick="exportJSON()">Backup</button>
     <button class="tool-btn" onclick="document.getElementById('importFile').click()">Restaurar</button>
     <button class="tool-btn solid" onclick="resetAll()">Zerar</button>
+    <button class="tool-btn" onclick="doLogout()">Sair</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
   </div>
 </div>
@@ -548,18 +592,23 @@ function defaultState(){
 /* ============ PERSIST (Supabase) ============ */
 const SUPA_URL='https://tulsemiywmrnvenmqsgy.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1bHNlbWl5d21ybnZlbm1xc2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDE0ODAsImV4cCI6MjA5ODkxNzQ4MH0.s0jgRd5bqMppeUB0YwEH58Mw2kC5xd3FT6MPaYnMRRE';
-const ROW_ID=1;
+// env.js é gerado no build do Vercel: só a produção usa a linha 1; prévias e testes locais usam a cópia (linha 2)
+const IS_PROD=window.AUST_ENV==='production';
+const ROW_ID=IS_PROD?1:2;
+if(!IS_PROD)document.body.classList.add('env-test');
 let sb=null, saveTimer=null, lastPushed='', editingUntil=0, applyingRemote=false;
+let loaded=false; // só grava depois de carregar os dados reais (nunca sobrescreve a nuvem com dados vazios)
 function setStatus(kind,txt){const el=document.getElementById('sync-status');if(!el)return;el.className='sync-status sync-'+kind;el.textContent=txt}
 function save(){ // chamado por toda a app; agenda auto-save na nuvem
-  if(applyingRemote)return;
+  if(applyingRemote||!loaded)return;
   editingUntil=Date.now()+4000;
   setStatus('saving','Salvando…');
   clearTimeout(saveTimer);
   saveTimer=setTimeout(cloudSave,700);
 }
 async function cloudSave(){
-  if(!sb){setStatus('offline','Offline');return}
+  saveTimer=null;
+  if(!sb||!loaded){setStatus('offline','Offline');return}
   try{
     const payload={state,uid};const str=JSON.stringify(payload);lastPushed=str;
     const {error}=await sb.from('app_state').upsert({id:ROW_ID,data:payload,updated_at:new Date().toISOString()});
@@ -573,15 +622,52 @@ async function cloudLoad(){
   if(data&&data.data&&data.data.state){state=data.data.state;uid=data.data.uid||100;lastPushed=JSON.stringify({state,uid});normalize();return true}
   return false;
 }
-async function cloudBoot(){
-  if(!window.supabase){state=defaultState();setStatus('offline','SDK offline');return}
+function showGate(msg,withActions){
+  document.getElementById('gate').hidden=false;
+  document.getElementById('login-form').hidden=true;
+  document.getElementById('gate-info').hidden=false;
+  document.getElementById('gate-msg').textContent=msg;
+  document.getElementById('gate-actions').hidden=!withActions;
+}
+function showLogin(){
+  document.getElementById('gate').hidden=false;
+  document.getElementById('gate-info').hidden=true;
+  document.getElementById('login-form').hidden=false;
+  document.getElementById('login-email').focus();
+}
+async function cloudBoot(){ // devolve true quando os dados foram carregados
+  if(!window.supabase){showGate('Não foi possível carregar a conexão com o banco. Verifique a internet e tente de novo.',true);return false}
   sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){showLogin();return false}
+  return loadData();
+}
+async function loadData(){
+  showGate('Carregando os dados…',false);
   try{
     const ok=await cloudLoad();
-    if(!ok){state=defaultState();await cloudSave();}
-    else setStatus('saved','Salvo na nuvem');
-    subscribeRealtime();
-  }catch(e){state=defaultState();setStatus('error','Sem conexão');}
+    // sem linha visível = usuário logado mas fora da lista de acesso; nunca cria dados novos por cima
+    if(!ok){showGate('Seu usuário entrou, mas não tem acesso aos dados. Peça a liberação do acesso.',true);return false}
+  }catch(e){showGate('Não foi possível carregar os dados agora. Nada foi alterado. Tente de novo em instantes.',true);return false}
+  loaded=true;
+  setStatus('saved','Salvo na nuvem');
+  document.getElementById('gate').hidden=true;
+  subscribeRealtime();
+  return true;
+}
+async function doLogin(ev){
+  ev.preventDefault();
+  const btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
+  btn.disabled=true;err.textContent='';
+  const {error}=await sb.auth.signInWithPassword({email:document.getElementById('login-email').value.trim(),password:document.getElementById('login-pass').value});
+  btn.disabled=false;
+  if(error){err.textContent=/invalid login/i.test(error.message)?'E-mail ou senha incorretos.':'Não foi possível entrar: '+error.message;return}
+  if(await loadData())renderAll();
+}
+async function doLogout(){
+  if(saveTimer){clearTimeout(saveTimer);await cloudSave()} // não perde a última edição
+  if(sb)await sb.auth.signOut();
+  location.reload();
 }
 function subscribeRealtime(){
   if(!sb)return;
@@ -1363,7 +1449,7 @@ function exportCSV(){
   dl(new Blob([csv],{type:'text/csv;charset=utf-8'}),'austcapital_simulador.csv');
 }
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function resetAll(){if(!confirm('Zerar TODOS os dados na nuvem? Isso afeta você, Gustavo e Ariana (todos veem os mesmos dados). Faça um Backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
+function resetAll(){if(!confirm('Zerar TODOS os dados na nuvem? Faça um Backup antes se quiser guardar.'))return;state=defaultState();save();renderAll();switchTab('cadastro')}
 
 /* ============ UTIL ============ */
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -1379,8 +1465,7 @@ function renderAll(){
 /* ============ INIT ============ */
 (async function(){
   setStatus('saving','Conectando…');
-  await cloudBoot();
-  renderAll();
+  if(await cloudBoot())renderAll();
 })();
 </script>
 </body>
