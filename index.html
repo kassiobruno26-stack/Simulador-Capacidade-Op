@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="env.js"></script>
+<script src="coo.js"></script>
 <style>
 :root{
   /* Padrão Aust Capital: cores do logo oficial (azul acinzentado, bege, vermelho) + neutros quentes.
@@ -519,6 +520,142 @@ body.env-test .env-badge{display:inline-block}
 .gate-btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--border);margin-top:8px}
 .gate-err{font-size:12px;color:var(--danger);min-height:16px;margin-bottom:10px}
 .gate-msg{font-size:13px;line-height:1.5;margin-bottom:18px}
+
+/* operação: monday + Granola (regras do Painel do COO) */
+.op-src{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.src-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink-2);background:#fff;border:1px solid var(--border);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.src-chip i{width:7px;height:7px;border-radius:50%;background:var(--line-strong)}
+.src-chip.ok i{background:var(--green)}.src-chip.warn i{background:var(--orange)}.src-chip.err i{background:var(--danger)}
+.op-sub{margin-bottom:20px}
+.op-sub .n{font-size:10px;font-weight:700;color:var(--gray);margin-left:5px;font-variant-numeric:tabular-nums}
+.op-sub button.on .n{color:var(--navy)}
+.op-lede{font-family:var(--display);font-size:21px;line-height:1.35;margin:0 0 18px;max-width:64ch}
+.op-lede .crit{color:var(--danger)}
+.op-stack{display:flex;height:6px;border-radius:999px;overflow:hidden;background:var(--border);margin-top:8px}
+.op-stack span{display:block;height:100%}
+.op-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:20px;align-items:start}
+.op-grid>*{min-width:0}
+.op-side{display:grid;gap:20px}
+.op-grid .card{margin-bottom:0}
+.card.flush{padding:0;overflow:hidden}
+.card.flush>.section-title{margin:16px 18px 4px}
+.op-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.fchip{background:#fff;border:1px solid var(--line-strong);border-radius:999px;padding:3px 10px;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.fchip:hover{border-color:var(--navy)}
+.fchip.on{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+.fchip .c{opacity:.65;font-variant-numeric:tabular-nums}
+.op-al{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:0 14px;padding:12px 16px 12px 0;border-top:1px solid var(--border)}
+.op-al:first-child{border-top:0}
+.op-al>.bar{border-radius:0 3px 3px 0;background:var(--orange)}
+.op-al.crit>.bar{background:var(--danger)}
+.op-al .top{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
+.op-al .tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--orange)}
+.op-al.crit .tipo{color:var(--danger)}
+.op-al .proj{font-size:11.5px;font-weight:600;color:var(--gray)}
+.op-al .tit{font-size:13.5px;font-weight:600;overflow-wrap:anywhere;margin-top:2px}
+.op-al .det{font-size:12px;color:var(--gray);overflow-wrap:anywhere;margin-top:2px}
+.op-al .who{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.op-al .side{display:grid;justify-items:end;align-content:start;gap:8px}
+.op-dias{font-family:var(--display);font-size:22px;font-weight:700;line-height:1;font-variant-numeric:lining-nums tabular-nums;text-align:right}
+.op-dias small{display:block;font-family:var(--sans);font-size:10px;font-weight:600;color:var(--gray)}
+.op-acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center}
+.op-lnk{font-size:11.5px;font-weight:600;color:var(--med-blue);text-decoration:none;white-space:nowrap}
+.op-lnk:hover{text-decoration:underline}
+.op-det{margin-top:6px}
+.op-det summary{cursor:pointer;font-size:11.5px;font-weight:600;color:var(--med-blue);list-style:none}
+.op-det summary::-webkit-details-marker{display:none}
+.op-det summary::before{content:'+ '}
+.op-det[open] summary::before{content:'− '}
+.op-det ul{list-style:none;margin:8px 0 0;display:grid;gap:6px}
+.op-det li{font-size:12px;padding-left:10px;border-left:2px solid var(--border);overflow-wrap:anywhere}
+.op-det li span{display:block;font-size:11px;color:var(--gray)}
+.op-more{padding:10px 16px;border-top:1px solid var(--border)}
+.op-who{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-2);background:var(--light-blue);border-radius:999px;padding:2px 8px 2px 2px;white-space:nowrap}
+.op-mini-r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 18px;border-top:1px solid var(--border);align-items:center}
+.op-mini-r:first-child{border-top:0}
+.op-mini-r .t{font-size:13px;font-weight:600;overflow-wrap:anywhere;color:var(--navy);text-decoration:none}
+.op-mini-r a.t:hover{text-decoration:underline}
+.op-mini-r .s{font-size:11px;color:var(--gray);grid-column:1}
+.op-mini-r .x{grid-row:1/span 2;grid-column:2;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.op-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.op-toolbar select,.op-toolbar input{padding:7px 10px;border:1px solid var(--line-strong);border-radius:8px;font-family:inherit;font-size:12px;background:#fff;color:var(--navy);max-width:100%}
+.op-toolbar input[type=search]{width:220px}
+.op-pr{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:4px 12px;padding:12px 16px;border-top:1px solid var(--border);align-items:start}
+.op-pr:first-child{border-top:0}
+.op-pr.done .pt{text-decoration:line-through;color:var(--gray)}
+.op-pr.del{opacity:.55}
+.op-pr .pt{font-size:13.5px;font-weight:600;overflow-wrap:anywhere}
+.op-pr .pd{font-size:12px;color:var(--gray);margin-top:2px;overflow-wrap:anywhere}
+.op-pr .pm{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:11.5px;color:var(--gray);margin-top:5px}
+.op-ed{grid-column:2/-1;display:grid;gap:10px;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:6px}
+.op-ed .field{margin-bottom:0}
+.op-ed textarea{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;resize:vertical;color:var(--navy)}
+.op-ed .acts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.op-new{padding:14px 16px}
+.op-new .op-ed{margin-top:0}
+.op-prow{display:grid;grid-template-columns:96px minmax(150px,1.4fr) minmax(170px,1.5fr) repeat(4,minmax(64px,.55fr)) minmax(96px,.8fr);gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--border);cursor:pointer}
+.op-prow:hover,.op-prow.open{background:var(--off-white)}
+.op-prow.head{cursor:default;background:var(--navy)!important;color:#fff;border-top:0;font-family:var(--display);font-size:12.5px;font-weight:700;padding:10px 16px}
+.op-prow .nm{font-weight:700;font-size:13.5px}
+.op-prow .sv{font-size:11px;color:var(--gray)}
+.op-prow .v{font-size:13.5px;font-variant-numeric:tabular-nums}
+.op-prow .v small{display:block;font-size:10.5px;color:var(--gray)}
+.op-prow .v.bad{color:var(--danger);font-weight:700}
+.op-prow .mob{display:none}
+.op-steps{display:flex;gap:3px;margin-top:5px}
+.op-steps i{flex:1;height:4px;border-radius:2px;background:var(--border)}
+.op-steps i.done{background:var(--ink-2)}.op-steps i.now{background:var(--orange)}.op-steps i.exp{outline:1.5px solid var(--danger);outline-offset:1px}
+.op-pdet{padding:6px 16px 18px;background:var(--off-white);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
+.op-pdet h4{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);margin:0 0 6px}
+.op-pdet ul{list-style:none;display:grid;gap:6px}
+.op-pdet li{font-size:12px;overflow-wrap:anywhere}
+.op-pdet li span{display:block;font-size:11px;color:var(--gray)}
+.op-pdet p{font-size:12px;line-height:1.5}
+.op-pdet select{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;background:#fff;margin-top:8px}
+.op-motivos{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding-top:10px}
+.op-pdet li .op-lnk,.op-det li .op-lnk{white-space:normal;color:var(--navy)}
+.op-pr .pm [class^="tag-"]{white-space:nowrap}
+.section-title .op-who{text-transform:none;letter-spacing:0}
+.kpi-grid.op-kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.op-people{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:20px}
+.op-pp{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;display:grid;gap:14px;align-content:start}
+.op-pp .h{display:flex;gap:10px;align-items:center}
+.op-pp .h .avatar{width:38px;height:38px;font-size:13px}
+.op-pp .nm{font-family:var(--display);font-size:18px;font-weight:700}
+.op-pp .sb{font-size:11.5px;color:var(--gray)}
+.op-meter{display:grid;gap:5px}
+.op-meter .mh{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+.op-meter .mh b{font-variant-numeric:tabular-nums}
+.op-meter .mb{height:6px;background:var(--border);border-radius:999px;overflow:hidden}
+.op-meter .mb span{display:block;height:100%;background:var(--ink-2);border-radius:999px}
+.op-meter .mb span.good{background:var(--green)}.op-meter .mb span.mid{background:var(--orange)}.op-meter .mb span.bad{background:var(--danger)}
+.op-pp .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid var(--border);padding-top:12px}
+.op-pp .g b{display:block;font-family:var(--display);font-size:21px;font-weight:700;font-variant-numeric:lining-nums tabular-nums}
+.op-pp .g span{font-size:10.5px;color:var(--gray)}
+.op-ab{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;align-items:start}
+.op-ab .card{margin-bottom:0}
+.op-ab .op-pr{grid-template-columns:24px minmax(0,1fr)}
+.op-ab .op-pr>.op-acts{grid-column:2;justify-content:flex-start}
+.op-note{padding:12px 16px;border-radius:8px;background:rgba(168,106,18,.08);border:1px solid rgba(168,106,18,.25);font-size:12.5px;margin-bottom:16px;line-height:1.5}
+.dr-op .tag-crit,.dr-op .tag-warn,.dr-op .tag-ok{margin-right:4px}
+@media(max-width:1000px){
+  .op-grid{grid-template-columns:1fr}
+  .op-prow{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  .op-prow.head{display:none}
+  .op-prow>.c-etapa,.op-prow>.c-hide{display:none}
+  .op-prow>.c-sem{grid-column:2;grid-row:1;justify-self:end}
+  .op-prow>.c-nome{grid-column:1;grid-row:1}
+  .op-prow>.mob{display:flex;grid-column:1/-1;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--gray)}
+}
+@media(max-width:640px){
+  .op-al{grid-template-columns:4px minmax(0,1fr);padding-right:12px}
+  .op-al .side{grid-column:2;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:8px}
+  .op-dias{font-size:18px}.op-dias small{display:inline;margin-left:4px}
+  .op-pr{grid-template-columns:24px minmax(0,1fr)}
+  .op-pr>.op-acts{grid-column:2;justify-content:flex-start}
+  .op-toolbar input[type=search]{width:100%}
+  .op-lede{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -564,14 +701,15 @@ body.env-test .env-badge{display:inline-block}
 <div class="tabbar">
   <button class="tab active" data-tab="dia" onclick="switchTab('dia')">1 · Meu dia</button>
   <button class="tab" data-tab="delegadas" onclick="switchTab('delegadas')">2 · Delegadas <span class="badge" id="badge-deleg">0</span></button>
-  <button class="tab" data-tab="cadastro" onclick="switchTab('cadastro')">3 · Cadastro</button>
-  <button class="tab" data-tab="alocacao" onclick="switchTab('alocacao')">4 · Grade <span class="badge" id="badge-pool">0</span></button>
-  <button class="tab" data-tab="custohora" onclick="switchTab('custohora')">5 · Custo-hora</button>
-  <button class="tab" data-tab="custos" onclick="switchTab('custos')">6 · Resultado</button>
-  <button class="tab" data-tab="churn" onclick="switchTab('churn')">7 · Churn</button>
-  <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">8 · Projeção</button>
-  <button class="tab" data-tab="watch" onclick="switchTab('watch')">9 · Watch List <span class="badge" id="badge-watch">0</span></button>
-  <button class="tab" data-tab="painel" onclick="switchTab('painel')">10 · Painel</button>
+  <button class="tab" data-tab="operacao" onclick="switchTab('operacao')">3 · Operação <span class="badge" id="badge-op" title="Combinados do Granola sem tarefa no monday"></span></button>
+  <button class="tab" data-tab="cadastro" onclick="switchTab('cadastro')">4 · Cadastro</button>
+  <button class="tab" data-tab="alocacao" onclick="switchTab('alocacao')">5 · Grade <span class="badge" id="badge-pool">0</span></button>
+  <button class="tab" data-tab="custohora" onclick="switchTab('custohora')">6 · Custo-hora</button>
+  <button class="tab" data-tab="custos" onclick="switchTab('custos')">7 · Resultado</button>
+  <button class="tab" data-tab="churn" onclick="switchTab('churn')">8 · Churn</button>
+  <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">9 · Projeção</button>
+  <button class="tab" data-tab="watch" onclick="switchTab('watch')">10 · Watch List <span class="badge" id="badge-watch">0</span></button>
+  <button class="tab" data-tab="painel" onclick="switchTab('painel')">11 · Painel</button>
 </div>
 
 <!-- ABA: MEU DIA -->
@@ -621,6 +759,16 @@ body.env-test .env-badge{display:inline-block}
   <div class="strip" id="deleg-strip"></div>
   <div class="card"><div class="section-title">Em aberto <span class="cnt" id="dg-open-count"></span></div><div id="deleg-open"></div></div>
   <div class="card"><div class="section-title">Entregues nos últimos 30 dias</div><div id="deleg-done"></div></div>
+</div>
+
+<!-- ABA: OPERAÇÃO (monday + Granola) -->
+<div class="page" id="page-operacao">
+  <div class="page-head dia-head">
+    <div><h1>Operação</h1><p>Saúde dos projetos no monday e promessas das reuniões do Granola, confrontadas com as tarefas do monday.</p></div>
+    <div class="op-src" id="op-src"></div>
+  </div>
+  <div class="seg op-sub" id="op-sub"></div>
+  <div id="op-body"></div>
 </div>
 
 <!-- ABA: CADASTRO -->
@@ -894,7 +1042,7 @@ function defaultState(){
       newPerson(p2,'Ariana','pj')
     ],
     clients:[], tasks:[],
-    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[],
+    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[], promessas:{}, vinculosMonday:{},
     fees:{advisor:0,projeto:0},
     fixed:[{id:nid(),name:'Aluguel',value:0},{id:nid(),name:'Softwares',value:0}],
     params:{attendance:75,weeks:4.33,lunch:1},
@@ -971,6 +1119,7 @@ async function loadData(){
   document.getElementById('gate').hidden=true;
   subscribeRealtime();
   loadImports();
+  opLoad();
   return true;
 }
 async function doLogin(ev){
@@ -1079,6 +1228,13 @@ function normalize(){
   const corte=addDays(todayStr(),-180);
   state.planner.blocks=state.planner.blocks.filter(b=>b.date>=corte||(!b.done&&!b.rolled));
   state.planner.items=state.planner.items.filter(i=>!i.done||(i.doneAt||'')>=corte);
+  // v6: Operação (edições das promessas do Granola e ligações quadro do monday → cliente)
+  const obj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+  if(!obj(state.promessas))state.promessas={};
+  if(!obj(state.vinculosMonday))state.vinculosMonday={};
+  // a aba lê 60 dias de reuniões: marcação sem mexer há 120 dias já não tem efeito (promessa manual aberta fica)
+  const corteP=new Date(Date.now()-120*864e5).toISOString();
+  Object.keys(state.promessas).forEach(id=>{const o=state.promessas[id];if(!obj(o)||((o.atualizado||'')<corteP&&!(o.origem==='manual'&&o.estado==='aberta')))delete state.promessas[id]});
 }
 function saveAndRender(){readParams();save();renderAll()}
 function readParams(){state.params.attendance=numv('p-attendance',75);state.params.weeks=numv('p-weeks',4.33);state.params.lunch=numv('p-lunch',1)}
@@ -1216,6 +1372,7 @@ function switchTab(t){
   try{localStorage.setItem('aust_tab',t)}catch(e){}
   if(t==='dia')renderPlanner();
   if(t==='delegadas')renderDelegations();
+  if(t==='operacao')opOpen();
   if(t==='churn')renderChurn();
   if(t==='alocacao')renderAllocation();
   if(t==='custohora')renderCustoHora();
@@ -1342,9 +1499,14 @@ function renderDrawer(){
     <div class="dr-row"><span class="dr-lbl">Estagiários (sob demanda, h/semana)</span><div class="pick-list">${interns.map(p=>{const on=(c.interns||[]).some(i=>i.personId===p.id);return `<button class="pick ${on?'on':''}" onclick="toggleIntern('${c.id}','${p.id}')">${avatar(p,true)}${esc(p.name)}</button>`}).join('')||'<span class="onb-empty">Nenhum estagiário ativo.</span>'}</div>
       ${(c.interns||[]).map(i=>{const p=personById(i.personId);return p?`<div class="intern-row">${avatar(p,true)}<span style="font-size:12px;font-weight:600;flex:1">${esc(p.name)}</span><input type="number" step="0.5" min="0" value="${i.hours}" onchange="updIntern('${c.id}','${i.personId}',+this.value)"><span style="font-size:11px;color:var(--gray)">h/sem</span></div>`:''}).join('')}</div>`;
   const extras=`<div class="row3">${drField('Mensal',drNum(c,'addMonthly','step="0.01" placeholder="0,00"'),'field-money')}${drField('Único',drNum(c,'addOnce','step="0.01" placeholder="0,00"'),'field-money')}${drField('Mês do único',drNum(c,'addOnceOffset','min="0" title="0 = mês de início"'))}</div>`;
+  const pj=projetoDoCliente(c),tg=pj?(pj.semaforo==='crítico'?'tag-crit':pj.semaforo==='atenção'?'tag-warn':'tag-ok'):'';
+  const execucao=pj?`<div class="dr-sec dr-op"><h4>Execução no monday</h4><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"><span class="${tg}">${esc(pj.semaforo)}</span>${pj.motivos.map(x=>`<span class="tag-neu">${esc(x)}</span>`).join('')}</div>
+    <div class="help" style="margin-top:0">${pj.abertas} tarefas em andamento · ${pj.atrasadas.length} atrasadas · ${pj.promessasAbertas.length} promessas abertas${pj.semTarefa.length?` (${pj.semTarefa.length} sem tarefa no monday)`:''}</div>
+    <div style="margin-top:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="btn-s" data-v="${esc(pj.projeto)}" onclick="opIrProjeto(this.dataset.v)">Ver na Operação</button>${opLink(pj.url,'Abrir no monday')}</div></div>`:'';
   d.innerHTML=`<div class="dr-head"><input id="dr-name" value="${esc(c.name)}" onchange="updC('${c.id}','name',this.value)" aria-label="Nome do cliente"><button class="dr-close" onclick="closeClient()" title="Fechar (Esc)">×</button></div>
     <div class="dr-body">
       <div class="dr-sec"><h4>Contrato</h4>${contrato}</div>
+      ${execucao}
       <div class="dr-sec"><h4>Financeiro</h4>${fin}</div>
       <div class="dr-sec"><h4>Equipe e horas</h4>${equipe}</div>
       <div class="dr-sec"><h4>Custos adicionais</h4>${extras}</div>
@@ -1464,6 +1626,7 @@ function updateBadges(){
   document.getElementById('badge-deleg').textContent=state.delegations.filter(d=>d.status==='aberta').length;
   document.getElementById('badge-pool').textContent=state.clients.filter(c=>!c.slot&&c.status==='ativo'&&clientOccupiesNow(c)).length;
   document.getElementById('badge-watch').textContent=state.clients.filter(c=>c.watch&&c.watch.on).length;
+  const bo=document.getElementById('badge-op'),n=opSemTarefa();bo.textContent=n;bo.hidden=!n;
 }
 
 /* ============ ALLOCATION ============ */
@@ -2196,11 +2359,19 @@ function renderChurn(){
 /* ===== importação do histórico (pacotes em app_imports) ===== */
 async function loadImports(){
   try{const {data,error}=await sb.from('app_imports').select('id,title,payload').order('created_at');if(!error&&Array.isArray(data))pendingImports=data}catch(e){}
+  applyAutoImports();
   if(document.getElementById('page-churn').classList.contains('active'))renderImportBanner();
+}
+function applyAutoImports(){ // edições feitas no Painel do COO: entram sozinhas uma vez, sem sobrescrever o que for mais novo
+  const todo=pendingImports.filter(i=>AUTO_IMPORT.test(i.id)&&!state.importsApplied.includes(i.id));if(!todo.length)return;
+  let n=0;
+  todo.forEach(i=>{const p=i.payload||{};Object.keys(p).forEach(id=>{const a=state.promessas[id];if(!a||(a.atualizado||'')<(p[id].atualizado||'')){state.promessas[id]=p[id];n++}});state.importsApplied.push(i.id)});
+  save();opCompute();updateBadges();if(opAtiva())renderOperacao();
+  if(n)toast(`${n} promessas marcadas no Painel do COO foram trazidas para cá`);
 }
 function renderImportBanner(){
   const box=document.getElementById('churn-import');if(!box)return;
-  const todo=pendingImports.filter(i=>!state.importsApplied.includes(i.id));
+  const todo=pendingImports.filter(i=>!AUTO_IMPORT.test(i.id)&&!state.importsApplied.includes(i.id));
   box.innerHTML=todo.map(i=>`<div class="imp-banner"><div><b>${esc(i.title)}</b><br><span style="color:var(--gray)">${(i.payload||[]).length} quadros encerrados para revisar e trazer para o histórico.</span></div><div style="display:flex;gap:8px"><button class="btn-s" onclick="dismissImport('${i.id}')">Ignorar</button><button class="btn-s pri" onclick="openImport('${i.id}')">Revisar e importar</button></div></div>`).join('');
 }
 function dismissImport(id){if(!confirm('Ignorar este histórico? Ele não aparecerá mais aqui.'))return;state.importsApplied.push(id);save();renderImportBanner()}
@@ -2244,6 +2415,278 @@ function runImport(){
   state.importsApplied.push(importId);normalize();save();closeImport();renderAll();toast(`${n} cliente${n===1?'':'s'} importado${n===1?'':'s'} para o histórico`);
 }
 
+/* ============ OPERAÇÃO: monday + Granola ============ */
+// Regras do Painel do COO (coo.js). O monday chega pela função sync-monday (a cada 30 min) e o Granola por uma
+// rotina 3x ao dia; aqui só lemos as duas tabelas. Concluir, editar e apagar promessas fica em state.promessas.
+const OP={monday:null,mondayAt:'',prazos:null,granola:[],granolaAt:'',ok:false,carregando:false,erro:'',model:null,promKey:'',sync:false,carga:0,
+  ui:{sub:'hoje',fTipo:'',fQuem:'',todos:false,pFiltro:'todos',pPasta:'',pBusca:'',aberto:{},prEstado:'abertas',prQuem:'',prProj:'',ed:null,draft:null,novo:false}};
+const OP_SUBS={hoje:'Hoje',promessas:'Promessas',projetos:'Projetos',abertura:'Abertura',desempenho:'Desempenho'};
+const AUTO_IMPORT=/^painel_coo_promessas/;
+try{const s=localStorage.getItem('aust_op_sub');if(OP_SUBS[s])OP.ui.sub=s}catch(e){}
+function opAtiva(){const p=document.getElementById('page-operacao');return !!p&&p.classList.contains('active')}
+function isoLocal(v){const d=new Date(v);if(isNaN(d))return '';const p=n=>String(n).padStart(2,'0'),o=-d.getTimezoneOffset(),a=Math.abs(o);return `${ymdOf(d)}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.000${o>=0?'+':'-'}${p(Math.floor(a/60))}:${p(a%60)}`}
+function haQuanto(iso){if(!iso)return '';const m=Math.max(0,Math.round((Date.now()-new Date(iso))/6e4));return m<1?'agora':m<60?`há ${m} min`:m<2880?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} dias`}
+function opDt(s){if(!s)return '—';const [y,m,d]=String(s).slice(0,10).split('-');return d+'/'+m+(y!==String(new Date().getFullYear())?'/'+y.slice(2):'')}
+function opPct(v){return v==null||isNaN(v)?'—':v+'%'}
+function opWho(n){return `<span class="op-who"><span class="avatar sm">${esc(initials(n))}</span>${esc(String(n).split(' ')[0])}</span>`}
+function opTxt(s){return String(s||'').replace(/\\([~*_#&<>()[\]-])/g,'$1')} // tira os escapes de markdown que vêm do Granola
+function opLink(url,txt,cls){return url?`<a class="${cls||'op-lnk'}" href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`:txt}
+
+async function opLoad(){
+  if(!sb||OP.carregando)return;
+  OP.carregando=true;if(opAtiva()&&!OP.ok)renderOperacao();
+  try{
+    const desde=new Date(Date.now()-60*864e5).toISOString();
+    const [s,g]=await Promise.all([
+      sb.from('sync_snapshots').select('id,payload,updated_at'),
+      sb.from('granola_meetings').select('id,titulo,data,url,criador,externos,resumo,synced_at').gte('data',desde).order('data',{ascending:false})]);
+    if(s.error)throw s.error;if(g.error)throw g.error;
+    const snap={};(s.data||[]).forEach(r=>{snap[r.id]=r});
+    OP.monday=snap.monday?snap.monday.payload:null;OP.mondayAt=snap.monday?snap.monday.updated_at:'';
+    OP.prazos=snap.prazos?snap.prazos.payload:null;
+    OP.granola=g.data||[];
+    OP.granolaAt=snap.granola?snap.granola.updated_at:OP.granola.reduce((m,r)=>r.synced_at>m?r.synced_at:m,'');
+    OP.ok=true;OP.erro='';OP.carga=Date.now();
+  }catch(e){OP.erro='Não foi possível ler o monday e o Granola agora. Tente de novo em instantes.'}
+  OP.carregando=false;opCompute();updateBadges();
+  // recarga em segundo plano não pode tirar o foco de quem está digitando
+  if(opAtiva()){if(opDigitando())renderOpHead();else renderOperacao()}
+  if(editingClient&&!document.getElementById('drawer').contains(document.activeElement))renderDrawer();
+}
+function opDigitando(){const a=document.activeElement;return !!(a&&a.closest&&a.closest('.op-ed,#op-busca'))}
+function opCompute(){
+  OP.promKey=JSON.stringify(state.promessas||{});OP.model=null;
+  if(!OP.monday||typeof COO==='undefined')return;
+  const granola=OP.granola.map(r=>({id:r.id,titulo:r.titulo,data:isoLocal(r.data),url:r.url||'',criador:r.criador||'',externos:r.externos||0}));
+  const resumos={};OP.granola.forEach(r=>{resumos[r.id]=r.resumo||''});
+  // sem a agenda conectada, as reuniões gravadas no Granola contam como as reuniões feitas com o cliente (1h cada)
+  const agendas={Granola:OP.granola.map(r=>({id:'g:'+r.id,titulo:r.titulo,inicio:new Date(r.data).toISOString(),fim:new Date(new Date(r.data).getTime()+36e5).toISOString(),dia_inteiro:false,original:'',participantes:2,externos:r.externos||0,resposta:'accepted',tipo_evento:'DEFAULT',status:'',link:r.url||''}))};
+  try{OP.model=COO.calcular({monday:OP.monday,prazos:OP.prazos,agendas,granola,resumos,overrides:state.promessas||{}});OP.erro=''}
+  catch(e){console.error(e);OP.erro='Não foi possível calcular a operação: '+e.message}
+}
+function opOpen(){if(!OP.ok||Date.now()-OP.carga>6e5)opLoad();renderOperacao()}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&loaded&&opAtiva()&&Date.now()-OP.carga>6e5)opLoad()});
+setInterval(()=>{if(loaded&&!document.hidden&&OP.ok&&Date.now()-OP.carga>9e5)opLoad()},3e5);
+async function opSincronizar(){
+  if(OP.sync||!sb)return;OP.sync=true;renderOpHead();
+  try{
+    const {data,error}=await sb.functions.invoke('sync-monday',{body:{}});
+    if(error){let msg='';try{msg=(await error.context.json()).erro||''}catch(e){}throw new Error(msg||error.message)}
+    OP.sync=false;toast(`monday atualizado: ${data.tarefas} tarefas em ${data.quadros} quadros`);await opLoad();
+  }catch(e){OP.sync=false;renderOpHead();toast(/MONDAY_TOKEN/.test(e.message)?'Falta salvar o token do monday no Supabase (segredo MONDAY_TOKEN).':'Não deu para atualizar o monday agora. '+String(e.message||'').slice(0,120))}
+}
+function opUltimas(m){ // última reunião gravada com o cliente, por projeto (janela de 60 dias)
+  if(!m._ult){m._ult={};m.eventos.forEach(e=>{if(e.tipo==='cliente'&&e.projeto&&(!m._ult[e.projeto]||e.dia>m._ult[e.projeto]))m._ult[e.projeto]=e.dia})}
+  return m._ult;
+}
+function opSemTarefa(){return OP.model?OP.model.promessas.filter(p=>p.situacao==='sem tarefa').length:0}
+
+function renderOpHead(){
+  const src=document.getElementById('op-src'),sub=document.getElementById('op-sub');if(!src||!sub)return;
+  const mMin=OP.mondayAt?(Date.now()-new Date(OP.mondayAt))/6e4:Infinity,gH=OP.granolaAt?(Date.now()-new Date(OP.granolaAt))/36e5:Infinity;
+  src.innerHTML=`<span class="src-chip ${!OP.monday?'err':mMin>120?'warn':'ok'}" title="${OP.mondayAt?'Última leitura dos quadros: '+new Date(OP.mondayAt).toLocaleString('pt-BR')+'. Atualiza sozinho a cada 30 min, em dias úteis.':'O monday ainda não foi lido.'}"><i></i>monday ${OP.monday?haQuanto(OP.mondayAt):'· aguardando'}</span>
+    <span class="src-chip ${!OP.granola.length?'err':gH>16?'warn':'ok'}" title="${OP.granolaAt?'Última cópia das reuniões: '+new Date(OP.granolaAt).toLocaleString('pt-BR')+'. Roda às 8h40, 12h40 e 17h40, em dias úteis.':'Nenhuma reunião do Granola copiada ainda.'}"><i></i>Granola ${OP.granolaAt?haQuanto(OP.granolaAt):'· sem dados'}</span>
+    <button class="btn-s" onclick="opSincronizar()" ${OP.sync?'disabled':''}>${OP.sync?'Atualizando…':'Atualizar monday'}</button>`;
+  const m=OP.model,n={hoje:m?m.kpis.alertasCriticos:'',promessas:m?m.promessas.filter(p=>p.lado==='aust'&&p.estado==='aberta').length:''};
+  sub.innerHTML=Object.entries(OP_SUBS).map(([k,l])=>`<button class="${OP.ui.sub===k?'on':''}" onclick="opSub('${k}')">${l}${n[k]!==undefined&&n[k]!==''?`<span class="n">${n[k]}</span>`:''}</button>`).join('');
+}
+function opSub(k){OP.ui.sub=k;OP.ui.ed=null;OP.ui.novo=false;OP.ui.draft=null;try{localStorage.setItem('aust_op_sub',k)}catch(e){}renderOperacao();window.scrollTo({top:0})}
+function renderOperacao(){
+  const box=document.getElementById('op-body');if(!box)return;
+  renderOpHead();
+  const m=OP.model;
+  if(!m){
+    box.innerHTML=!OP.ok&&!OP.erro?'<div class="empty-state"><b>Lendo o monday e o Granola…</b></div>'
+      :OP.erro?`<div class="insight ins-danger">${esc(OP.erro)} <button class="btn-s" onclick="opLoad()">Tentar de novo</button></div>`
+      :'<div class="empty-state"><b>Aguardando a primeira leitura do monday</b>Assim que o token do monday estiver salvo no Supabase, os quadros entram aqui sozinhos a cada 30 minutos, em dias úteis. Para puxar agora, use “Atualizar monday”.</div>';
+    return;
+  }
+  const s=OP.ui.sub;
+  box.innerHTML=s==='promessas'?opPromessas(m):s==='projetos'?opProjetos(m):s==='abertura'?opAbertura(m):s==='desempenho'?opDesempenho(m):opHoje(m);
+}
+function opFiltro(campo,v){OP.ui[campo]=OP.ui[campo]===v?'':v;renderOperacao()}
+
+/* ----- Hoje ----- */
+function opHoje(m){
+  const k=m.kpis,tot=Math.max(1,k.projetos),semT=opSemTarefa(),u=OP.ui;
+  const lede=`<p class="op-lede">${k.critico?`<b class="crit">${k.critico} ${k.critico>1?'projetos críticos':'projeto crítico'}</b>`:'Nenhum projeto crítico'}, ${k.alertasCriticos} ${k.alertasCriticos===1?'alerta crítico':'alertas críticos'} e ${k.promessasAbertas} ${k.promessasAbertas===1?'promessa aberta':'promessas abertas'} com clientes${semT?`, ${semT} sem tarefa no monday`:''}.</p>`;
+  const kp=`<div class="kpi-grid op-kpis">
+    ${kpi(k.projetos,'Saúde dos projetos','',`<div class="op-stack"><span style="width:${100*k.critico/tot}%;background:var(--danger)"></span><span style="width:${100*k.atencao/tot}%;background:var(--orange)"></span><span style="width:${100*k.emDia/tot}%;background:var(--green)"></span></div>${k.critico} críticos · ${k.atencao} atenção · ${k.emDia} em dia`)}
+    ${kpi(opPct(k.pctNoPrazoMes),'No prazo original · mês',k.pctNoPrazoMes!=null&&k.pctNoPrazoMes<50?'n-red':'',`${opPct(k.pctNoPrazo7)} nos últimos 7 dias · ${k.concluidasMes} entregues`)}
+    ${kpi(k.adiamentos30,'Adiamentos · 30 dias',k.adiamentos30>50?'n-red':'',`${k.tarefasAdiadasAbertas} tarefas abertas já adiadas · idade média ${k.idadeMedia==null?'—':k.idadeMedia+' dias'}`)}
+    ${kpi(opPct(k.pctDisciplina),'Granola → monday',k.pctDisciplina!=null&&k.pctDisciplina<50?'n-red':'',`dos ${k.passos} combinados viraram tarefa · ${k.horasLancar==null?'—':k.horasLancar+'h'} em média`)}
+    ${kpi(k.promessasAbertas,'Promessas abertas','',`a mais antiga tem ${k.promessaMaisAntiga} dias`)}</div>`;
+  const tipos={},quem={};
+  m.alertas.forEach(a=>{tipos[a.tipo]=(tipos[a.tipo]||0)+1;a.quem.forEach(q=>{quem[q]=(quem[q]||0)+1})});
+  let als=m.alertas.filter(a=>(!u.fTipo||a.tipo===u.fTipo)&&(!u.fQuem||a.quem.includes(u.fQuem)));
+  const total=als.length;if(!u.todos)als=als.slice(0,14);
+  const chip=(campo,v,rot,n)=>`<button class="fchip ${u[campo]===v?'on':''}" data-v="${esc(v)}" onclick="opFiltro('${campo}',this.dataset.v)">${esc(rot)}${n!=null?`<span class="c">${n}</span>`:''}</button>`;
+  const chips=`<div class="op-filters">${chip('fTipo','','Todos',m.alertas.length)}${Object.entries(tipos).sort((a,b)=>b[1]-a[1]).map(([t,n])=>chip('fTipo',t,t,n)).join('')}</div>
+    <div class="op-filters">${chip('fQuem','','Todas as pessoas')}${Object.entries(quem).sort((a,b)=>b[1]-a[1]).map(([t,n])=>chip('fQuem',t,t.split(' ')[0],n)).join('')}</div>`;
+  const lista=`<div class="card flush">${als.length?als.map(opAlerta).join(''):'<div class="empty-line" style="padding:14px 18px">Nada neste filtro.</div>'}${total>14?`<div class="op-more"><button class="btn-s" onclick="OP.ui.todos=!OP.ui.todos;renderOperacao()">${u.todos?'Mostrar menos':'Ver todos os '+total}</button></div>`:''}</div>`;
+  const ent=m.proximasEntregas;
+  const prox=`<div class="card flush"><div class="section-title">Vencem em até 3 dias úteis</div>${ent.length?ent.slice(0,10).map(t=>`<div class="op-mini-r">${opLink(t.url,esc(t.nome),'t')}<span class="s">${esc(t.projeto)} · ${esc(t.pessoas.map(p=>p.split(' ')[0]).join(', ')||'sem dono')}${t.adiamentos?` · adiada ${t.adiamentos}x`:''}</span><span class="x">${opDt(t.entrega)}</span></div>`).join('')+(ent.length>10?`<div class="op-mini-r"><span class="s">+ ${ent.length-10} entregas</span></div>`:''):'<div class="empty-line" style="padding:6px 18px 14px">Nenhuma entrega nos próximos 3 dias úteis.</div>'}</div>`;
+  const ult=opUltimas(m),hoje=todayStr();
+  const fila=m.projetos.map(p=>({p,d:ult[p.projeto]||''})).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,8);
+  const contato=`<div class="card flush"><div class="section-title">Mais tempo sem reunião gravada</div>${fila.map(({p,d})=>{const n=d?daysBetween(d,hoje):null;return `<div class="op-mini-r"><span class="t">${esc(p.projeto)}</span><span class="s">${d?'Última: '+opDt(d):'Nenhuma gravada em 60 dias'}${p.lider[0]?' · '+esc(p.lider[0].split(' ')[0]):''}</span><span class="x">${d?`<span class="${n>14?'tag-warn':'tag-neu'}">${n} ${n===1?'dia':'dias'}</span>`:'<span class="tag-crit">sem registro</span>'}</span></div>`}).join('')}</div>`;
+  return lede+kp+(k.temHist?'':'<div class="op-note">O histórico de prazos do monday ainda está sendo montado. Atrasos e adiamentos ficam exatos depois da primeira sincronização completa.</div>')+
+    `<div class="op-grid"><div><div class="section-title">Atenção imediata <span class="cnt">crítico primeiro · atraso conta da 1ª data de entrega do card</span></div>${chips}${lista}</div><div class="op-side">${prox}${contato}</div></div>`;
+}
+function opAlerta(a){
+  const det=a.itens&&a.itens.length?`<details class="op-det" data-k="al:${esc(a.id)}" ${OP.ui.aberto['al:'+a.id]?'open':''} ontoggle="OP.ui.aberto[this.dataset.k]=this.open"><summary>Ver ${a.itens.length} ${a.itens.length>1?'itens':'item'}</summary><ul>${a.itens.slice(0,25).map(i=>`<li>${opLink(i.url,esc(opTxt(i.nome)))}${i.info?`<span>${esc(i.info)}</span>`:''}</li>`).join('')}</ul></details>`:'';
+  const acoes=(a.promessa?`<button class="btn-s" onclick="opCopiar('${a.promessa}',this)">Copiar tarefa</button><button class="btn-s" onclick="opSalvar('${a.promessa}',{estado:'concluida'},'Promessa concluída')">Concluir</button>`:'')+(a.link?opLink(a.link,'Abrir no monday'):'');
+  return `<div class="op-al ${a.gravidade==='crítico'?'crit':''}"><span class="bar"></span><div><div class="top"><span class="tipo">${esc(a.tipo)}</span><span class="proj">${esc(a.projeto)}</span></div><div class="tit">${esc(opTxt(a.titulo))}</div>${a.detalhe?`<div class="det">${esc(opTxt(a.detalhe))}</div>`:''}${a.quem.length?`<div class="who">${a.quem.slice(0,4).map(opWho).join('')}</div>`:''}${det}</div><div class="side">${a.dias!=null?`<span class="op-dias">${a.dias}<small>dias</small></span>`:''}<div class="op-acts">${acoes}</div></div></div>`;
+}
+
+/* ----- Promessas ----- */
+function opPromessas(m){
+  const u=OP.ui,est={abertas:['Abertas',p=>p.estado==='aberta'],concluidas:['Concluídas',p=>p.estado==='concluida'],apagadas:['Apagadas',p=>p.estado==='apagada'],todas:['Todas',p=>p.estado!=='apagada']};
+  const fEst=(est[u.prEstado]||est.abertas)[1];
+  const base=m.promessas.filter(p=>(!u.prQuem||(p.donos||[]).includes(u.prQuem))&&(!u.prProj||p.projeto===u.prProj));
+  const aust=base.filter(p=>p.lado==='aust'&&fEst(p)).sort((a,b)=>(a.situacao==='sem tarefa'?0:1)-(b.situacao==='sem tarefa'?0:1)||b.dias-a.dias);
+  const cli=base.filter(p=>p.lado==='cliente'&&p.ultima&&fEst(p)).sort((a,b)=>b.dias-a.dias);
+  const cont=f=>m.promessas.filter(p=>p.lado==='aust'&&f(p)).length;
+  const seg=`<div class="seg">${Object.entries(est).map(([k,[l,f]])=>`<button class="${u.prEstado===k?'on':''}" onclick="OP.ui.prEstado='${k}';renderOperacao()">${l} ${cont(f)}</button>`).join('')}</div>`;
+  const projs=[...new Set(m.promessas.map(p=>p.projeto).filter(Boolean))].sort();
+  const selQ=`<select onchange="OP.ui.prQuem=this.value;renderOperacao()" aria-label="Dono"><option value="">Todos os donos</option>${m.pessoasTime.map(n=>`<option value="${esc(n)}" ${u.prQuem===n?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
+  const selP=`<select onchange="OP.ui.prProj=this.value;renderOperacao()" aria-label="Projeto"><option value="">Todos os projetos</option>${projs.map(n=>`<option value="${esc(n)}" ${u.prProj===n?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
+  return `<div class="op-toolbar">${seg}${selQ}${selP}<span style="flex:1"></span><button class="add-btn sm" onclick="opNovo()">+ Nova promessa</button></div>
+    ${u.novo?`<div class="card flush"><div class="op-new">${opEditor(m,null)}</div></div>`:''}
+    <div class="card flush"><div class="section-title">Promessas da Aust <span class="cnt">próximos passos do Granola confrontados com as tarefas do monday</span></div>${aust.length?aust.map(p=>opLinhaPromessa(p,m)).join(''):'<div class="empty-line" style="padding:6px 18px 16px">Nenhuma promessa neste filtro.</div>'}</div>
+    <div class="card flush"><div class="section-title">O cliente ficou de… <span class="cnt">da reunião mais recente de cada projeto</span></div>${cli.length?cli.map(p=>opLinhaPromessa(p,m)).join(''):'<div class="empty-line" style="padding:6px 18px 16px">Nenhuma pendência do cliente neste filtro.</div>'}</div>
+    <p class="help">Uma promessa conta como lançada quando existe no quadro do cliente uma tarefa com pelo menos 2 palavras em comum, criada a partir da véspera da reunião. Concluir, editar ou apagar fica salvo só aqui; nada é escrito no monday.</p>`;
+}
+function opLinhaPromessa(p,m){
+  const feito=p.estado==='concluida',apag=p.estado==='apagada';
+  const sit={'sem tarefa':'<span class="tag-crit">sem tarefa no monday</span>','no monday':'<span class="tag-warn">no monday</span>','concluída':'<span class="tag-ok">concluída</span>','apagada':'<span class="tag-neu">apagada</span>','cliente':'<span class="tag-neu">do cliente</span>','recente':'<span class="tag-neu">recente</span>'}[p.situacao]||'';
+  const meta=[esc(p.projeto||'Sem projeto'),p.origem==='manual'?'adicionada aqui':(p.origem==='abertura'?'abertura de ':'reunião de ')+opDt(p.data),(p.donos||[]).length?p.donos.map(opWho).join(' '):'sem dono'];
+  if(p.prazo)meta.push(`<span class="${p.atrasada?'tag-crit':'tag-neu'}">prazo ${opDt(p.prazo)}</span>`);
+  if(p.dias&&p.estado==='aberta')meta.push(p.dias+(p.dias===1?' dia':' dias'));
+  const tarefa=p.tarefa?`<div class="pd">↳ No monday: ${opLink(p.tarefa_url,esc(p.tarefa))}${p.tarefa_feita?' · feita':''}</div>`:'';
+  const acoes=apag?`<button class="btn-s" onclick="opSalvar('${p.id}',{estado:'aberta'})">Restaurar</button>`
+    :`<button class="btn-s" onclick="opEditar('${p.id}')">Editar</button>${p.lado==='aust'&&p.situacao==='sem tarefa'?`<button class="btn-s" onclick="opCopiar('${p.id}',this)">Copiar tarefa</button>`:''}<button class="mini-btn" onclick="opApagar('${p.id}')">Apagar</button>`;
+  const links=(!p.tarefa&&p.quadro_url?opLink(p.quadro_url,'Quadro'):'')+(p.nota_url?opLink(p.nota_url,'Nota'):'');
+  return `<div class="op-pr ${feito?'done':''} ${apag?'del':''}"><button class="ck ${feito?'on':''}" role="checkbox" aria-checked="${feito}" aria-label="Concluída" onclick="opToggle('${p.id}')" ${apag?'disabled':''}></button>
+    <div><div class="pt">${esc(opTxt(p.texto))}</div>${p.detalhe&&!p.editada?`<div class="pd">${esc(opTxt(p.detalhe))}</div>`:''}${p.obs?`<div class="pd">Obs.: ${esc(p.obs)}</div>`:''}<div class="pm">${meta.join('<span>·</span>')} ${sit}${p.manualEstado&&feito?'<span>(marcada aqui)</span>':''}</div>${tarefa}</div>
+    <div class="op-acts">${links}${acoes}</div>${OP.ui.ed===p.id?opEditor(m,p):''}</div>`;
+}
+function opEditor(m,p){
+  const d=OP.ui.draft||{};
+  return `<div class="op-ed">
+    <div class="field"><label for="op-ed-texto">${p?'Promessa':'Nova promessa'}</label><textarea id="op-ed-texto" rows="2" placeholder="O que foi prometido ao cliente" oninput="OP.ui.draft.texto=this.value">${esc(d.texto||'')}</textarea></div>
+    <div class="row2"><div class="field"><label>Prazo combinado</label><input type="date" value="${esc(d.prazo||'')}" onchange="OP.ui.draft.prazo=this.value"></div>
+      <div class="field"><label>Projeto</label><select onchange="OP.ui.draft.projeto=this.value"><option value="">Sem projeto</option>${m.projetos.map(x=>`<option value="${esc(x.projeto)}" ${x.projeto===d.projeto?'selected':''}>${esc(x.projeto)}</option>`).join('')}</select></div></div>
+    <div class="field"><label>Dono</label><div class="pick-list">${m.pessoasTime.map(n=>`<button class="pick ${(d.donos||[]).includes(n)?'on':''}" data-v="${esc(n)}" onclick="opDono(this)"><span class="avatar sm">${esc(initials(n))}</span>${esc(n.split(' ')[0])}</button>`).join('')}</div></div>
+    ${p?`<div class="field"><label>Observação</label><input value="${esc(d.obs||'')}" oninput="OP.ui.draft.obs=this.value"></div>`:''}
+    <div class="acts"><button class="btn-s" onclick="opCancelar()">Cancelar</button><button class="btn-s pri" onclick="${p?`opSalvarEd('${p.id}')`:'opCriar()'}">${p?'Salvar':'Adicionar'}</button></div></div>`;
+}
+function opPromessa(id){const m=OP.model;return m?m.promessas.concat(m.abertura.itens).find(p=>p.id===id):null}
+function opSalvar(id,mud,msg){
+  const novo={...(state.promessas[id]||{}),...mud,atualizado:new Date().toISOString()};
+  Object.keys(novo).forEach(k=>{if(novo[k]===undefined)delete novo[k]});
+  state.promessas[id]=novo;save();opCompute();updateBadges();renderOperacao();if(msg)toast(msg);
+}
+function opToggle(id){const p=opPromessa(id);if(p)opSalvar(id,{estado:p.estado==='concluida'?'aberta':'concluida'})}
+function opApagar(id){
+  const p=opPromessa(id);if(!p)return;
+  if(p.origem!=='manual'){opSalvar(id,{estado:'apagada'},'Promessa apagada. Ela fica em “Apagadas” se quiser restaurar.');return}
+  if(!confirm(`Remover "${p.texto}"?`))return;
+  delete state.promessas[id];save();opCompute();updateBadges();renderOperacao();toast('Promessa removida');
+}
+function opFocoEditor(){setTimeout(()=>{const t=document.getElementById('op-ed-texto');if(t)t.focus()},0)}
+function opEditar(id){const p=opPromessa(id);if(!p)return;OP.ui.ed=id;OP.ui.novo=false;OP.ui.draft={texto:opTxt(p.texto),prazo:p.prazo,projeto:p.projeto,donos:(p.donos||[]).slice(),obs:p.obs};renderOperacao();opFocoEditor()}
+function opNovo(){OP.ui.novo=true;OP.ui.ed=null;OP.ui.draft={texto:'',prazo:'',projeto:OP.ui.prProj||'',donos:[],obs:''};renderOperacao();opFocoEditor()}
+function opCancelar(){OP.ui.ed=null;OP.ui.novo=false;OP.ui.draft=null;renderOperacao()}
+function opDono(el){const d=OP.ui.draft;if(!d)return;const v=el.dataset.v,ds=d.donos||[];d.donos=ds.includes(v)?ds.filter(x=>x!==v):ds.concat(v);el.classList.toggle('on',d.donos.includes(v))}
+function opSalvarEd(id){const d=OP.ui.draft||{};if(!(d.texto||'').trim()){toast('Escreva a promessa antes de salvar');return}OP.ui.ed=null;OP.ui.draft=null;opSalvar(id,{texto:d.texto.trim(),prazo:d.prazo||'',projeto:d.projeto||'',donos:d.donos||[],obs:(d.obs||'').trim()},'Promessa atualizada')}
+function opCriar(){const d=OP.ui.draft||{};if(!(d.texto||'').trim()){toast('Escreva a promessa antes de adicionar');return}OP.ui.novo=false;OP.ui.draft=null;opSalvar('m_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),{origem:'manual',texto:d.texto.trim(),prazo:d.prazo||'',projeto:d.projeto||'',donos:d.donos||[],estado:'aberta',criado:new Date().toISOString()},'Promessa adicionada')}
+function opCopiar(id,btn){
+  const p=opPromessa(id);if(!p)return;
+  const txt=[opTxt(p.texto),p.detalhe&&!p.editada?'Detalhe: '+opTxt(p.detalhe):'','Projeto: '+(p.projeto||'—'),'Responsável: '+((p.donos||[]).join(', ')||'a definir'),p.prazo?'Prazo: '+opDt(p.prazo):'','Origem: '+(p.origem==='manual'?'ferramenta do COO':'reunião de '+opDt(p.data)+' (Granola)')].filter(Boolean).join('\n');
+  const ok=()=>{if(btn){const o=btn.textContent;btn.textContent='Copiado';setTimeout(()=>{btn.textContent=o},1500)}toast('Tarefa copiada: cole no quadro do cliente no monday')};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,()=>{prompt('Copie a tarefa:',txt);ok()});else{prompt('Copie a tarefa:',txt);ok()}
+}
+
+/* ----- Projetos ----- */
+function clienteDoProjeto(nome){ // ligação manual primeiro; senão, pelo nome
+  const id=(state.vinculosMonday||{})[nome];if(id){const c=state.clients.find(x=>x.id===id);if(c)return c}
+  const k=normTxt(nome).replace(/ /g,'');if(k.length<3)return null;
+  const n=c=>normTxt(c.name).replace(/ /g,''),vivos=state.clients.filter(c=>c.status==='ativo'||c.status==='pausado');
+  return vivos.find(c=>n(c)===k)||vivos.find(c=>Math.min(n(c).length,k.length)>=4&&(n(c).startsWith(k)||k.startsWith(n(c))))||null;
+}
+function projetoDoCliente(c){return OP.model?OP.model.projetos.find(p=>clienteDoProjeto(p.projeto)===c)||null:null}
+function opVincular(proj,val){if(!val)return;state.vinculosMonday=state.vinculosMonday||{};if(val==='-')delete state.vinculosMonday[proj];else state.vinculosMonday[proj]=val;save();renderOperacao();toast(val==='-'?'Ligação desfeita':'Quadro ligado ao cadastro')}
+function opIrProjeto(v){if(editingClient)closeClient();OP.ui.sub='projetos';OP.ui.pFiltro='todos';OP.ui.pPasta='';OP.ui.pBusca='';OP.ui.aberto['p:'+v]=true;switchTab('operacao')}
+function opBusca(v){OP.ui.pBusca=v;clearTimeout(opBusca._t);opBusca._t=setTimeout(()=>{renderOperacao();const b=document.getElementById('op-busca');if(b){b.focus();b.setSelectionRange(b.value.length,b.value.length)}},250)}
+function opAbrirProj(ev,v){if(ev.target.closest('a,button,select'))return;OP.ui.aberto['p:'+v]=!OP.ui.aberto['p:'+v];renderOperacao()}
+function opProjetos(m){
+  const u=OP.ui,cont={todos:m.projetos.length,'crítico':0,'atenção':0,'em dia':0};m.projetos.forEach(p=>{cont[p.semaforo]++});
+  const busca=normTxt(u.pBusca);
+  const ps=m.projetos.filter(p=>(u.pFiltro==='todos'||p.semaforo===u.pFiltro)&&(!u.pPasta||p.pasta===u.pPasta)&&(!busca||normTxt(p.projeto+' '+p.servico).includes(busca)));
+  const seg=`<div class="seg">${[['todos','Todos'],['crítico','Críticos'],['atenção','Atenção'],['em dia','Em dia']].map(([v,l])=>`<button class="${u.pFiltro===v?'on':''}" data-v="${v}" onclick="OP.ui.pFiltro=this.dataset.v;renderOperacao()">${l} ${cont[v]}</button>`).join('')}</div>`;
+  const pastas=[['','Tudo']].concat([...new Set(m.projetos.map(p=>p.pasta))].sort().map(x=>[x,x]));
+  const segP=`<div class="seg">${pastas.map(([v,l])=>`<button class="${u.pPasta===v?'on':''}" data-v="${esc(v)}" onclick="OP.ui.pPasta=this.dataset.v;renderOperacao()">${esc(l)}</button>`).join('')}</div>`;
+  const head='<div class="op-prow head"><span>Status</span><span>Projeto</span><span>Etapa</span><span>Atrasadas</span><span>Adiamentos</span><span>No prazo</span><span>Reuniões 30d</span><span>Última reunião</span></div>';
+  return `<div class="op-toolbar">${seg}${segP}<input type="search" id="op-busca" placeholder="Buscar cliente" aria-label="Buscar cliente" value="${esc(u.pBusca)}" oninput="opBusca(this.value)"></div>
+    <div class="card flush">${head}${ps.map(p=>opLinhaProjeto(p,m)).join('')||'<div class="empty-line" style="padding:14px 18px">Nenhum projeto neste filtro.</div>'}</div>
+    <p class="help">Atraso e “no prazo” contam da 1ª data de entrega do card; mudar a data nos 2 primeiros dias do card conta como planejamento. Reuniões são as gravadas no Granola com o cliente.</p>`;
+}
+function opLinhaProjeto(p,m){
+  const ab=!!OP.ui.aberto['p:'+p.projeto],tg=p.semaforo==='crítico'?'tag-crit':p.semaforo==='atenção'?'tag-warn':'tag-ok',ult=opUltimas(m)[p.projeto]||'';
+  const iAt=p.etapas.indexOf(p.etapaAtual),iEx=p.etapas.indexOf(p.etapaEsperada);
+  const steps=p.etapas.length?`<div class="op-steps">${p.etapas.map((e,i)=>`<i class="${i<iAt?'done':i===iAt?'now':''}${i===iEx&&iEx!==iAt?' exp':''}" title="${esc(e)}"></i>`).join('')}</div>`:'';
+  const linha=`<div class="op-prow ${ab?'open':''}" data-v="${esc(p.projeto)}" onclick="opAbrirProj(event,this.dataset.v)" onkeydown="if(event.key==='Enter')opAbrirProj(event,this.dataset.v)" role="button" tabindex="0" aria-expanded="${ab}">
+    <span class="c-sem"><span class="${tg}">${esc(p.semaforo)}</span></span>
+    <span class="c-nome"><div class="nm">${esc(p.projeto)}</div><div class="sv">${esc(p.servico)}</div></span>
+    <span class="c-etapa"><div style="font-size:12px">${esc(p.etapaAtual||'—')}${p.faseAtrasada?` <span style="color:var(--gray)">→ ${esc(p.etapaEsperada)}</span>`:''}</div>${steps}</span>
+    <span class="v c-hide ${p.maiorAtraso>=15?'bad':''}">${p.atrasadas.length}<small>${p.maiorAtraso?'até '+p.maiorAtraso+' dias':'em dia'}</small></span>
+    <span class="v c-hide">${p.adiamentos}<small>${p.empurradas.length} tarefas</small></span>
+    <span class="v c-hide">${opPct(p.pctNoPrazo)}<small>${p.concluidasMes} no mês</small></span>
+    <span class="v c-hide ${p.reunioes30<2?'bad':''}">${p.reunioes30}<small>gravadas</small></span>
+    <span class="v c-hide" style="font-size:12px">${ult?opDt(ult):'<span class="tag-warn">sem registro</span>'}</span>
+    <span class="mob"><span>${p.atrasadas.length} atrasadas</span><span>${p.adiamentos} adiamentos</span><span>${p.reunioes30} reuniões em 30 dias</span></span></div>`;
+  if(!ab)return linha;
+  const li=(arr,f)=>arr.length?`<ul>${arr.slice(0,12).map(f).join('')}${arr.length>12?`<li style="color:var(--gray)">+ ${arr.length-12}</li>`:''}</ul>`:'<p style="color:var(--gray)">Nada.</p>';
+  const lt=t=>`<li>${opLink(t.url,esc(t.nome))}<span>${esc((t.pessoas.join(', ')||'sem dono')+' · original '+opDt(t.original)+(t.entrega&&t.entrega!==t.original?' → atual '+opDt(t.entrega):'')+(t.adiamentos?' · '+t.adiamentos+'x adiada':''))}</span></li>`;
+  const c=clienteDoProjeto(p.projeto),mg=c?clientMarginNow(c):null,dono=c?personById(c.ownerId):null;
+  const cad=c?`<p><b>${esc(c.name)}</b> · ${esc(clientKindLabel(c))} · ${esc(CLIENT_STATUS[c.status]||'')}<br>${esc(clientPeriodText(c))} · ${esc(clientValueText(c))}<br>Consultor: ${dono?esc(dono.name):'—'} · Margem agora: <b class="${marginClass(mg)}">${marginText(mg)}</b></p><p style="margin-top:8px"><button class="btn-s" onclick="openClient('${c.id}')">Abrir no cadastro</button></p>`:'<p style="color:var(--gray)">Nenhum cliente do cadastro ligado a este quadro.</p>';
+  const opts=state.clients.filter(x=>x.status!=='encerrado').sort((a,b)=>a.name.localeCompare(b.name));
+  const vinc=`<select data-v="${esc(p.projeto)}" onchange="opVincular(this.dataset.v,this.value)" aria-label="Ligar ao cadastro"><option value="">${c?'Trocar o cliente ligado…':'Ligar a um cliente do cadastro…'}</option>${opts.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}${state.vinculosMonday[p.projeto]?'<option value="-">Desfazer a ligação manual</option>':''}</select>`;
+  return linha+`<div class="op-pdet"><div class="op-motivos">${p.motivos.length?p.motivos.map(x=>`<span class="${tg}">${esc(x)}</span>`).join(''):'<span class="tag-ok">Sem pendências</span>'}</div>
+    <div><h4>Próximo marco</h4>${p.proximo?`<p><b>${esc(p.proximo.nome)}</b><br><span style="color:var(--gray)">${opDt(p.proximo.entrega)} · ${esc(p.proximo.pessoas.join(', ')||'sem dono')}</span></p>`:'<p style="color:var(--gray)">Sem marco com data.</p>'}
+      <h4 style="margin-top:14px">Contato</h4><p>Última reunião gravada: ${ult?opDt(ult):'—'}<br>Promessas abertas: ${p.promessasAbertas.length}${p.semTarefa.length?` · <b style="color:var(--danger)">${p.semTarefa.length} sem tarefa</b>`:''}</p>
+      <p style="margin-top:10px">${opLink(p.url,'Abrir quadro no monday')}</p></div>
+    <div><h4>Cadastro</h4>${cad}${vinc}</div>
+    <div><h4>Atrasadas (prazo original)</h4>${li(p.atrasadas.slice().sort((a,b)=>b.atrasoReal-a.atrasoReal),lt)}</div>
+    <div><h4>Com prazo adiado</h4>${li(p.empurradas.slice().sort((a,b)=>b.adiamentos-a.adiamentos),lt)}</div>
+    <div><h4>Travadas e sem dono</h4>${li(p.travadas.concat(p.semDono.filter(t=>!p.travadas.includes(t))),lt)}</div>
+    ${p.clienteDevendo.length?`<div><h4>Cliente devendo</h4>${li(p.clienteDevendo,x=>`<li>${esc(opTxt(x))}</li>`)}</div>`:''}</div>`;
+}
+
+/* ----- Abertura ----- */
+function opAbertura(m){
+  const ab=m.abertura;
+  if(!ab.reuniao)return '<div class="op-note">Nenhuma gravação do Start Semanal com próximos passos no Granola nos últimos 60 dias. Grave a próxima abertura no Granola e ela aparece aqui sozinha.</div>';
+  const velho=ab.itens.length&&ab.itens[0].dias>=7,semResumo=ab.ultimaGravada&&ab.ultimaGravada.id!==ab.reuniao.id;
+  const grupos={};ab.itens.forEach(p=>{const k=(p.donos&&p.donos[0])||'Sem dono';(grupos[k]=grupos[k]||[]).push(p)});
+  const feitos=ab.itens.filter(p=>p.estado==='concluida').length;
+  const cols=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0])).map(([dono,its])=>`<div class="card flush"><div class="section-title">${dono==='Sem dono'?'Sem dono':opWho(dono)} <span class="cnt">${its.filter(p=>p.estado==='concluida').length} de ${its.filter(p=>p.estado!=='apagada').length}</span></div>${its.map(p=>opLinhaPromessa(p,m)).join('')}</div>`).join('');
+  return `<p class="op-lede">Start Semanal de ${opDt(ab.reuniao.data)}: ${feitos} de ${ab.itens.length} feitos. ${opLink(ab.reuniao.url,'Abrir no Granola')}</p>`+
+    (velho?`<div class="op-note">${semResumo?`A abertura de ${opDt(ab.ultimaGravada.data)} foi gravada, mas ainda não tem resumo com próximos passos.`:'A abertura desta semana ainda não foi gravada no Granola.'} Mostrando a de ${opDt(ab.reuniao.data)}.</div>`:'')+`<div class="op-ab">${cols}</div>`;
+}
+
+/* ----- Desempenho ----- */
+function opDesempenho(m){
+  const tom=(v,b,r)=>v==null?'':v>=b?'good':v<=r?'bad':'mid',tomInv=(v,b,r)=>v==null?'':v<=b?'good':v>=r?'bad':'mid';
+  const meter=(rot,v,cls)=>`<div class="op-meter"><div class="mh"><span>${rot}</span><b>${opPct(v)}</b></div><div class="mb"><span class="${cls}" style="width:${Math.min(100,v||0)}%"></span></div></div>`;
+  const cards=m.consultores.map(c=>`<div class="op-pp"><div class="h"><span class="avatar">${esc(initials(c.pessoa))}</span><div><div class="nm">${esc(c.pessoa)}</div><div class="sb">${c.projetos} projetos · ${c.abertas} tarefas abertas</div></div></div>
+    ${meter('Entregue no prazo original (mês)',c.pctNoPrazo,tom(c.pctNoPrazo,80,50))}${meter('Tarefas com prazo adiado',c.pctAdiadas,tomInv(c.pctAdiadas,15,35))}${meter('Combinados do Granola lançados no monday',c.pctDisciplina,tom(c.pctDisciplina,80,50))}
+    <div class="g"><div><b>${c.atrasadas}</b><span>atrasadas</span></div><div><b>${c.adiamentos30}</b><span>adiamentos em 30 dias</span></div><div><b>${c.idadeMedia==null?'—':c.idadeMedia}</b><span>idade média (dias)</span></div><div><b>${c.semTarefa}</b><span>combinados sem tarefa</span></div><div><b>${c.promessasAbertas}</b><span>promessas abertas</span></div><div><b>${c.horasLancar==null?'—':c.horasLancar+'h'}</b><span>até lançar</span></div></div></div>`).join('');
+  const rank=`<table class="tbl"><thead><tr><th>Pessoa</th><th>Combinados</th><th>Lançados</th><th>Disciplina</th><th>Horas até lançar</th><th>Sem tarefa</th></tr></thead><tbody>${m.consultores.map(c=>`<tr><td><b>${esc(c.pessoa)}</b></td><td class="mono-num">${c.passos}</td><td class="mono-num">${c.lancados}</td><td class="mono-num"><b>${opPct(c.pctDisciplina)}</b></td><td class="mono-num">${c.horasLancar==null?'—':c.horasLancar+'h'}</td><td class="mono-num">${c.semTarefa}</td></tr>`).join('')}</tbody></table>`;
+  return `<div class="op-people">${cards}</div><div class="card"><div class="section-title">Granola → monday por pessoa <span class="cnt">próximos passos com mais de 24h que viraram tarefa no quadro do cliente</span></div><div style="overflow-x:auto">${rank}</div></div>
+    <p class="help">Prazo original = 1ª data de entrega do card. Adiado = data empurrada depois do planejamento. Horas em reunião ficam de fora até a agenda ser conectada.</p>`;
+}
+
 /* ============ EXPORT / IMPORT ============ */
 function exportJSON(){dl(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'austcapital_simulador_backup.json')}
 function importJSON(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const o=JSON.parse(e.target.result);if(!o.people||!o.clients)throw 0;state=o;if(!state.params)state.params={attendance:75,weeks:4.33,lunch:1};normalize();save();renderAll();switchTab('cadastro');alert('Backup restaurado.')}catch(err){alert('Arquivo inválido.')}};r.readAsText(file);ev.target.value=''}
@@ -2270,6 +2713,8 @@ function renderAll(){
   renderPeople();renderClients();renderFixed();renderFeesInputs();renderParams();renderDatalists();updateBadges();
   if(document.getElementById('page-dia').classList.contains('active'))renderPlanner();
   if(document.getElementById('page-delegadas').classList.contains('active'))renderDelegations();
+  if(OP.monday&&JSON.stringify(state.promessas||{})!==OP.promKey){opCompute();updateBadges()} // edição chegou de outro lugar
+  if(opAtiva()&&!opDigitando())renderOperacao();
   if(document.getElementById('page-churn').classList.contains('active'))renderChurn();
   if(document.getElementById('page-alocacao').classList.contains('active'))renderAllocation();
   if(document.getElementById('page-custohora').classList.contains('active'))renderCustoHora();

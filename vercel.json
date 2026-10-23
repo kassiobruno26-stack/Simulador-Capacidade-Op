@@ -1,4 +1,4 @@
 {
-  "buildCommand": "mkdir -p dist && cp -r index.html assets dist/ && printf \"window.AUST_ENV='%s';\\n\" \"$VERCEL_ENV\" > dist/env.js",
+  "buildCommand": "mkdir -p dist && cp -r index.html coo.js assets dist/ && printf \"window.AUST_ENV='%s';\\n\" \"$VERCEL_ENV\" > dist/env.js",
   "outputDirectory": "dist"
 }
