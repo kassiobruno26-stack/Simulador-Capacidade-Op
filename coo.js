@@ -1,5 +1,6 @@
-/* Regras do Painel do COO (copiadas sem alteração do painel publicado em 13/10/2026, versão 1791923650-75a0).
-   Usado pela ferramenta (navegador) e pela função sync-monday (Supabase). */
+/* Regras do Painel do COO (copiadas do painel publicado em 13/10/2026, versão 1791923650-75a0).
+   Usado pela ferramenta (navegador) e pela função sync-monday (Supabase).
+   Únicas adições, para a aba Indicadores: cada tarefa traz adDias (dias dos adiamentos) e calcular devolve tarefas. */
 /* Painel do COO — leitura das fontes e regras. Funções puras (sem DOM). */
 const COO = (() => {
   const EXCLUIR = /zanatta|ana loise|membro exclu|institucional@/i;
@@ -284,7 +285,7 @@ const COO = (() => {
       const emJogo = !f && !!(t.entrega || (t.status && !/^(to.?do|a fazer)$/i.test(t.status)) || /^cronograma$/i.test(t.cronograma));
       return {
         ...t, feita: f, emJogo, doCliente: doCliente(t), travada: !f && travada(t), original,
-        adiamentos: h.ad.length, adiamentos30: h.ad.filter((d) => d * 864e5 >= agora - 30 * 864e5).length, empurrados: h.e, adiadasVencidas: h.vencida,
+        adiamentos: h.ad.length, adDias: h.ad, adiamentos30: h.ad.filter((d) => d * 864e5 >= agora - 30 * 864e5).length, empurrados: h.e, adiadasVencidas: h.vencida,
         adiadoPor: h.u ? usuarios[h.u] || '' : '', conclusao, conclusaoReal: !!h.c,
         idade: t.criado ? dias(ymd(t.criado), hoje) : null,
         atrasoReal: !f && original && original < hoje ? dias(original, hoje) : 0,
@@ -570,7 +571,7 @@ const COO = (() => {
       hReuniao: Math.round(hR), hBloco: Math.round(hB), pctReuniao: consultores.length ? Math.round((100 * hR) / (40 * consultores.length)) : null,
       semReuniao: semReuniao.length, nps: npsGeral.nps, temHist,
     };
-    return { hoje, iniSemana, fimSemana, kpis, proximasEntregas, projetos, consultores, alertas, promessas: prom, abertura, semReuniao, nps: npsGeral, eventos, pessoasTime };
+    return { hoje, iniSemana, fimSemana, kpis, proximasEntregas, projetos, consultores, alertas, promessas: prom, abertura, semReuniao, nps: npsGeral, eventos, pessoasTime, tarefas: T };
   }
 
   return { QUERY_MONDAY, NPS_BOARD, lerMonday, queriesLog, aplicarLogs, lerAgenda, lerGranolaLista, lerGranolaResumos, passosDoResumo, calcular, norm, ymd };
