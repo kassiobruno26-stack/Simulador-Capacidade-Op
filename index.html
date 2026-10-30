@@ -520,6 +520,13 @@ body.env-test .env-badge{display:inline-block}
 .gate-btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--border);margin-top:8px}
 .gate-err{font-size:12px;color:var(--danger);min-height:16px;margin-bottom:10px}
 .gate-msg{font-size:13px;line-height:1.5;margin-bottom:18px}
+/* perfis: sócios e equipe só leem; a equipe não vê exportações nem valores */
+body.ro .ed{display:none!important}
+body.colab .gestao{display:none!important}
+.tab[hidden]{display:none}
+.sync-ro{background:rgba(248,244,239,.1);color:rgba(248,244,239,.75)}
+.sync-local{background:rgba(224,168,74,.18);color:#E0A84A;cursor:pointer}
+.sync-local:hover{background:rgba(224,168,74,.3)}
 
 /* operação: monday + Granola (regras do Painel do COO) */
 .op-src{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -692,6 +699,17 @@ body.env-test .env-badge{display:inline-block}
       <div class="gate-err" id="login-err"></div>
       <button class="gate-btn" id="login-btn" type="submit">Entrar</button>
     </form>
+    <form id="senha-form" hidden onsubmit="salvarSenha(event)">
+      <div class="gate-msg" id="senha-msg"></div>
+      <input id="senha-user" type="email" autocomplete="username" style="display:none" tabindex="-1" aria-hidden="true">
+      <label for="senha-nova">Nova senha</label>
+      <input id="senha-nova" type="password" autocomplete="new-password" required>
+      <label for="senha-conf">Repita a nova senha</label>
+      <input id="senha-conf" type="password" autocomplete="new-password" required>
+      <div class="gate-err" id="senha-err"></div>
+      <button class="gate-btn" id="senha-btn" type="submit">Salvar senha</button>
+      <button class="gate-btn ghost" id="senha-cancel" type="button" onclick="fecharSenha()">Cancelar</button>
+    </form>
     <div id="gate-info">
       <div class="gate-msg" id="gate-msg">Conectando…</div>
       <div id="gate-actions" hidden>
@@ -709,10 +727,11 @@ body.env-test .env-badge{display:inline-block}
   <span id="sync-status" class="sync-status" title="Estado da sincronização">•••</span>
   <span class="env-badge" title="Você está editando uma cópia dos dados. Nada aqui afeta a versão oficial.">AMBIENTE DE TESTE</span>
   <div class="tools">
-    <button class="tool-btn" onclick="exportCSV()">Exportar planilha</button>
-    <button class="tool-btn" onclick="exportJSON()">Backup</button>
-    <button class="tool-btn" onclick="document.getElementById('importFile').click()">Restaurar</button>
-    <button class="tool-btn solid" onclick="resetAll()">Zerar</button>
+    <button class="tool-btn gestao" onclick="exportCSV()">Exportar planilha</button>
+    <button class="tool-btn gestao" onclick="exportJSON()">Backup</button>
+    <button class="tool-btn ed" onclick="document.getElementById('importFile').click()">Restaurar</button>
+    <button class="tool-btn solid ed" onclick="resetAll()">Zerar</button>
+    <button class="tool-btn" onclick="showSenha(false)">Trocar senha</button>
     <button class="tool-btn" onclick="doLogout()">Sair</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
   </div>
@@ -763,8 +782,8 @@ body.env-test .env-badge{display:inline-block}
 
 <!-- ABA: DELEGADAS -->
 <div class="page" id="page-delegadas">
-  <div class="page-head"><h1>Delegadas</h1><p>O que você passou para os estagiários, em que pé está e o que cobrar.</p></div>
-  <div class="card">
+  <div class="page-head"><h1>Delegadas</h1><p data-ro="O que foi passado para os estagiários e em que pé está.">O que você passou para os estagiários, em que pé está e o que cobrar.</p></div>
+  <div class="card ed">
     <div class="section-title">Nova demanda</div>
     <form onsubmit="addDelegation(event)">
       <div class="dr-row"><span class="dr-lbl">Para</span><div class="pick-list" id="deleg-who"></div></div>
@@ -795,7 +814,7 @@ body.env-test .env-badge{display:inline-block}
 <div class="page" id="page-cadastro">
   <div class="page-head"><h1>Cadastro</h1><p>Carteira de clientes, equipe e custos fixos da operação.</p></div>
   <div class="card">
-    <div class="section-title">Clientes <button class="add-btn" onclick="addClient()">+ Cliente</button></div>
+    <div class="section-title">Clientes <button class="add-btn ed" onclick="addClient()">+ Cliente</button></div>
     <div class="cl-toolbar">
       <div class="seg" id="cl-view"></div>
       <div class="seg" id="cl-type"></div>
@@ -810,9 +829,9 @@ body.env-test .env-badge{display:inline-block}
   <div class="card">
     <div class="section-title">Equipe
       <span style="display:flex;gap:8px">
-        <button class="add-btn ghost sm" onclick="addPerson('pj')">+ Consultor</button>
-        <button class="add-btn ghost sm" onclick="addPerson('estagio')">+ Estagiário</button>
-        <button class="add-btn ghost sm" onclick="addPerson('socio')">+ Sócio</button>
+        <button class="add-btn ghost sm ed" onclick="addPerson('pj')">+ Consultor</button>
+        <button class="add-btn ghost sm ed" onclick="addPerson('estagio')">+ Estagiário</button>
+        <button class="add-btn ghost sm ed" onclick="addPerson('socio')">+ Sócio</button>
       </span>
     </div>
     <div id="people-grid"></div>
@@ -830,7 +849,7 @@ body.env-test .env-badge{display:inline-block}
   <div class="card">
     <div class="section-title">Custos fixos da operação</div>
     <div id="fixed-list"></div>
-    <button class="add-btn ghost" onclick="addFixed()" style="margin-top:10px">+ Adicionar custo fixo</button>
+    <button class="add-btn ghost ed" onclick="addFixed()" style="margin-top:10px">+ Adicionar custo fixo</button>
     <p class="help">Divididos pelas horas operacionais da equipe no mês → custo fixo por hora. Aparece como "margem após rateio" em cada cliente.</p>
   </div>
 
@@ -846,13 +865,13 @@ body.env-test .env-badge{display:inline-block}
 
 <!-- ABA 2: ALOCACAO -->
 <div class="page" id="page-alocacao">
-  <div class="page-head"><h1>Grade</h1><p>Agenda semanal de cada pessoa. Arraste clientes e afazeres para os horários.</p></div>
+  <div class="page-head"><h1>Grade</h1><p data-ro="Agenda semanal de cada pessoa.">Agenda semanal de cada pessoa. Arraste clientes e afazeres para os horários.</p></div>
   <div class="alloc-layout">
     <div class="pool">
       <div class="pool-title">Clientes a alocar</div>
       <div id="pool-list"></div>
       <div class="pool-title">Afazeres internos</div>
-      <div class="task-create">
+      <div class="task-create ed">
         <input id="task-name" placeholder="Ex: Reunião interna">
         <input id="task-hours" type="number" step="0.5" placeholder="h/sem">
         <button onclick="addTask()">+</button>
@@ -1001,7 +1020,7 @@ body.env-test .env-badge{display:inline-block}
     <div class="watch-grid" id="watch-grid"></div>
     <div id="watch-empty"></div>
   </div>
-  <div class="card">
+  <div class="card ed">
     <div class="section-title">Adicionar à watch list</div>
     <div class="avail-list" id="watch-avail"></div>
   </div>
@@ -1085,14 +1104,27 @@ const ROW_ID=IS_PROD?1:2;
 if(!IS_PROD)document.body.classList.add('env-test');
 let sb=null, saveTimer=null, lastPushed='', editingUntil=0, applyingRemote=false;
 let loaded=false; // só grava depois de carregar os dados reais (nunca sobrescreve a nuvem com dados vazios)
-function setStatus(kind,txt){const el=document.getElementById('sync-status');if(!el)return;el.className='sync-status sync-'+kind;el.textContent=txt}
+// Perfis (app_members.papel): editor grava; sócios (leitor) veem tudo menos o Meu dia; a equipe (colaborador) vê 4 abas
+// e recebe do banco uma versão filtrada da base. A regra vale no banco; aqui só ajusta a tela.
+let PAPEL='colaborador', localSujo=false, avisouLeitura=false;
+const ABAS_PAPEL={leitor:['delegadas','operacao','cadastro','alocacao','custohora','custos','churn','projecao','watch','painel'],colaborador:['operacao','alocacao','delegadas','watch']};
+function podeGravar(){return PAPEL==='editor'}
+function abaPermitida(t){const l=ABAS_PAPEL[PAPEL];return !!document.getElementById('page-'+t)&&(!l||l.includes(t))}
+function abaPadrao(){return PAPEL==='leitor'?'painel':PAPEL==='colaborador'?'operacao':'dia'}
+function setStatus(kind,txt){const el=document.getElementById('sync-status');if(!el)return;el.className='sync-status sync-'+kind;el.textContent=txt;
+  const desfaz=kind==='local';el.onclick=desfaz?descartarLocal:null;el.onkeydown=desfaz?e=>{if(e.key==='Enter')descartarLocal()}:null;
+  el.tabIndex=desfaz?0:-1;el.setAttribute('role',desfaz?'button':'status');el.title=desfaz?'Descartar o que você mudou e voltar aos dados salvos':'Estado da sincronização'}
+function statusOk(txt){if(localSujo)setStatus('local','Só na sua tela · desfazer');else if(podeGravar())setStatus('saved',txt||'Salvo na nuvem');else setStatus('ro','Modo leitura')}
 function save(){ // chamado por toda a app; agenda auto-save na nuvem
   if(applyingRemote||!loaded)return;
   editingUntil=Date.now()+4000;
+  if(!podeGravar()){mudouLocal();return} // só leitura: a mudança fica na tela de quem mexeu
   setStatus('saving','Salvando…');
   clearTimeout(saveTimer);
   saveTimer=setTimeout(cloudSave,700);
 }
+function mudouLocal(){localSujo=true;statusOk();if(!avisouLeitura){avisouLeitura=true;toast('Modo leitura: o que você mudar fica só na sua tela. Nada é salvo.')}}
+async function descartarLocal(){try{await cloudLoad();renderAll()}catch(e){toast('Sem conexão agora. Tente de novo em instantes.')}statusOk()}
 async function cloudSave(){
   saveTimer=null;
   if(!sb||!loaded){setStatus('offline','Offline');return}
@@ -1103,22 +1135,27 @@ async function cloudSave(){
     setStatus('saved','Salvo na nuvem');
   }catch(e){setStatus('error','Erro ao salvar');}
 }
-async function cloudLoad(){
+async function lerBase(){ // a equipe recebe a versão filtrada (sem valores, custos, projeção nem Meu dia)
+  if(PAPEL==='colaborador'){const {data,error}=await sb.rpc('estado_equipe',{p_id:ROW_ID});if(error)throw error;return data}
   const {data,error}=await sb.from('app_state').select('data').eq('id',ROW_ID).maybeSingle();
   if(error)throw error;
-  if(data&&data.data&&data.data.state){state=data.data.state;uid=data.data.uid||100;lastPushed=JSON.stringify({state,uid});normalize();return true}
+  return data&&data.data;
+}
+async function cloudLoad(){
+  const d=await lerBase();
+  if(d&&d.state){state=d.state;uid=d.uid||100;lastPushed=JSON.stringify({state,uid});normalize();localSujo=false;return true}
   return false;
 }
 function showGate(msg,withActions){
   document.getElementById('gate').hidden=false;
-  document.getElementById('login-form').hidden=true;
+  document.getElementById('login-form').hidden=true;document.getElementById('senha-form').hidden=true;
   document.getElementById('gate-info').hidden=false;
   document.getElementById('gate-msg').textContent=msg;
   document.getElementById('gate-actions').hidden=!withActions;
 }
 function showLogin(){
   document.getElementById('gate').hidden=false;
-  document.getElementById('gate-info').hidden=true;
+  document.getElementById('gate-info').hidden=true;document.getElementById('senha-form').hidden=true;
   document.getElementById('login-form').hidden=false;
   document.getElementById('login-email').focus();
 }
@@ -1131,18 +1168,68 @@ async function cloudBoot(){ // devolve true quando os dados foram carregados
 }
 async function loadData(){
   showGate('Carregando os dados…',false);
+  const semAcesso='Seu usuário entrou, mas não tem acesso aos dados. Peça a liberação do acesso.';
   try{
-    const ok=await cloudLoad();
-    // sem linha visível = usuário logado mas fora da lista de acesso; nunca cria dados novos por cima
-    if(!ok){showGate('Seu usuário entrou, mas não tem acesso aos dados. Peça a liberação do acesso.',true);return false}
+    const {data:ac,error:ea}=await sb.rpc('meu_acesso');
+    if(ea)throw ea;
+    // fora da lista de acesso (ou sem linha visível): avisa e nunca cria dados novos por cima
+    if(!ac){showGate(semAcesso,true);return false}
+    PAPEL=['editor','leitor'].includes(ac.papel)?ac.papel:'colaborador';
+    if(ac.trocar_senha){showSenha(true);return false} // primeiro acesso: troca a senha provisória antes de ver os dados
+    if(!(await cloudLoad())){showGate(semAcesso,true);return false}
   }catch(e){showGate('Não foi possível carregar os dados agora. Nada foi alterado. Tente de novo em instantes.',true);return false}
   loaded=true;
-  setStatus('saved','Salvo na nuvem');
+  aplicarPapel();statusOk();
   document.getElementById('gate').hidden=true;
   subscribeRealtime();
-  loadImports();
+  if(PAPEL!=='colaborador')loadImports(); // históricos importados: só editor e sócios leem
   opLoad();
   return true;
+}
+function aplicarPapel(){ // abas, ordem e controles de cada perfil
+  document.body.classList.toggle('ro',!podeGravar());
+  document.body.classList.toggle('colab',PAPEL==='colaborador');
+  const bar=document.querySelector('.tabbar'),lista=ABAS_PAPEL[PAPEL];
+  if(lista)lista.forEach(k=>{const b=bar.querySelector(`.tab[data-tab="${k}"]`);if(b)bar.appendChild(b)});
+  let n=0;bar.querySelectorAll('.tab').forEach(b=>{b.hidden=!abaPermitida(b.dataset.tab);if(!b.hidden)b.firstChild.textContent=b.firstChild.textContent.replace(/^\d+/,++n)});
+  if(!podeGravar())document.querySelectorAll('[data-ro]').forEach(e=>{e.textContent=e.dataset.ro});
+  const ativa=document.querySelector('.page.active');if(ativa&&!abaPermitida(ativa.id.slice(5)))ativa.classList.remove('active');
+}
+async function entrar(){if(await loadData()){renderAll();switchTab(initialTab())}}
+function showSenha(obrigatoria){ // obrigatória no primeiro acesso; voluntária pelo botão "Trocar senha"
+  document.getElementById('gate').hidden=false;
+  document.getElementById('login-form').hidden=true;document.getElementById('gate-info').hidden=true;
+  const f=document.getElementById('senha-form');f.reset();f.hidden=false;f.dataset.obrigatoria=obrigatoria?'1':'';
+  document.getElementById('senha-msg').textContent=obrigatoria?'Primeiro acesso: crie a sua senha. Ela substitui a senha provisória que você recebeu.':'Escolha a nova senha.';
+  document.getElementById('senha-cancel').textContent=obrigatoria?'Sair':'Cancelar';
+  document.getElementById('senha-err').textContent='';
+  sb.auth.getSession().then(({data})=>{const u=data&&data.session&&data.session.user;document.getElementById('senha-user').value=u&&u.email||''});
+  document.getElementById('senha-nova').focus();
+}
+function fecharSenha(){
+  const f=document.getElementById('senha-form');
+  if(f.dataset.obrigatoria){doLogout();return}
+  f.hidden=true;document.getElementById('gate').hidden=true;
+}
+let senhaJaSalva=false; // senha trocada mas a confirmação no banco falhou: na nova tentativa só confirma
+async function salvarSenha(ev){
+  ev.preventDefault();
+  const a=document.getElementById('senha-nova').value,b=document.getElementById('senha-conf').value;
+  const err=document.getElementById('senha-err'),btn=document.getElementById('senha-btn'),obrig=!!document.getElementById('senha-form').dataset.obrigatoria;
+  if(!senhaJaSalva){
+    if(a.length<8){err.textContent='Use pelo menos 8 caracteres.';return}
+    if(a!==b){err.textContent='As duas senhas não são iguais.';return}
+  }
+  btn.disabled=true;err.textContent='';
+  if(!senhaJaSalva){
+    const {error}=await sb.auth.updateUser({password:a});
+    if(error){btn.disabled=false;const m=error.message||'';
+      err.textContent=/different|same/i.test(m)?'A nova senha precisa ser diferente da atual.':/reauth/i.test(m)?'Por segurança, saia e entre de novo antes de trocar a senha.':/weak|short|characters/i.test(m)?'Senha fraca: misture letras e números, com pelo menos 8 caracteres.':'Não foi possível salvar a senha: '+m;return}
+    senhaJaSalva=true;
+  }
+  if(obrig){const {error}=await sb.rpc('senha_definida');if(error){btn.disabled=false;err.textContent='A senha foi salva, mas não deu para concluir agora. Clique em Salvar senha de novo.';return}}
+  senhaJaSalva=false;btn.disabled=false;document.getElementById('senha-form').hidden=true;
+  if(obrig)await entrar();else{document.getElementById('gate').hidden=true;toast('Senha alterada')}
 }
 async function doLogin(ev){
   ev.preventDefault();
@@ -1151,7 +1238,7 @@ async function doLogin(ev){
   const {error}=await sb.auth.signInWithPassword({email:document.getElementById('login-email').value.trim(),password:document.getElementById('login-pass').value});
   btn.disabled=false;
   if(error){err.textContent=/invalid login/i.test(error.message)?'E-mail ou senha incorretos.':'Não foi possível entrar: '+error.message;return}
-  if(await loadData()){renderAll();switchTab(initialTab())}
+  await entrar();
 }
 async function doLogout(){
   if(saveTimer){clearTimeout(saveTimer);await cloudSave()} // não perde a última edição
@@ -1165,14 +1252,18 @@ function subscribeRealtime(){
     const incoming=JSON.stringify({state:nd.state,uid:nd.uid});
     if(incoming===lastPushed)return;            // eco da minha própria gravação
     if(Date.now()<editingUntil)return;          // estou editando agora: não sobrescreve
+    if(localSujo)return;                        // só leitura com mudança na tela: fica até a pessoa desfazer
     applyingRemote=true;
     state=nd.state;uid=nd.uid||uid;lastPushed=incoming;normalize();renderAll();
     applyingRemote=false;
-    setStatus('saved','Atualizado por outro usuário');
+    statusOk('Atualizado por outro usuário');
   }).subscribe();
   // ao voltar pra aba, recarrega o mais recente
-  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&sb&&Date.now()>editingUntil){try{const changed=await cloudLoad();if(changed!==false)renderAll();setStatus('saved','Salvo na nuvem')}catch(e){}}});
+  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&sb&&Date.now()>editingUntil&&!localSujo){try{const changed=await cloudLoad();if(changed!==false)renderAll();statusOk()}catch(e){}}});
 }
+// a equipe não recebe o tempo real da base completa: relê a versão filtrada a cada 5 min
+setInterval(async()=>{if(!loaded||PAPEL!=='colaborador'||document.hidden||localSujo||Date.now()<editingUntil)return;
+  try{const antes=lastPushed;if(await cloudLoad()&&lastPushed!==antes)renderAll()}catch(e){}},3e5);
 function scenarioDefault(nc,ramp,churn,adjust){return {newClients:nc,ramp,churn,adjust}}
 function normalize(){
   state.tasks=state.tasks||[];
@@ -1388,7 +1479,7 @@ function costBreakdownNow(){ // para onde vai o custo das pessoas no mês (soma 
 
 /* ============ TABS ============ */
 function switchTab(t){
-  if(!document.getElementById('page-'+t))t='dia';
+  if(!abaPermitida(t))t=abaPadrao();
   document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===t));
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
@@ -1644,7 +1735,7 @@ function togglePermuta(id){const c=state.clients.find(x=>x.id===id);if(!c)return
 function delClient(id){const c=state.clients.find(x=>x.id===id);if(!c||!confirm(`Excluir "${c.name}"? Para quem saiu, prefira o status Encerrado: assim ele entra no histórico de churn.`))return;state.clients=state.clients.filter(x=>x.id!==id);save();if(editingClient===id)closeClient();else renderClients();updateBadges()}
 function addFixed(){state.fixed.push({id:nid(),name:'Novo custo',value:0});save();renderFixed()}
 function delFixed(id){state.fixed=state.fixed.filter(f=>f.id!==id);save();renderFixed()}
-function initialTab(){try{return localStorage.getItem('aust_tab')||'dia'}catch(e){return 'dia'}}
+function initialTab(){let t='';try{t=localStorage.getItem('aust_tab')||''}catch(e){}return abaPermitida(t)?t:abaPadrao()}
 function updateBadges(){
   document.getElementById('badge-deleg').textContent=state.delegations.filter(d=>d.status==='aberta').length;
   document.getElementById('badge-pool').textContent=state.clients.filter(c=>!c.slot&&c.status==='ativo'&&clientOccupiesNow(c)).length;
@@ -1659,7 +1750,7 @@ function renderPool(){
   const pend=state.clients.filter(c=>!c.slot&&c.status==='ativo'&&clientOccupiesNow(c));
   if(!pend.length){list.innerHTML=`<div class="pool-empty">Todos os clientes estão na grade.</div>`;return}
   list.innerHTML=pend.map(c=>`
-    <div class="chip ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)">
+    <div class="chip ${typeClass(c.type)}" draggable="${podeGravar()}" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)">
       <div class="chip-name">${esc(c.name)}${c.freq==='quinzenal'?'<span class="freq-tag">15/15</span>':''}</div>
       <div class="chip-meta">${esc(clientKindLabel(c))} · reun ${num2(c.meetingDur)}h · oper ${num2(c.opHours)}h</div>
     </div>`).join('');
@@ -1669,9 +1760,9 @@ function renderTaskPool(){
   const pend=state.tasks.filter(t=>!t.slot);
   if(!pend.length){list.innerHTML=`<div class="pool-empty">Nenhum afazer solto.</div>`;return}
   list.innerHTML=pend.map(t=>`
-    <div class="chip task" draggable="true" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)">
+    <div class="chip task" draggable="${podeGravar()}" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)">
       <div class="chip-name">${esc(t.name)}</div>
-      <div class="chip-meta">interno · ${num2(t.hours)}h/sem <button class="del-btn" style="float:right;margin-top:-2px" onclick="delTask('${t.id}')">×</button></div>
+      <div class="chip-meta">interno · ${num2(t.hours)}h/sem <button class="del-btn ed" style="float:right;margin-top:-2px" onclick="delTask('${t.id}')">×</button></div>
     </div>`).join('');
 }
 function addTask(){
@@ -1708,8 +1799,8 @@ function renderGrid(){
       const conflict=(cli.length+tsk.length)>1;
       let cls='slot';if(outside)cls+=' outside';if(lunch)cls+=' lunch';if(conflict)cls+=' conflict';
       let inner='';
-      cli.forEach(c=>{inner+=`<div class="placed ${typeClass(c.type)}" draggable="true" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)" title="${esc(c.name)}"><span class="x" onclick="event.stopPropagation();unassign('${c.id}','client')">×</span><span>${esc(c.name)}${c.freq==='quinzenal'?' <b>15/15</b>':''}</span><span class="pf">${esc(clientKindLabel(c))}</span></div>`});
-      tsk.forEach(t=>{inner+=`<div class="placed task" draggable="true" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)" title="${esc(t.name)}"><span class="x" onclick="event.stopPropagation();unassign('${t.id}','task')">×</span><span>${esc(t.name)}</span><span class="pf">interno ${num2(t.hours)}h</span></div>`});
+      cli.forEach(c=>{inner+=`<div class="placed ${typeClass(c.type)}" draggable="${podeGravar()}" ondragstart="onDragStart(event,'${c.id}','client')" ondragend="onDragEnd(event)" title="${esc(c.name)}"><span class="x ed" onclick="event.stopPropagation();unassign('${c.id}','client')">×</span><span>${esc(c.name)}${c.freq==='quinzenal'?' <b>15/15</b>':''}</span><span class="pf">${esc(clientKindLabel(c))}</span></div>`});
+      tsk.forEach(t=>{inner+=`<div class="placed task" draggable="${podeGravar()}" ondragstart="onDragStart(event,'${t.id}','task')" ondragend="onDragEnd(event)" title="${esc(t.name)}"><span class="x ed" onclick="event.stopPropagation();unassign('${t.id}','task')">×</span><span>${esc(t.name)}</span><span class="pf">interno ${num2(t.hours)}h</span></div>`});
       const drop=outside?'':`ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'${p.id}','${day}',${h})"`;
       html+=`<div class="${cls}" ${drop}>${inner}</div>`;
     });
@@ -1992,15 +2083,15 @@ function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c
 function updWatch(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch[k]=v;save();if(k==='level')renderWatch()}
 function renderWatch(){
   const grid=document.getElementById('watch-grid');const empty=document.getElementById('watch-empty');
-  const flagged=state.clients.filter(c=>c.watch&&c.watch.on);
-  if(!flagged.length){grid.innerHTML='';empty.innerHTML='<div class="empty-state"><b>Nenhum cliente em atenção</b>Marque clientes abaixo ou pelo ⚑ na aba Cadastro.</div>'}
+  const flagged=state.clients.filter(c=>c.watch&&c.watch.on),dis=podeGravar()?'':'disabled',ro=podeGravar()?'':'readonly';
+  if(!flagged.length){grid.innerHTML='';empty.innerHTML=`<div class="empty-state"><b>Nenhum cliente em atenção</b>${podeGravar()?'Marque clientes abaixo ou pelo ⚑ na aba Cadastro.':''}</div>`}
   else{empty.innerHTML='';grid.innerHTML=flagged.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);
     return `<div class="watch-card ${c.watch.level==='media'?'media':''}">
-      <div class="wc-head"><span class="wc-name">${esc(c.name)}</span><button class="flag-btn on" title="Tirar da watch" onclick="toggleWatch('${c.id}')">⚑</button></div>
+      <div class="wc-head"><span class="wc-name">${esc(c.name)}</span><button class="flag-btn on ed" title="Tirar da watch" onclick="toggleWatch('${c.id}')">⚑</button></div>
       <div class="wc-field"><label>Tipo · Consultor</label><div style="font-size:12px;font-weight:600"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> · ${owner?esc(owner.name):'sem consultor'}</div></div>
-      <div class="wc-field"><label>Nível de atenção</label><select onchange="updWatch('${c.id}','level',this.value)"><option value="alta" ${c.watch.level==='alta'?'selected':''}>Alta</option><option value="media" ${c.watch.level==='media'?'selected':''}>Média</option></select></div>
-      <div class="wc-field"><label>Motivo</label><textarea rows="2" placeholder="Ex: atraso no pagamento, risco de churn…" onchange="updWatch('${c.id}','reason',this.value)">${esc(c.watch.reason)}</textarea></div>
-      <div class="wc-field"><label>Próxima ação</label><input value="${esc(c.watch.next)}" placeholder="Ex: ligar até sexta" onchange="updWatch('${c.id}','next',this.value)"></div>
+      <div class="wc-field"><label>Nível de atenção</label><select onchange="updWatch('${c.id}','level',this.value)" ${dis}><option value="alta" ${c.watch.level==='alta'?'selected':''}>Alta</option><option value="media" ${c.watch.level==='media'?'selected':''}>Média</option></select></div>
+      <div class="wc-field"><label>Motivo</label><textarea rows="2" placeholder="Ex: atraso no pagamento, risco de churn…" onchange="updWatch('${c.id}','reason',this.value)" ${ro}>${esc(c.watch.reason)}</textarea></div>
+      <div class="wc-field"><label>Próxima ação</label><input value="${esc(c.watch.next)}" placeholder="Ex: ligar até sexta" onchange="updWatch('${c.id}','next',this.value)" ${ro}></div>
     </div>`}).join('')}
   const avail=document.getElementById('watch-avail');const rest=state.clients.filter(c=>!(c.watch&&c.watch.on));
   avail.innerHTML=rest.length?rest.map(c=>`<div class="avail-chip" onclick="toggleWatch('${c.id}')"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> ${esc(c.name)} +</div>`).join(''):'<div class="onb-empty">Todos os clientes já estão na watch list.</div>';
@@ -2150,7 +2241,7 @@ function plannerGo(ds){plannerDate=ds;renderPlanner()}
 function plannerShift(n){plannerGo(addDays(plannerDate,n))}
 function dayBlocks(ds){return state.planner.blocks.filter(b=>b.date===ds)}
 function renderPlanner(){
-  if(plannerRollover())save();
+  if(plannerRollover()&&podeGravar())save();
   renderHeadList();renderAgenda();
   const bs=dayBlocks(plannerDate),live=bs.filter(b=>!b.rolled),done=bs.filter(b=>b.done).length,rolled=bs.filter(b=>b.rolled).length;
   const plan=live.reduce((s,b)=>s+b.dur,0),t=todayStr();
@@ -2257,7 +2348,7 @@ function resizeBlock(id,d){const b=state.planner.blocks.find(x=>x.id===id);if(!b
 function unschedule(id,noRender){state.planner.blocks=state.planner.blocks.filter(b=>b.id!==id);if(!noRender){save();renderPlanner()}}
 setInterval(()=>{ // virada do dia com a aba aberta + linha do "agora"
   if(!loaded)return;
-  if(plannerRollover()){save();if(document.getElementById('page-dia').classList.contains('active'))renderPlanner()}
+  if(podeGravar()&&plannerRollover()){save();if(document.getElementById('page-dia').classList.contains('active'))renderPlanner()}
   const n=document.getElementById('ag-now');if(n){const d=new Date();n.style.top=((d.getHours()*60+d.getMinutes()-DIA_START)/SLOT*ROW_H)+'px'}
 },60000);
 
@@ -2294,10 +2385,10 @@ function delegRow(d){
   const p=personById(d.personId),due=delegDueInfo(d),open=d.status==='aberta';
   const nud=(d.nudges||[]);
   return `<div class="dg-row">
-    <button class="ck ${open?'':'on'}" onclick="toggleDelegation('${d.id}')" title="${open?'Marcar como entregue':'Reabrir'}" aria-label="${open?'Marcar como entregue':'Reabrir'}"></button>
+    <button class="ck ${open?'':'on'}" onclick="toggleDelegation('${d.id}')" ${podeGravar()?'':'disabled'} title="${open?'Marcar como entregue':'Reabrir'}" aria-label="${open?'Marcar como entregue':'Reabrir'}"></button>
     <div><div class="dg-text" style="${open?'':'color:var(--gray);text-decoration:line-through'}">${esc(d.text)}</div>
       <div class="dg-meta">${p?`${avatar(p,true)} ${esc(p.name.split(' ')[0])}`:'—'}${d.client?`<span class="tag-cli">${esc(d.client)}</span>`:''}<span class="${due.cls}">${due.txt}</span><span>passada ${brDate(d.givenAt)}</span>${nud.length?`<span>cobrada ${nud.length}x, última ${brDate(nud[nud.length-1])}</span>`:''}${d.note?`<span>· ${esc(d.note)}</span>`:''}</div></div>
-    <div class="dg-actions">${open?`<button class="btn-s pri" onclick="nudgeDelegation('${d.id}')" title="Copia uma mensagem de cobrança">Cobrar</button>`:''}<button class="btn-s" onclick="delegEditing=delegEditing==='${d.id}'?null:'${d.id}';renderDelegations()">Editar</button><button class="mini-btn" onclick="delDelegation('${d.id}')" title="Excluir" aria-label="Excluir">×</button></div>
+    <div class="dg-actions ed">${open?`<button class="btn-s pri" onclick="nudgeDelegation('${d.id}')" title="Copia uma mensagem de cobrança">Cobrar</button>`:''}<button class="btn-s" onclick="delegEditing=delegEditing==='${d.id}'?null:'${d.id}';renderDelegations()">Editar</button><button class="mini-btn" onclick="delDelegation('${d.id}')" title="Excluir" aria-label="Excluir">×</button></div>
     ${delegEditing===d.id?`<div class="dg-edit">
       <div class="field"><label>O que foi passado</label><input id="de-text" value="${esc(d.text)}"></div>
       <div class="field"><label>Cliente</label><input id="de-client" list="dl-clients" value="${esc(d.client)}"></div>
@@ -2377,6 +2468,7 @@ async function loadImports(){
   if(document.getElementById('page-churn').classList.contains('active'))renderImportBanner();
 }
 function applyAutoImports(){ // edições feitas no Painel do COO: entram sozinhas uma vez, sem sobrescrever o que for mais novo
+  if(!podeGravar())return;
   const todo=pendingImports.filter(i=>AUTO_IMPORT.test(i.id)&&!state.importsApplied.includes(i.id));if(!todo.length)return;
   let n=0;
   todo.forEach(i=>{const p=i.payload||{};Object.keys(p).forEach(id=>{const a=state.promessas[id];if(!a||(a.atualizado||'')<(p[id].atualizado||'')){state.promessas[id]=p[id];n++}});state.importsApplied.push(i.id)});
@@ -2385,6 +2477,7 @@ function applyAutoImports(){ // edições feitas no Painel do COO: entram sozinh
 }
 function renderImportBanner(){
   const box=document.getElementById('churn-import');if(!box)return;
+  if(!podeGravar()){box.innerHTML='';return}
   const todo=pendingImports.filter(i=>!AUTO_IMPORT.test(i.id)&&!state.importsApplied.includes(i.id));
   box.innerHTML=todo.map(i=>`<div class="imp-banner"><div><b>${esc(i.title)}</b><br><span style="color:var(--gray)">${(i.payload||[]).length} quadros encerrados para revisar e trazer para o histórico.</span></div><div style="display:flex;gap:8px"><button class="btn-s" onclick="dismissImport('${i.id}')">Ignorar</button><button class="btn-s pri" onclick="openImport('${i.id}')">Revisar e importar</button></div></div>`).join('');
 }
@@ -2516,7 +2609,7 @@ function renderOpHead(){
   const mMin=OP.mondayAt?(Date.now()-new Date(OP.mondayAt))/6e4:Infinity,gH=OP.granolaAt?(Date.now()-new Date(OP.granolaAt))/36e5:Infinity;
   src.innerHTML=`<span class="src-chip ${!OP.monday?'err':mMin>120?'warn':'ok'}" title="${OP.mondayAt?'Última leitura dos quadros: '+new Date(OP.mondayAt).toLocaleString('pt-BR')+'. Atualiza sozinho a cada 30 min, em dias úteis.':'O monday ainda não foi lido.'}"><i></i>monday ${OP.monday?haQuanto(OP.mondayAt):'· aguardando'}</span>
     <span class="src-chip ${!OP.granola.length?'err':gH>16?'warn':'ok'}" title="${OP.granolaAt?'Última cópia das reuniões: '+new Date(OP.granolaAt).toLocaleString('pt-BR')+'. Roda às 8h40, 12h40 e 17h40, em dias úteis.':'Nenhuma reunião do Granola copiada ainda.'}"><i></i>Granola ${OP.granolaAt?haQuanto(OP.granolaAt):'· sem dados'}</span>
-    <button class="btn-s" onclick="opSincronizar()" ${OP.sync?'disabled':''}>${OP.sync?'Atualizando…':'Atualizar monday'}</button>`;
+    <button class="btn-s ed" onclick="opSincronizar()" ${OP.sync?'disabled':''}>${OP.sync?'Atualizando…':'Atualizar monday'}</button>`;
   const m=OP.model,n={hoje:m?m.kpis.alertasCriticos:'',promessas:m?m.promessas.filter(p=>p.lado==='aust'&&p.estado==='aberta').length:''};
   sub.innerHTML=Object.entries(OP_SUBS).map(([k,l])=>`<button class="${OP.ui.sub===k?'on':''}" onclick="opSub('${k}')">${l}${n[k]!==undefined&&n[k]!==''?`<span class="n">${n[k]}</span>`:''}</button>`).join('');
 }
@@ -2564,7 +2657,7 @@ function opHoje(m){
 }
 function opAlerta(a){
   const det=a.itens&&a.itens.length?`<details class="op-det" data-k="al:${esc(a.id)}" ${OP.ui.aberto['al:'+a.id]?'open':''} ontoggle="OP.ui.aberto[this.dataset.k]=this.open"><summary>Ver ${a.itens.length} ${a.itens.length>1?'itens':'item'}</summary><ul>${a.itens.slice(0,25).map(i=>`<li>${opLink(i.url,esc(opTxt(i.nome)))}${i.info?`<span>${esc(i.info)}</span>`:''}</li>`).join('')}</ul></details>`:'';
-  const acoes=(a.promessa?`<button class="btn-s" onclick="opCopiar('${a.promessa}',this)">Copiar tarefa</button><button class="btn-s" onclick="opSalvar('${a.promessa}',{estado:'concluida'},'Promessa concluída')">Concluir</button>`:'')+(a.link?opLink(a.link,'Abrir no monday'):'');
+  const acoes=(a.promessa?`<button class="btn-s" onclick="opCopiar('${a.promessa}',this)">Copiar tarefa</button><button class="btn-s ed" onclick="opSalvar('${a.promessa}',{estado:'concluida'},'Promessa concluída')">Concluir</button>`:'')+(a.link?opLink(a.link,'Abrir no monday'):'');
   return `<div class="op-al ${a.gravidade==='crítico'?'crit':''}"><span class="bar"></span><div><div class="top"><span class="tipo">${esc(a.tipo)}</span><span class="proj">${esc(a.projeto)}</span></div><div class="tit">${esc(opTxt(a.titulo))}</div>${a.detalhe?`<div class="det">${esc(opTxt(a.detalhe))}</div>`:''}${a.quem.length?`<div class="who">${a.quem.slice(0,4).map(opWho).join('')}</div>`:''}${det}</div><div class="side">${a.dias!=null?`<span class="op-dias">${a.dias}<small>dias</small></span>`:''}<div class="op-acts">${acoes}</div></div></div>`;
 }
 
@@ -2580,7 +2673,7 @@ function opPromessas(m){
   const projs=[...new Set(m.promessas.map(p=>p.projeto).filter(Boolean))].sort();
   const selQ=`<select onchange="OP.ui.prQuem=this.value;renderOperacao()" aria-label="Dono"><option value="">Todos os donos</option>${m.pessoasTime.map(n=>`<option value="${esc(n)}" ${u.prQuem===n?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
   const selP=`<select onchange="OP.ui.prProj=this.value;renderOperacao()" aria-label="Projeto"><option value="">Todos os projetos</option>${projs.map(n=>`<option value="${esc(n)}" ${u.prProj===n?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
-  return `<div class="op-toolbar">${seg}${selQ}${selP}<span style="flex:1"></span><button class="add-btn sm" onclick="opNovo()">+ Nova promessa</button></div>
+  return `<div class="op-toolbar">${seg}${selQ}${selP}<span style="flex:1"></span><button class="add-btn sm ed" onclick="opNovo()">+ Nova promessa</button></div>
     ${u.novo?`<div class="card flush"><div class="op-new">${opEditor(m,null)}</div></div>`:''}
     <div class="card flush"><div class="section-title">Promessas da Aust <span class="cnt">próximos passos do Granola confrontados com as tarefas do monday</span></div>${aust.length?aust.map(p=>opLinhaPromessa(p,m)).join(''):'<div class="empty-line" style="padding:6px 18px 16px">Nenhuma promessa neste filtro.</div>'}</div>
     <div class="card flush"><div class="section-title">O cliente ficou de… <span class="cnt">da reunião mais recente de cada projeto</span></div>${cli.length?cli.map(p=>opLinhaPromessa(p,m)).join(''):'<div class="empty-line" style="padding:6px 18px 16px">Nenhuma pendência do cliente neste filtro.</div>'}</div>
@@ -2593,10 +2686,10 @@ function opLinhaPromessa(p,m){
   if(p.prazo)meta.push(`<span class="${p.atrasada?'tag-crit':'tag-neu'}">prazo ${opDt(p.prazo)}</span>`);
   if(p.dias&&p.estado==='aberta')meta.push(p.dias+(p.dias===1?' dia':' dias'));
   const tarefa=p.tarefa?`<div class="pd">↳ No monday: ${opLink(p.tarefa_url,esc(p.tarefa))}${p.tarefa_feita?' · feita':''}</div>`:'';
-  const acoes=apag?`<button class="btn-s" onclick="opSalvar('${p.id}',{estado:'aberta'})">Restaurar</button>`
-    :`<button class="btn-s" onclick="opEditar('${p.id}')">Editar</button>${p.lado==='aust'&&p.situacao==='sem tarefa'?`<button class="btn-s" onclick="opCopiar('${p.id}',this)">Copiar tarefa</button>`:''}<button class="mini-btn" onclick="opApagar('${p.id}')">Apagar</button>`;
+  const acoes=apag?`<button class="btn-s ed" onclick="opSalvar('${p.id}',{estado:'aberta'})">Restaurar</button>`
+    :`<button class="btn-s ed" onclick="opEditar('${p.id}')">Editar</button>${p.lado==='aust'&&p.situacao==='sem tarefa'?`<button class="btn-s" onclick="opCopiar('${p.id}',this)">Copiar tarefa</button>`:''}<button class="mini-btn ed" onclick="opApagar('${p.id}')">Apagar</button>`;
   const links=(!p.tarefa&&p.quadro_url?opLink(p.quadro_url,'Quadro'):'')+(p.nota_url?opLink(p.nota_url,'Nota'):'');
-  return `<div class="op-pr ${feito?'done':''} ${apag?'del':''}"><button class="ck ${feito?'on':''}" role="checkbox" aria-checked="${feito}" aria-label="Concluída" onclick="opToggle('${p.id}')" ${apag?'disabled':''}></button>
+  return `<div class="op-pr ${feito?'done':''} ${apag?'del':''}"><button class="ck ${feito?'on':''}" role="checkbox" aria-checked="${feito}" aria-label="Concluída" onclick="opToggle('${p.id}')" ${apag||!podeGravar()?'disabled':''}></button>
     <div><div class="pt">${esc(opTxt(p.texto))}</div>${p.detalhe&&!p.editada?`<div class="pd">${esc(opTxt(p.detalhe))}</div>`:''}${p.obs?`<div class="pd">Obs.: ${esc(p.obs)}</div>`:''}<div class="pm">${meta.join('<span>·</span>')} ${sit}${p.manualEstado&&feito?'<span>(marcada aqui)</span>':''}</div>${tarefa}</div>
     <div class="op-acts">${links}${acoes}</div>${OP.ui.ed===p.id?opEditor(m,p):''}</div>`;
 }
@@ -2679,9 +2772,9 @@ function opLinhaProjeto(p,m){
   const li=(arr,f)=>arr.length?`<ul>${arr.slice(0,12).map(f).join('')}${arr.length>12?`<li style="color:var(--gray)">+ ${arr.length-12}</li>`:''}</ul>`:'<p style="color:var(--gray)">Nada.</p>';
   const lt=t=>`<li>${opLink(t.url,esc(t.nome))}<span>${esc((t.pessoas.join(', ')||'sem dono')+' · original '+opDt(t.original)+(t.entrega&&t.entrega!==t.original?' → atual '+opDt(t.entrega):'')+(t.adiamentos?' · '+t.adiamentos+'x adiada':''))}</span></li>`;
   const c=clienteDoProjeto(p.projeto),mg=c?clientMarginNow(c):null,dono=c?personById(c.ownerId):null;
-  const cad=c?`<p><b>${esc(c.name)}</b> · ${esc(clientKindLabel(c))} · ${esc(CLIENT_STATUS[c.status]||'')}<br>${esc(clientPeriodText(c))} · ${esc(clientValueText(c))}<br>Consultor: ${dono?esc(dono.name):'—'} · Margem agora: <b class="${marginClass(mg)}">${marginText(mg)}</b></p><p style="margin-top:8px"><button class="btn-s" onclick="openClient('${c.id}')">Abrir no cadastro</button></p>`:'<p style="color:var(--gray)">Nenhum cliente do cadastro ligado a este quadro.</p>';
+  const cad=c?`<p><b>${esc(c.name)}</b> · ${esc(clientKindLabel(c))} · ${esc(CLIENT_STATUS[c.status]||'')}<br>${esc(clientPeriodText(c))}${PAPEL==='colaborador'?'':' · '+esc(clientValueText(c))}<br>Consultor: ${dono?esc(dono.name):'—'}${PAPEL==='colaborador'?'':` · Margem agora: <b class="${marginClass(mg)}">${marginText(mg)}</b>`}</p><p class="gestao" style="margin-top:8px"><button class="btn-s" onclick="openClient('${c.id}')">Abrir no cadastro</button></p>`:'<p style="color:var(--gray)">Nenhum cliente do cadastro ligado a este quadro.</p>';
   const opts=state.clients.filter(x=>x.status!=='encerrado').sort((a,b)=>a.name.localeCompare(b.name));
-  const vinc=`<select data-v="${esc(p.projeto)}" onchange="opVincular(this.dataset.v,this.value)" aria-label="Ligar ao cadastro"><option value="">${c?'Trocar o cliente ligado…':'Ligar a um cliente do cadastro…'}</option>${opts.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}${state.vinculosMonday[p.projeto]?'<option value="-">Desfazer a ligação manual</option>':''}</select>`;
+  const vinc=`<select class="ed" data-v="${esc(p.projeto)}" onchange="opVincular(this.dataset.v,this.value)" aria-label="Ligar ao cadastro"><option value="">${c?'Trocar o cliente ligado…':'Ligar a um cliente do cadastro…'}</option>${opts.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}${state.vinculosMonday[p.projeto]?'<option value="-">Desfazer a ligação manual</option>':''}</select>`;
   return linha+`<div class="op-pdet"><div class="op-motivos">${p.motivos.length?p.motivos.map(x=>`<span class="${tg}">${esc(x)}</span>`).join(''):'<span class="tag-ok">Sem pendências</span>'}</div>
     <div><h4>Próximo marco</h4>${p.proximo?`<p><b>${esc(p.proximo.nome)}</b><br><span style="color:var(--gray)">${opDt(p.proximo.entrega)} · ${esc(p.proximo.pessoas.join(', ')||'sem dono')}</span></p>`:'<p style="color:var(--gray)">Sem marco com data.</p>'}
       <h4 style="margin-top:14px">Contato</h4><p>Última reunião gravada: ${ult?opDt(ult):'—'}<br>Promessas abertas: ${p.promessasAbertas.length}${p.semTarefa.length?` · <b style="color:var(--danger)">${p.semTarefa.length} sem tarefa</b>`:''}</p>
@@ -2780,6 +2873,7 @@ function indCalc(m,pes){ // pes: item de indPessoas ou null (operação toda)
 }
 function indRetratoAnt(){return (state.indicadores||{})[indPeriodo().ymAnt]||null}
 function indGuardar(R,calc){ // retrato do mês (no máximo a cada 3h) para o mês seguinte comparar o que não dá para recompor
+  if(!podeGravar())return;
   const ym=indPeriodo().ym,a=state.indicadores[ym];
   if(a&&Date.now()-new Date(a.em).getTime()<108e5)return;
   const pessoas={};calc.forEach(([x,r])=>{pessoas[primNome(x.nome)]={atrasadas:r.atrasadas,promessas:r.promessas,semTarefa:r.semTarefa}});
