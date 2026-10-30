@@ -523,6 +523,8 @@ body.env-test .env-badge{display:inline-block}
 /* perfis: sócios e equipe só leem; a equipe não vê exportações nem valores */
 body.ro .ed{display:none!important}
 body.colab .gestao{display:none!important}
+body.ro:not(.colab) .eq{display:none!important}
+.wc-por{font-size:10px;color:var(--gray);margin-top:4px}
 .tab[hidden]{display:none}
 .sync-ro{background:rgba(248,244,239,.1);color:rgba(248,244,239,.75)}
 .sync-local{background:rgba(224,168,74,.18);color:#E0A84A;cursor:pointer}
@@ -1020,7 +1022,7 @@ body.colab .gestao{display:none!important}
     <div class="watch-grid" id="watch-grid"></div>
     <div id="watch-empty"></div>
   </div>
-  <div class="card ed">
+  <div class="card eq">
     <div class="section-title">Adicionar à watch list</div>
     <div class="avail-list" id="watch-avail"></div>
   </div>
@@ -1109,12 +1111,13 @@ let loaded=false; // só grava depois de carregar os dados reais (nunca sobrescr
 let PAPEL='colaborador', localSujo=false, avisouLeitura=false;
 const ABAS_PAPEL={leitor:['delegadas','operacao','cadastro','alocacao','custohora','custos','churn','projecao','watch','painel'],colaborador:['operacao','alocacao','delegadas','watch']};
 function podeGravar(){return PAPEL==='editor'}
+function podeMarcar(){return PAPEL==='editor'||PAPEL==='colaborador'} // entrega das Delegadas e Watch List
 function abaPermitida(t){const l=ABAS_PAPEL[PAPEL];return !!document.getElementById('page-'+t)&&(!l||l.includes(t))}
 function abaPadrao(){return PAPEL==='leitor'?'painel':PAPEL==='colaborador'?'operacao':'dia'}
 function setStatus(kind,txt){const el=document.getElementById('sync-status');if(!el)return;el.className='sync-status sync-'+kind;el.textContent=txt;
   const desfaz=kind==='local';el.onclick=desfaz?descartarLocal:null;el.onkeydown=desfaz?e=>{if(e.key==='Enter')descartarLocal()}:null;
   el.tabIndex=desfaz?0:-1;el.setAttribute('role',desfaz?'button':'status');el.title=desfaz?'Descartar o que você mudou e voltar aos dados salvos':'Estado da sincronização'}
-function statusOk(txt){if(localSujo)setStatus('local','Só na sua tela · desfazer');else if(podeGravar())setStatus('saved',txt||'Salvo na nuvem');else setStatus('ro','Modo leitura')}
+function statusOk(txt){if(localSujo)setStatus('local','Só na sua tela · desfazer');else if(podeGravar())setStatus('saved',txt||'Salvo na nuvem');else setStatus('ro',PAPEL==='colaborador'?'Acesso da equipe':'Modo leitura')}
 function save(){ // chamado por toda a app; agenda auto-save na nuvem
   if(applyingRemote||!loaded)return;
   editingUntil=Date.now()+4000;
@@ -1125,6 +1128,30 @@ function save(){ // chamado por toda a app; agenda auto-save na nuvem
 }
 function mudouLocal(){localSujo=true;statusOk();if(!avisouLeitura){avisouLeitura=true;toast('Modo leitura: o que você mudar fica só na sua tela. Nada é salvo.')}}
 async function descartarLocal(){try{await cloudLoad();renderAll()}catch(e){toast('Sem conexão agora. Tente de novo em instantes.')}statusOk()}
+/* Ajustes da equipe (equipe_marcas): a colaboradora marca entregas e mexe na Watch List sem tocar na base inteira.
+   Em cada item vale o mais recente: a marca da equipe ou a última mudança feita pelo editor (statusEm / watch.em). */
+let MARCAS=[];
+async function carregarMarcas(){try{const {data,error}=await sb.from('equipe_marcas').select('tipo,ref,dados,por_email,em').eq('linha',ROW_ID);if(!error&&Array.isArray(data))MARCAS=data}catch(e){}}
+function nomeDoEmail(e){const n=String(e||'').split('@')[0].split('.')[0];return n?n[0].toUpperCase()+n.slice(1):''}
+function quando(iso){return iso?Date.parse(iso)||0:0}
+function aplicarMarcas(){
+  let mudou=false;
+  MARCAS.forEach(m=>{
+    const em=quando(m.em),por=nomeDoEmail(m.por_email);
+    if(m.tipo==='delegada'){const d=state.delegations.find(x=>x.id===m.ref);if(!d||quando(d.statusEm)>=em)return;
+      d.status=m.dados.status;d.deliveredAt=m.dados.deliveredAt||'';d.statusEm=m.em;d.statusPor=por;mudou=true}
+    if(m.tipo==='watch'){const c=state.clients.find(x=>x.id===m.ref);if(!c)return;c.watch=c.watch||{on:false,level:'media',reason:'',next:''};if(quando(c.watch.em)>=em)return;
+      Object.assign(c.watch,{on:!!m.dados.on,level:m.dados.level||'media',reason:m.dados.reason||'',next:m.dados.next||'',em:m.em,por});mudou=true}
+  });
+  return mudou;
+}
+async function marcarEquipe(tipo,ref,dados,msg){ // colaboradora: grava só este ajuste
+  setStatus('saving','Salvando…');
+  const {data,error}=await sb.rpc('marcar_equipe',{p_linha:ROW_ID,p_tipo:tipo,p_ref:ref,p_dados:dados});
+  if(error||!data){toast('Não deu para salvar agora. Tente de novo em instantes.');statusOk();return false}
+  MARCAS=MARCAS.filter(m=>!(m.tipo===tipo&&m.ref===ref)).concat({tipo,ref,dados:data.dados,por_email:data.por_email,em:data.em});
+  aplicarMarcas();setStatus('saved','Salvo na nuvem');if(msg)toast(msg);return true;
+}
 async function cloudSave(){
   saveTimer=null;
   if(!sb||!loaded){setStatus('offline','Offline');return}
@@ -1143,7 +1170,7 @@ async function lerBase(){ // a equipe recebe a versão filtrada (sem valores, cu
 }
 async function cloudLoad(){
   const d=await lerBase();
-  if(d&&d.state){state=d.state;uid=d.uid||100;lastPushed=JSON.stringify({state,uid});normalize();localSujo=false;return true}
+  if(d&&d.state){state=d.state;uid=d.uid||100;lastPushed=JSON.stringify({state,uid});normalize();aplicarMarcas();localSujo=false;return true}
   return false;
 }
 function showGate(msg,withActions){
@@ -1176,6 +1203,7 @@ async function loadData(){
     if(!ac){showGate(semAcesso,true);return false}
     PAPEL=['editor','leitor'].includes(ac.papel)?ac.papel:'colaborador';
     if(ac.trocar_senha){showSenha(true);return false} // primeiro acesso: troca a senha provisória antes de ver os dados
+    await carregarMarcas();
     if(!(await cloudLoad())){showGate(semAcesso,true);return false}
   }catch(e){showGate('Não foi possível carregar os dados agora. Nada foi alterado. Tente de novo em instantes.',true);return false}
   loaded=true;
@@ -1254,16 +1282,20 @@ function subscribeRealtime(){
     if(Date.now()<editingUntil)return;          // estou editando agora: não sobrescreve
     if(localSujo)return;                        // só leitura com mudança na tela: fica até a pessoa desfazer
     applyingRemote=true;
-    state=nd.state;uid=nd.uid||uid;lastPushed=incoming;normalize();renderAll();
+    state=nd.state;uid=nd.uid||uid;lastPushed=incoming;normalize();aplicarMarcas();renderAll();
     applyingRemote=false;
     statusOk('Atualizado por outro usuário');
   }).subscribe();
+  // marca da equipe chegou: aplica (se estiver editando agora, tenta de novo em seguida)
+  const novaMarca=async()=>{await carregarMarcas();if(Date.now()<editingUntil||localSujo){clearTimeout(novaMarca._t);novaMarca._t=setTimeout(novaMarca,4500);return}
+    if(aplicarMarcas()){applyingRemote=true;renderAll();applyingRemote=false}};
+  sb.channel('equipe_marcas_live').on('postgres_changes',{event:'*',schema:'public',table:'equipe_marcas',filter:'linha=eq.'+ROW_ID},novaMarca).subscribe();
   // ao voltar pra aba, recarrega o mais recente
-  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&sb&&Date.now()>editingUntil&&!localSujo){try{const changed=await cloudLoad();if(changed!==false)renderAll();statusOk()}catch(e){}}});
+  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&sb&&Date.now()>editingUntil&&!localSujo){try{await carregarMarcas();const changed=await cloudLoad();if(changed!==false)renderAll();statusOk()}catch(e){}}});
 }
 // a equipe não recebe o tempo real da base completa: relê a versão filtrada a cada 5 min
 setInterval(async()=>{if(!loaded||PAPEL!=='colaborador'||document.hidden||localSujo||Date.now()<editingUntil)return;
-  try{const antes=lastPushed;if(await cloudLoad()&&lastPushed!==antes)renderAll()}catch(e){}},3e5);
+  try{const antes=lastPushed,n=JSON.stringify(MARCAS);await carregarMarcas();if(await cloudLoad()&&(lastPushed!==antes||JSON.stringify(MARCAS)!==n))renderAll()}catch(e){}},3e5);
 function scenarioDefault(nc,ramp,churn,adjust){return {newClients:nc,ramp,churn,adjust}}
 function normalize(){
   state.tasks=state.tasks||[];
@@ -2079,19 +2111,26 @@ function renderProjResults(){
 }
 
 /* ============ WATCH LIST ============ */
-function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch.on=!c.watch.on;save();afterClientEdit(!!editingClient);if(document.getElementById('page-watch').classList.contains('active'))renderWatch()}
-function updWatch(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;c.watch[k]=v;save();if(k==='level')renderWatch()}
+function watchDados(w){return {on:!!w.on,level:w.level||'media',reason:w.reason||'',next:w.next||''}}
+function watchEquipe(c,mud,msg){marcarEquipe('watch',c.id,{...watchDados(c.watch),...mud},msg).then(()=>{renderWatch();updateBadges()})}
+function toggleWatch(id){const c=state.clients.find(x=>x.id===id);if(!c)return;
+  if(!podeGravar()){if(podeMarcar())watchEquipe(c,{on:!c.watch.on},c.watch.on?'Saiu da watch list':'Entrou na watch list');return}
+  c.watch.on=!c.watch.on;c.watch.em=new Date().toISOString();c.watch.por='';save();afterClientEdit(!!editingClient);if(document.getElementById('page-watch').classList.contains('active'))renderWatch()}
+function updWatch(id,k,v){const c=state.clients.find(x=>x.id===id);if(!c)return;
+  if(!podeGravar()){if(podeMarcar())watchEquipe(c,{[k]:v});return}
+  c.watch[k]=v;c.watch.em=new Date().toISOString();c.watch.por='';save();if(k==='level')renderWatch()}
 function renderWatch(){
   const grid=document.getElementById('watch-grid');const empty=document.getElementById('watch-empty');
-  const flagged=state.clients.filter(c=>c.watch&&c.watch.on),dis=podeGravar()?'':'disabled',ro=podeGravar()?'':'readonly';
-  if(!flagged.length){grid.innerHTML='';empty.innerHTML=`<div class="empty-state"><b>Nenhum cliente em atenção</b>${podeGravar()?'Marque clientes abaixo ou pelo ⚑ na aba Cadastro.':''}</div>`}
+  const flagged=state.clients.filter(c=>c.watch&&c.watch.on),dis=podeMarcar()?'':'disabled',ro=podeMarcar()?'':'readonly';
+  if(!flagged.length){grid.innerHTML='';empty.innerHTML=`<div class="empty-state"><b>Nenhum cliente em atenção</b>${podeGravar()?'Marque clientes abaixo ou pelo ⚑ na aba Cadastro.':podeMarcar()?'Marque clientes abaixo.':''}</div>`}
   else{empty.innerHTML='';grid.innerHTML=flagged.map(c=>{const owner=state.people.find(p=>p.id===c.ownerId);
     return `<div class="watch-card ${c.watch.level==='media'?'media':''}">
-      <div class="wc-head"><span class="wc-name">${esc(c.name)}</span><button class="flag-btn on ed" title="Tirar da watch" onclick="toggleWatch('${c.id}')">⚑</button></div>
+      <div class="wc-head"><span class="wc-name">${esc(c.name)}</span><button class="flag-btn on eq" title="Tirar da watch" onclick="toggleWatch('${c.id}')">⚑</button></div>
       <div class="wc-field"><label>Tipo · Consultor</label><div style="font-size:12px;font-weight:600"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> · ${owner?esc(owner.name):'sem consultor'}</div></div>
       <div class="wc-field"><label>Nível de atenção</label><select onchange="updWatch('${c.id}','level',this.value)" ${dis}><option value="alta" ${c.watch.level==='alta'?'selected':''}>Alta</option><option value="media" ${c.watch.level==='media'?'selected':''}>Média</option></select></div>
       <div class="wc-field"><label>Motivo</label><textarea rows="2" placeholder="Ex: atraso no pagamento, risco de churn…" onchange="updWatch('${c.id}','reason',this.value)" ${ro}>${esc(c.watch.reason)}</textarea></div>
       <div class="wc-field"><label>Próxima ação</label><input value="${esc(c.watch.next)}" placeholder="Ex: ligar até sexta" onchange="updWatch('${c.id}','next',this.value)" ${ro}></div>
+      ${c.watch.por?`<div class="wc-por">Atualizado por ${esc(c.watch.por)} em ${new Date(c.watch.em).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</div>`:''}
     </div>`}).join('')}
   const avail=document.getElementById('watch-avail');const rest=state.clients.filter(c=>!(c.watch&&c.watch.on));
   avail.innerHTML=rest.length?rest.map(c=>`<div class="avail-chip" onclick="toggleWatch('${c.id}')"><span class="type-tag ${typeClass(c.type)}">${typeLabel(c.type)}</span> ${esc(c.name)} +</div>`).join(''):'<div class="onb-empty">Todos os clientes já estão na watch list.</div>';
@@ -2385,9 +2424,9 @@ function delegRow(d){
   const p=personById(d.personId),due=delegDueInfo(d),open=d.status==='aberta';
   const nud=(d.nudges||[]);
   return `<div class="dg-row">
-    <button class="ck ${open?'':'on'}" onclick="toggleDelegation('${d.id}')" ${podeGravar()?'':'disabled'} title="${open?'Marcar como entregue':'Reabrir'}" aria-label="${open?'Marcar como entregue':'Reabrir'}"></button>
+    <button class="ck ${open?'':'on'}" onclick="toggleDelegation('${d.id}')" ${podeMarcar()?'':'disabled'} title="${open?'Marcar como entregue':'Reabrir'}" aria-label="${open?'Marcar como entregue':'Reabrir'}"></button>
     <div><div class="dg-text" style="${open?'':'color:var(--gray);text-decoration:line-through'}">${esc(d.text)}</div>
-      <div class="dg-meta">${p?`${avatar(p,true)} ${esc(p.name.split(' ')[0])}`:'—'}${d.client?`<span class="tag-cli">${esc(d.client)}</span>`:''}<span class="${due.cls}">${due.txt}</span><span>passada ${brDate(d.givenAt)}</span>${nud.length?`<span>cobrada ${nud.length}x, última ${brDate(nud[nud.length-1])}</span>`:''}${d.note?`<span>· ${esc(d.note)}</span>`:''}</div></div>
+      <div class="dg-meta">${p?`${avatar(p,true)} ${esc(p.name.split(' ')[0])}`:'—'}${d.client?`<span class="tag-cli">${esc(d.client)}</span>`:''}<span class="${due.cls}">${due.txt}</span><span>passada ${brDate(d.givenAt)}</span>${!open&&d.statusPor?`<span>entregue por ${esc(d.statusPor)}</span>`:''}${nud.length?`<span>cobrada ${nud.length}x, última ${brDate(nud[nud.length-1])}</span>`:''}${d.note?`<span>· ${esc(d.note)}</span>`:''}</div></div>
     <div class="dg-actions ed">${open?`<button class="btn-s pri" onclick="nudgeDelegation('${d.id}')" title="Copia uma mensagem de cobrança">Cobrar</button>`:''}<button class="btn-s" onclick="delegEditing=delegEditing==='${d.id}'?null:'${d.id}';renderDelegations()">Editar</button><button class="mini-btn" onclick="delDelegation('${d.id}')" title="Excluir" aria-label="Excluir">×</button></div>
     ${delegEditing===d.id?`<div class="dg-edit">
       <div class="field"><label>O que foi passado</label><input id="de-text" value="${esc(d.text)}"></div>
@@ -2405,7 +2444,9 @@ function addDelegation(e){
   ti.value='';document.getElementById('dg-client').value='';document.getElementById('dg-due').value='';
   save();renderDelegations();updateBadges();toast('Demanda registrada');ti.focus();
 }
-function toggleDelegation(id){const d=state.delegations.find(x=>x.id===id);if(!d)return;if(d.status==='aberta'){d.status='entregue';d.deliveredAt=todayStr()}else{d.status='aberta';d.deliveredAt=''}save();renderDelegations();updateBadges()}
+function toggleDelegation(id){const d=state.delegations.find(x=>x.id===id);if(!d)return;const entregar=d.status==='aberta';
+  if(!podeGravar()){if(podeMarcar())marcarEquipe('delegada',id,{status:entregar?'entregue':'aberta',deliveredAt:entregar?todayStr():''},entregar?'Entrega registrada':'Demanda reaberta').then(()=>{renderDelegations();updateBadges()});return}
+  if(entregar){d.status='entregue';d.deliveredAt=todayStr()}else{d.status='aberta';d.deliveredAt=''}d.statusEm=new Date().toISOString();d.statusPor='';save();renderDelegations();updateBadges()}
 function saveDelegation(id){const d=state.delegations.find(x=>x.id===id);if(!d)return;const tx=document.getElementById('de-text').value.trim();if(tx)d.text=tx;d.client=document.getElementById('de-client').value.trim();d.dueAt=document.getElementById('de-due').value;d.note=document.getElementById('de-note').value.trim();delegEditing=null;save();renderDelegations();updateBadges()}
 function delDelegation(id){const d=state.delegations.find(x=>x.id===id);if(!d||!confirm(`Excluir "${d.text}"?`))return;state.delegations=state.delegations.filter(x=>x.id!==id);save();renderDelegations();updateBadges()}
 function nudgeDelegation(id){
