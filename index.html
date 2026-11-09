@@ -666,6 +666,40 @@ body.ro:not(.colab) .eq{display:none!important}
 .ind-tbl{overflow-x:auto;margin-top:16px}
 .ind-tbl td,.ind-tbl th{white-space:nowrap}
 @media(max-width:1000px){.bn-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ===== Avaliações das reuniões ===== */
+.av-n{display:inline-block;min-width:36px;text-align:center;font-family:var(--display);font-weight:700;font-size:13px;border-radius:6px;padding:2px 6px;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.av-n.ex{background:var(--navy);color:var(--cream)}
+.av-n.ok{background:rgba(46,113,84,.12);color:var(--green)}
+.av-n.at{background:rgba(168,106,18,.14);color:var(--orange)}
+.av-n.cr{background:rgba(192,34,37,.12);color:var(--danger)}
+.av-n.na{color:var(--gray);font-family:var(--sans);font-weight:600;font-size:11px}
+.av-tbl{overflow-x:auto}
+.av-tbl td.c,.av-tbl th.c{text-align:center}
+.av-tbl td small{display:block;font-size:9.5px;color:var(--gray);font-weight:600;margin-top:2px}
+.av-tbl td.nm{white-space:nowrap;font-weight:700}
+.av-tbl td.nm select{width:auto;margin-left:6px;font-size:10px;padding:2px 4px}
+.av-tbl tr.av-grp td{background:var(--off-white);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);padding:6px 8px}
+.av-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.av-resumo{font-size:12.5px;line-height:1.5;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.av-row{display:grid;grid-template-columns:62px minmax(0,1.1fr) minmax(0,1.3fr) 230px 92px 56px;gap:12px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--light-gray);cursor:pointer}
+.av-row:hover{background:var(--light-blue)}
+.av-row.open{background:var(--off-white)}
+.av-row.sem{cursor:default;color:var(--gray)}
+.av-row .dt{font-size:12px;font-weight:700;color:var(--gray)}
+.av-row .cl b{display:block;font-size:13px}.av-row .cl small{font-size:11px;color:var(--gray)}
+.av-row .tm{font-size:12px;line-height:1.4}
+.av-row .pil{display:flex;gap:4px;flex-wrap:wrap}
+.av-row .pil span{font-size:10.5px;font-weight:700;color:var(--gray);background:#fff;border:1px solid var(--border);border-radius:5px;padding:1px 5px;white-space:nowrap}
+.av-row .nt{text-align:right}
+.av-det{padding:16px 18px 20px;border-bottom:1px solid var(--light-gray);background:var(--off-white);display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px}
+.av-det .tbl td{vertical-align:top}
+.av-ev{font-size:11px;color:var(--gray);line-height:1.4;margin-top:2px}
+.av-box h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin:0 0 5px}
+.av-box p,.av-box li{font-size:12.5px;line-height:1.5;margin:0}
+.av-box ul{margin:0;padding-left:18px}
+.av-box+.av-box{margin-top:14px}
+.av-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:1000px){.av-row{grid-template-columns:54px minmax(0,1fr) 56px}.av-row .c-hide{display:none}.av-det{grid-template-columns:1fr}}
 @media(max-width:640px){.bn-v{font-size:27px}.bn{padding:13px 12px 11px 15px}}
 @media(max-width:1000px){
   .op-grid{grid-template-columns:1fr}
@@ -751,6 +785,7 @@ body.ro:not(.colab) .eq{display:none!important}
   <button class="tab" data-tab="projecao" onclick="switchTab('projecao')">9 · Projeção</button>
   <button class="tab" data-tab="watch" onclick="switchTab('watch')">10 · Watch List <span class="badge" id="badge-watch">0</span></button>
   <button class="tab" data-tab="painel" onclick="switchTab('painel')">11 · Indicadores</button>
+  <button class="tab" data-tab="avaliacoes" onclick="switchTab('avaliacoes')">12 · Avaliações</button>
 </div>
 
 <!-- ABA: MEU DIA -->
@@ -1028,6 +1063,15 @@ body.ro:not(.colab) .eq{display:none!important}
   </div>
 </div>
 
+<!-- ABA 12: AVALIAÇÕES DAS REUNIÕES (só o editor) -->
+<div class="page" id="page-avaliacoes">
+  <div class="page-head dia-head">
+    <div><h1>Avaliações</h1><p>Qualidade das reuniões com cliente, pelo manual de avaliação da Aust. Notas de 0 a 10; padrão Aust a partir de 7,5.</p></div>
+    <div class="op-src" id="av-src"></div>
+  </div>
+  <div id="av-body"></div>
+</div>
+
 <!-- ABA 11: INDICADORES (inclui o antigo Painel) -->
 <div class="page" id="page-painel">
   <div class="page-head"><h1>Indicadores</h1><p id="ind-sub">Números da operação no mês, comparados com o mês anterior.</p></div>
@@ -1085,7 +1129,7 @@ function defaultState(){
       newPerson(p2,'Ariana','pj')
     ],
     clients:[], tasks:[],
-    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[], promessas:{}, vinculosMonday:{}, indicadores:{},
+    planner:{items:[],blocks:[]}, delegations:[], importsApplied:[], promessas:{}, vinculosMonday:{}, indicadores:{}, avGrupos:{},
     fees:{advisor:0,projeto:0},
     fixed:[{id:nid(),name:'Aluguel',value:0},{id:nid(),name:'Softwares',value:0}],
     params:{attendance:75,weeks:4.33,lunch:1},
@@ -1378,6 +1422,7 @@ function normalize(){
   if(!obj(state.promessas))state.promessas={};
   if(!obj(state.vinculosMonday))state.vinculosMonday={};
   if(!obj(state.indicadores))state.indicadores={}; // retratos mensais da aba Indicadores
+  if(!obj(state.avGrupos))state.avGrupos={}; // grupo (sócio/consultor/estagiário) de quem é avaliado e não está no Cadastro
   // a aba lê 60 dias de reuniões: marcação sem mexer há 120 dias já não tem efeito (promessa manual aberta fica)
   const corteP=new Date(Date.now()-120*864e5).toISOString();
   Object.keys(state.promessas).forEach(id=>{const o=state.promessas[id];if(!obj(o)||((o.atualizado||'')<corteP&&!(o.origem==='manual'&&o.estado==='aberta')))delete state.promessas[id]});
@@ -1519,6 +1564,7 @@ function switchTab(t){
   if(t==='dia')renderPlanner();
   if(t==='delegadas')renderDelegations();
   if(t==='operacao')opOpen();
+  if(t==='avaliacoes')avOpen();
   if(t==='churn')renderChurn();
   if(t==='alocacao')renderAllocation();
   if(t==='custohora')renderCustoHora();
@@ -2926,7 +2972,7 @@ function indGuardar(R,calc){ // retrato do mês (no máximo a cada 3h) para o m�
 function indDelta(v,ant,rot,o={}){ // ▲▼ com cor pelo sentido bom do número
   if(v==null||ant==null)return `<div class="bn-d neutro"><span>${o.semBase||'sem base de comparação'}</span></div>`;
   const f=o.fmt||(x=>Math.round(x).toLocaleString('pt-BR')),d=v-ant;
-  if(Math.abs(d)<(o.pp?0.05:0.5))return `<div class="bn-d neutro">= <span>sem variação vs ${rot} (${f(ant)})</span></div>`;
+  if(Math.abs(d)<(o.limiar??(o.pp?0.05:0.5)))return `<div class="bn-d neutro">= <span>sem variação vs ${rot} (${f(ant)})</span></div>`;
   const good=o.bom==='neutro'?null:((o.bom||'up')==='up')===(d>0);
   return `<div class="bn-d ${good==null?'neutro':good?'bom':'ruim'}">${d>0?'▲':'▼'} ${o.pp?num1(Math.abs(d))+' p.p.':f(Math.abs(d))} <span>vs ${rot}: ${f(ant)}</span></div>`;
 }
@@ -3024,6 +3070,179 @@ function resetAll(){if(!confirm('Zerar TODOS os dados na nuvem? Faça um Backup 
 
 /* ============ UTIL ============ */
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+/* ============ AVALIAÇÕES DAS REUNIÕES (aba 12, só o editor) ============ */
+// A rotina do Granola avalia cada reunião com cliente pelo manual da Aust e grava em reuniao_avaliacoes (só o editor lê);
+// o banco confere os critérios e calcula pilares e nota final. Aqui: números do mês, histórico por pessoa e cada avaliação.
+const AV={lista:[],fila:null,ok:false,carregando:false,erro:'',carga:0,ui:{periodo:'semana',papel:'todos',pessoa:'',aberta:null,soAlerta:false}};
+try{const u=JSON.parse(localStorage.getItem('aust_av_ui')||'{}');if(u.periodo)AV.ui.periodo=u.periodo;if(u.papel)AV.ui.papel=u.papel}catch(e){}
+const AV_CRIT=[['1.1','Clareza e linguagem profissional'],['1.2','Compreensão e adaptação ao cliente'],['1.3','Proatividade e segurança'],
+  ['2.1','Domínio e precisão'],['2.2','Fundamentação das recomendações'],['2.3','Coragem intelectual'],['2.4','Integridade e transparência'],
+  ['3.1','Entregas desde a última reunião'],['3.2','Compromissos anteriores'],['3.3','Cronograma e escopo'],['3.4','Próximos passos'],
+  ['4.1','Participação do cliente'],['4.2','Compreensão do valor'],['4.3','Sinais de satisfação']];
+const AV_PILAR=[['1','Postura e Comunicação'],['2','Rigor Técnico e Coragem Intelectual'],['3','Disciplina de Execução'],['4','Engajamento e Valor Percebido']];
+const AV_GRUPOS=[['socio','Sócios'],['pj','Consultores'],['estagio','Estagiários'],['','Sem grupo']];
+function avAtiva(){const p=document.getElementById('page-avaliacoes');return !!(p&&p.classList.contains('active'))}
+function avOpen(){if(!AV.ok||Date.now()-AV.carga>6e5)avLoad();renderAvaliacoes()}
+async function avLoad(){
+  if(!sb||AV.carregando||!podeGravar())return;
+  AV.carregando=true;
+  try{
+    const [a,f]=await Promise.all([
+      sb.from('reuniao_avaliacoes').select('meeting_id,data,titulo,cliente,situacao,tipo,pessoas,criterios,evidencias,pilares,nota,destaque,desenvolver,sugestoes,observacoes,avaliado_em').order('data',{ascending:false}),
+      sb.from('avaliacao_fila').select('id',{count:'exact',head:true})]);
+    if(a.error)throw a.error;
+    AV.lista=(a.data||[]).map(x=>({...x,nota:x.nota==null?null:+x.nota})).sort((x,y)=>new Date(y.data)-new Date(x.data));AV.fila=f&&!f.error?(f.count||0):null;AV.ok=true;AV.erro='';AV.carga=Date.now();
+  }catch(e){AV.erro='Não foi possível ler as avaliações agora. Tente de novo em instantes.'}
+  AV.carregando=false;if(avAtiva())renderAvaliacoes();
+}
+function avNum(v){return v==null||isNaN(v)?'N/A':Number(v).toFixed(1).replace('.',',')}
+function avCls(v){return v==null||isNaN(v)?'na':v>=9?'ex':v>=7.5?'ok':v>=6?'at':'cr'}
+function avNota(v){return `<span class="av-n ${avCls(v)}">${v==null||isNaN(v)?'—':avNum(v)}</span>`}
+const avMedia=xs=>xs.length?xs.reduce((s,x)=>s+x,0)/xs.length:null;
+function avSemana(iso){const d=new Date(iso);return ymdOf(new Date(d.getFullYear(),d.getMonth(),d.getDate()-(d.getDay()+6)%7))} // segunda-feira
+function avSemanaRot(seg){const a=new Date(seg+'T12:00:00'),b=new Date(a);b.setDate(a.getDate()+6);const m=x=>MESES[x.getMonth()].slice(0,3);return a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()}/${m(b)}`:`${a.getDate()}/${m(a)}–${b.getDate()}/${m(b)}`}
+function avMes(iso){const d=new Date(iso);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+function avMesRot(ym){const [y,m]=ym.split('-');return MESES[+m-1].slice(0,3)+'/'+y.slice(2)}
+function avAvaliadas(){return AV.lista.filter(a=>a.situacao==='avaliada'&&a.nota!=null)}
+function avAlertas(a){ // manual: alertas só se algum critério < 6,0 ou a nota final < 7,5; aí lista os critérios abaixo de 7,5
+  const c=a.criterios||{};if(!(Object.values(c).some(v=>v!=null&&v<6)||(a.nota!=null&&a.nota<7.5)))return [];
+  return AV_CRIT.filter(([k])=>c[k]!=null&&c[k]<7.5).map(([k,r])=>({k,r,v:c[k],critico:c[k]<6,ev:(a.evidencias||{})[k]||''})).sort((x,y)=>y.critico-x.critico); // críticos primeiro
+}
+function avComAlerta(a){return a.situacao==='avaliada'&&(a.nota<7.5||avAlertas(a).length>0)}
+function avPessoaInfo(nome){ // grupo pelo Cadastro (primeiro nome); quem não está lá é classificado nesta aba
+  const k=primNome(nome),p=state.people.find(x=>primNome(x.name)===k);
+  const g=p?(p.isIntern||p.contract==='estagio'?'estagio':p.contract==='socio'?'socio':'pj'):((state.avGrupos||{})[k]||'');
+  return {k,nome:p?p.name:nome,grupo:g,cad:!!p};
+}
+function avParticipacoes(){ // uma linha por pessoa por reunião; quem aparece duas vezes fica como "conduziu"
+  const r=[];
+  avAvaliadas().forEach(a=>{const vis={};(a.pessoas||[]).forEach(p=>{if(!p||!p.nome)return;const i=avPessoaInfo(p.nome);
+    if(vis[i.k]){if(p.papel==='conduziu')vis[i.k].papel='conduziu';return}vis[i.k]={...i,papel:p.papel,contribuicao:p.contribuicao||'',a};r.push(vis[i.k])})});
+  return r;
+}
+function avValorCitado(textos){ // valor da Aust mais citado no começo de "destaque" / "desenvolver" ("Rigor técnico: ...")
+  const n={};textos.forEach(t=>{const v=String(t||'').split(/[:—–-]/)[0].trim();if(v&&v.length<40){const k=v[0].toUpperCase()+v.slice(1).toLowerCase();n[k]=(n[k]||0)+1}});
+  const o=Object.entries(n).sort((a,b)=>b[1]-a[1])[0];return o?{valor:o[0],n:o[1]}:null;
+}
+function avUi(k,v){AV.ui[k]=v;if(k!=='aberta')AV.ui.aberta=null;try{localStorage.setItem('aust_av_ui',JSON.stringify({periodo:AV.ui.periodo,papel:AV.ui.papel}))}catch(e){}renderAvaliacoes()}
+function avAbrir(id){AV.ui.aberta=AV.ui.aberta===id?null:id;renderAvaliacoes()}
+function avGrupo(k,g){state.avGrupos=state.avGrupos||{};if(g)state.avGrupos[k]=g;else delete state.avGrupos[k];save();renderAvaliacoes()}
+
+function renderAvaliacoes(){
+  const box=document.getElementById('av-body'),src=document.getElementById('av-src');if(!box)return;
+  const ult=AV.lista.reduce((m,a)=>a.avaliado_em>m?a.avaliado_em:m,'');
+  if(src)src.innerHTML=`<span class="src-chip ${AV.ok?'ok':''}" title="A rotina do Granola avalia as reuniões com cliente nos dias úteis, depois de copiar as reuniões."><i></i>${avAvaliadas().length} avaliadas${AV.fila?` · ${AV.fila} na fila`:''}${ult?' · última '+haQuanto(ult):''}</span>`;
+  if(!AV.ok){box.innerHTML=AV.erro?`<div class="insight ins-danger">${esc(AV.erro)} <button class="btn-s" onclick="avLoad()">Tentar de novo</button></div>`:'<div class="empty-state"><b>Lendo as avaliações…</b></div>';return}
+  if(!avAvaliadas().length){box.innerHTML=`<div class="empty-state"><b>Nenhuma reunião avaliada ainda</b>A rotina do Granola está avaliando as reuniões com cliente desde 1º de setembro${AV.fila?` (${AV.fila} na fila)`:''}. As notas aparecem aqui conforme forem gravadas.</div>`;return}
+  box.innerHTML=avNumeros()+avHistorico()+avLista();
+}
+function avNumeros(){
+  const mi=nowMI(),ym=miToYM(mi),ant=miToYM(mi-1),rotAnt=MESES[((mi-1)%12+12)%12];
+  const av=avAvaliadas(),M=av.filter(a=>avMes(a.data)===ym),A=av.filter(a=>avMes(a.data)===ant);
+  const media=xs=>avMedia(xs.map(a=>a.nota)),pad=xs=>xs.length?Math.round(100*xs.filter(a=>a.nota>=7.5).length/xs.length):null;
+  const comAl=xs=>xs.filter(avComAlerta).length,crit=xs=>xs.filter(a=>avAlertas(a).some(x=>x.critico)).length;
+  const dec={fmt:avNum,limiar:0.05};
+  const geral=bn('Nota média do mês',M.length?avNum(media(M)):'—',indDelta(M.length?media(M):null,A.length?media(A):null,rotAnt,dec),`${MESES[mi%12]} até agora`)+
+    bn('Reuniões avaliadas',M.length,indDelta(M.length,A.length,rotAnt,{bom:'neutro'}),AV.fila?`${AV.fila} ainda na fila`:'nenhuma na fila')+
+    bn('No padrão Aust',pad(M)==null?'—':pad(M)+'<small>%</small>',indDelta(pad(M),pad(A),rotAnt,{pp:true,fmt:x=>Math.round(x)+'%'}),'reuniões com nota a partir de 7,5')+
+    bn('Com alerta',comAl(M),indDelta(comAl(M),comAl(A),rotAnt,{bom:'down'}),`${crit(M)} com critério crítico (abaixo de 6,0)`,crit(M)>0);
+  const pil=AV_PILAR.map(([k,r])=>{const pm=xs=>avMedia(xs.map(a=>a.pilares&&a.pilares[k]).filter(v=>v!=null).map(Number));
+    return bn(`P${k} · ${r}`,M.length&&pm(M)!=null?avNum(pm(M)):'—',indDelta(pm(M),pm(A),rotAnt,dec),['peso 25%','peso 30%','peso 30%','peso 15%'][+k-1])}).join('');
+  return indGrupo('Reuniões do mês','média de todas as reuniões avaliadas no mês, comparada com o mês anterior',geral)+indGrupo('Pilares no mês','média de cada pilar; critérios N/A saem da conta',pil);
+}
+function avHistorico(){
+  const u=AV.ui,sem=u.periodo==='semana',chave=a=>sem?avSemana(a.data):avMes(a.data);
+  let cols=[];
+  if(sem){const s=avSemana(new Date().toISOString());for(let i=7;i>=0;i--)cols.push(addDays(s,-7*i))}
+  else{const mi=nowMI(),ini=Math.max(ymToMI('2026-09'),mi-5);for(let m=ini;m<=mi;m++)cols.push(miToYM(m))}
+  const parts=avParticipacoes().filter(x=>u.papel==='todos'||x.papel==='conduziu');
+  const pes={};parts.forEach(x=>{(pes[x.k]=pes[x.k]||{k:x.k,nome:x.nome,grupo:x.grupo,cad:x.cad,itens:[]}).itens.push(x)});
+  const cel=xs=>{const m=avMedia(xs.map(x=>x.a?x.a.nota:x.nota));return `<td class="c">${m==null?'<span class="av-n na">—</span>':avNota(m)+`<small>${xs.length} ${xs.length===1?'reunião':'reuniões'}</small>`}</td>`};
+  const linha=p=>{const noPer=p.itens.filter(x=>cols.includes(chave(x.a)));
+    const sel=p.cad?'':`<select onchange="avGrupo('${esc(p.k)}',this.value)" aria-label="Grupo de ${esc(p.nome)}" title="Fora do Cadastro: escolha o grupo">${AV_GRUPOS.map(([g,l])=>`<option value="${g}" ${p.grupo===g?'selected':''}>${g?l.replace(/s$/,'').replace(/ore$/,'or'):'Grupo…'}</option>`).join('')}</select>`;
+    return `<tr><td class="nm">${esc(p.nome)}${sel}</td>${cols.map(c=>cel(p.itens.filter(x=>chave(x.a)===c))).join('')}${cel(noPer)}<td class="c">${noPer.filter(x=>x.papel==='conduziu').length}</td></tr>`};
+  const grupos=AV_GRUPOS.map(([g,l])=>{const ps=Object.values(pes).filter(p=>p.grupo===g).sort((a,b)=>a.nome.localeCompare(b.nome));
+    return ps.length?`<tr class="av-grp"><td colspan="${cols.length+3}">${l}</td></tr>`+ps.map(linha).join(''):''}).join('');
+  const todas=avAvaliadas();
+  const tot=`<tr class="tot"><td>Aust (cada reunião uma vez)</td>${cols.map(c=>cel(todas.filter(a=>chave(a)===c))).join('')}${cel(todas.filter(a=>cols.includes(chave(a))))}<td class="c">${todas.filter(a=>cols.includes(chave(a))).length}</td></tr>`;
+  const seg=(k,ops)=>`<div class="seg">${ops.map(([v,l])=>`<button class="${u[k]===v?'on':''}" onclick="avUi('${k}','${v}')">${l}</button>`).join('')}</div>`;
+  return `<div class="card"><div class="section-title">Histórico por pessoa <span class="cnt">média das reuniões de cada um; a nota da reunião vale para quem conduziu e para quem participou</span></div>
+    <div class="av-bar">${seg('periodo',[['semana','Semanal'],['mes','Mensal']])}${seg('papel',[['todos','Conduziu ou participou'],['conduziu','Só quando conduziu']])}</div>
+    <div class="av-tbl"><table class="tbl"><thead><tr><th>Pessoa</th>${cols.map(c=>`<th class="c">${sem?avSemanaRot(c):avMesRot(c)}</th>`).join('')}<th class="c">${sem?'8 semanas':'Período'}</th><th class="c">Conduziu</th></tr></thead>
+    <tbody>${grupos||`<tr><td colspan="${cols.length+3}">Ninguém neste filtro.</td></tr>`}${tot}</tbody></table></div>
+    <p class="help">Semanas de segunda a domingo. Faixas do manual: 9,0+ exemplar · 7,5 a 8,9 padrão Aust · 6,0 a 7,4 abaixo do padrão · abaixo de 6,0 crítico.</p></div>`;
+}
+function avLista(){
+  const u=AV.ui,parts=avParticipacoes();
+  const pessoas={};parts.forEach(x=>{pessoas[x.k]=pessoas[x.k]||{k:x.k,nome:x.nome,grupo:x.grupo}});
+  const ordem=Object.values(pessoas).sort((a,b)=>AV_GRUPOS.findIndex(g=>g[0]===a.grupo)-AV_GRUPOS.findIndex(g=>g[0]===b.grupo)||a.nome.localeCompare(b.nome));
+  if(u.pessoa&&!pessoas[u.pessoa])u.pessoa='';
+  const chips=`<div class="pick-list"><button class="pick ${!u.pessoa?'on':''}" onclick="avUi('pessoa','')">Todas</button>${ordem.map(p=>`<button class="pick ${u.pessoa===p.k?'on':''}" data-v="${esc(p.k)}" onclick="avUi('pessoa',this.dataset.v)"><span class="avatar sm">${esc(initials(p.nome))}</span>${esc(p.nome.split(' ')[0])}</button>`).join('')}</div>`;
+  const alerta=`<button class="fchip ${u.soAlerta?'on':''}" onclick="avUi('soAlerta',${!u.soAlerta})">Só com alerta</button>`;
+  let lista=AV.lista.filter(a=>(!u.pessoa||(a.pessoas||[]).some(p=>primNome(p.nome)===u.pessoa))&&(!u.soAlerta||avComAlerta(a)));
+  let resumo='';
+  if(u.pessoa){
+    const meus=parts.filter(x=>x.k===u.pessoa),mi=nowMI(),mes=meus.filter(x=>avMes(x.a.data)===miToYM(mi)),base=mes.length?mes:meus;
+    const pil=AV_PILAR.map(([k,r])=>({k,r,v:avMedia(base.map(x=>x.a.pilares&&x.a.pilares[k]).filter(v=>v!=null).map(Number))})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v);
+    const des=avValorCitado(base.map(x=>x.a.desenvolver)),dst=avValorCitado(base.map(x=>x.a.destaque));
+    resumo=`<div class="av-resumo"><b>${esc(pessoas[u.pessoa].nome)}</b> · ${mes.length?`${mes.length} ${mes.length===1?'reunião':'reuniões'} em ${MESES[mi%12]}`:`${meus.length} reuniões no histórico`} (${base.filter(x=>x.papel==='conduziu').length} conduziu) · média ${avNota(avMedia(base.map(x=>x.a.nota)))}
+      ${pil.length>1?`<br>Pilar mais forte: <b>${esc(pil[0].r)}</b> (${avNum(pil[0].v)}) · a desenvolver: <b>${esc(pil[pil.length-1].r)}</b> (${avNum(pil[pil.length-1].v)})`:''}
+      ${dst||des?`<br>${dst?`Valor em destaque mais citado: <b>${esc(dst.valor)}</b> (${dst.n}×)`:''}${dst&&des?' · ':''}${des?`valor a desenvolver mais citado: <b>${esc(des.valor)}</b> (${des.n}×)`:''}`:''}</div>`;
+  }
+  return `<div class="card flush"><div class="section-title" style="padding:18px 18px 7px;margin:0 0 6px">Reuniões avaliadas <span class="cnt">clique para ver a avaliação completa</span></div>
+    <div style="padding:0 18px 12px"><div class="av-bar">${chips}${alerta}</div>${resumo}</div>
+    ${lista.length?lista.map(avLinha).join(''):'<div class="empty-line" style="padding:6px 18px 16px">Nenhuma reunião neste filtro.</div>'}</div>`;
+}
+function avLinha(a){
+  const dia=opDt(isoLocal(a.data).slice(0,10));
+  if(a.situacao!=='avaliada')return `<div class="av-row sem"><span class="dt">${dia}</span><span class="cl"><b>${esc(a.cliente)}</b><small>sem transcrição no Granola</small></span><span class="tm c-hide"></span><span class="pil c-hide"></span><span class="c-hide"></span><span class="nt"><span class="av-n na">—</span></span></div>`;
+  const ab=AV.ui.aberta===a.meeting_id,ps=a.pessoas||[],con=ps.filter(p=>p.papel==='conduziu'),par=ps.filter(p=>p.papel!=='conduziu');
+  const al=avAlertas(a),crit=al.some(x=>x.critico);
+  return `<div class="av-row ${ab?'open':''}" data-id="${esc(a.meeting_id)}" onclick="avAbrir(this.dataset.id)" onkeydown="if(event.key==='Enter')avAbrir(this.dataset.id)" role="button" tabindex="0" aria-expanded="${ab}">
+    <span class="dt">${dia}</span>
+    <span class="cl"><b>${esc(a.cliente)}</b><small>${esc(a.tipo||'')}</small></span>
+    <span class="tm c-hide">${con.map(p=>`<b>${esc(p.nome.split(' ')[0])}</b>`).join(', ')}${par.length?' com '+par.map(p=>esc(p.nome.split(' ')[0])).join(', '):''}</span>
+    <span class="pil c-hide">${AV_PILAR.map(([k,r])=>`<span title="${r}">P${k} ${avNum(a.pilares&&a.pilares[k])}</span>`).join('')}</span>
+    <span class="c-hide">${al.length||a.nota<7.5?`<span class="${crit?'tag-crit':'tag-warn'}">${crit?'crítico':'atenção'}</span>`:''}</span>
+    <span class="nt">${avNota(a.nota)}</span></div>${ab?avDetalhe(a):''}`;
+}
+function avDetalhe(a){
+  const c=a.criterios||{},ev=a.evidencias||{},sug=a.sugestoes||{},al=avAlertas(a);
+  const linhas=AV_PILAR.map(([p,rot])=>`<tr class="av-grp"><td colspan="2">Pilar ${p} · ${rot}</td><td class="c">${avNota(a.pilares&&a.pilares[p])}</td></tr>`+
+    AV_CRIT.filter(([k])=>k[0]===p).map(([k,r])=>`<tr><td style="width:34px">${k}</td><td>${r}${ev[k]?`<div class="av-ev">${esc(ev[k])}</div>`:''}</td><td class="c">${c[k]==null?'<span class="av-n na">N/A</span>':avNota(c[k])}</td></tr>`).join('')).join('');
+  const sugAl=al.filter(x=>sug[x.k]);
+  return `<div class="av-det">
+    <div class="av-tbl"><table class="tbl"><tbody>${linhas}<tr class="tot"><td colspan="2">Nota final</td><td class="c">${avNota(a.nota)}</td></tr></tbody></table></div>
+    <div>
+      <div class="av-box"><h4>Time</h4><ul>${(a.pessoas||[]).map(p=>`<li><b>${esc(p.nome)}</b> · ${p.papel==='conduziu'?'conduziu':'participou'}${p.contribuicao?`: ${esc(p.contribuicao)}`:''}</li>`).join('')}</ul></div>
+      <div class="av-box"><h4>🏅 Valor em destaque</h4><p>${esc(a.destaque||'—')}</p></div>
+      <div class="av-box"><h4>🎯 Valor a desenvolver</h4><p>${esc(a.desenvolver||'—')}</p></div>
+      <div class="av-box"><h4>⚠️ Alertas</h4>${al.length||a.nota<7.5?`<ul>${al.map(x=>`<li>${x.critico?'🔴':'🟡'} ${x.k} ${esc(x.r)} (${avNum(x.v)})${x.ev?` · ${esc(x.ev)}`:''}</li>`).join('')||`<li>🟡 Nota final ${avNum(a.nota)} abaixo do padrão Aust</li>`}</ul>`:'<p>✅ Nenhum alerta. Reunião padrão Aust Capital.</p>'}</div>
+      <div class="av-box"><h4>💡 Sugestões de ação</h4>${sugAl.length?`<ul>${sugAl.map(x=>`<li>${x.k} ${esc(x.r)} → ${esc(sug[x.k])}</li>`).join('')}</ul>`:'<p>✅ Nenhuma sugestão adicional. Manter o padrão.</p>'}</div>
+      ${a.observacoes?`<div class="av-box"><h4>Observações da avaliação</h4><p>${esc(a.observacoes)}</p></div>`:''}
+      <div class="av-acts"><button class="btn-s pri" data-id="${esc(a.meeting_id)}" onclick="avCopiar(this.dataset.id,this)">Copiar score</button>${opLink('https://notes.granola.ai/d/'+encodeURIComponent(a.meeting_id),'Abrir no Granola','btn-s')}</div>
+    </div></div>`;
+}
+function avTexto(a){ // o score no formato do manual da Aust (para colar no WhatsApp)
+  const c=a.criterios||{},p=a.pilares||{},al=avAlertas(a),sug=a.sugestoes||{};
+  const d=isoLocal(a.data).slice(0,10).split('-').reverse().join('/');
+  const time=[...(a.pessoas||[]).filter(x=>x.papel==='conduziu'),...(a.pessoas||[]).filter(x=>x.papel!=='conduziu')].map(x=>x.nome).join(', ');
+  const pil=(k,espaco)=>`*🏛️${espaco}PILAR ${k}: ${AV_PILAR[+k-1][1]} [${p[k]==null?'N/A':avNum(p[k])+' / 10,0'}]*`;
+  const crit=k=>`* ${k} ${AV_CRIT.find(x=>x[0]===k)[1]}: ${avNum(c[k])}`;
+  const bloco=(k,espaco)=>[pil(k,espaco),...AV_CRIT.filter(([x])=>x[0]===k).map(([x])=>crit(x)),''];
+  const alertas=al.length||a.nota<7.5?(al.length?al.map(x=>`${x.critico?'🔴 CRÍTICO (abaixo de 6,0)':'🟡 ATENÇÃO (6,0 a 7,4)'}: ${x.k} ${x.r} — ${x.ev||'sem evidência registrada'}`):[`🟡 ATENÇÃO (6,0 a 7,4): Nota final — ${avNum(a.nota)} / 10,0`]):['✅ Nenhum alerta. Reunião padrão Aust Capital.'];
+  const sugs=al.filter(x=>sug[x.k]).map(x=>`* ${x.k} ${x.r} → ${sug[x.k]}`);
+  return [`*⭐ Score da Reunião: ${a.cliente} | ${d}*`,'',`*Tipo:* ${a.tipo}`,`*Time:* ${time}`,'',
+    ...bloco('1',' '),...bloco('2','  '),...bloco('3','  '),...bloco('4','  '),
+    `_*⭐NOTA FINAL: ${avNum(a.nota)} / 10,0*_`,'','_🏅 VALOR EM DESTAQUE_',a.destaque||'—','','_🎯 VALOR A DESENVOLVER_',a.desenvolver||'—','',
+    '_⚠️ ALERTAS_',...alertas,'','_💡 SUGESTÕES DE AÇÃO_',...(sugs.length?sugs:['✅ Nenhuma sugestão adicional. Manter o padrão.']),'','_Aust Capital | Corporate Finance._'].join('\n');
+}
+function avCopiar(id,btn){
+  const a=AV.lista.find(x=>x.meeting_id===id);if(!a)return;const txt=avTexto(a);
+  const ok=()=>{if(btn){const o=btn.textContent;btn.textContent='Copiado';setTimeout(()=>{btn.textContent=o},1500)}toast('Score copiado no formato da Aust')};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,()=>{prompt('Copie o score:',txt);ok()});else{prompt('Copie o score:',txt);ok()}
+}
+
 function renderAll(){
   renderPeople();renderClients();renderFixed();renderFeesInputs();renderParams();renderDatalists();updateBadges();
   if(document.getElementById('page-dia').classList.contains('active'))renderPlanner();
@@ -3037,6 +3256,7 @@ function renderAll(){
   if(document.getElementById('page-projecao').classList.contains('active'))renderProjection();
   if(document.getElementById('page-watch').classList.contains('active'))renderWatch();
   if(document.getElementById('page-painel').classList.contains('active'))renderPainel();
+  if(avAtiva())renderAvaliacoes();
   if(editingClient)renderDrawer();
 }
 
